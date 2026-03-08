@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issuer Settings | PapirVault</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../Styles/style.css">
+
+    <style>
+        body.dashboard-body {
+            overflow: hidden;
+        }
+
+        #mainContent {
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #mainContent .content-wrapper {
+            min-height: calc(100vh + 8px);
+        }
+
+        #dashboardHeader {
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            background-color: #ffffff;
+        }
+
+        #dashboardHeader.header-scrolled {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar shadow-sm" id="sidebar">
+    <div class="sidebar-header px-4 pt-4 mb-4">
+        <div class="d-flex align-items-center">
+            <div class="brand-icon-modern me-2">
+                <i class="bi bi-shield-shaded"></i>
+            </div>
+            <div class="brand-info">
+                <h5 class="fw-bold mb-0 brand-name" style="color: #6366f1;">PapirVault</h5>
+                <small class="text-muted extra-small brand-subtext">Secure & Verified</small>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav flex-grow-1 px-3">
+        <a href="IssuerDashboard.html" class="nav-link-modern">
+            <i class="bi bi-grid-fill"></i> <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="IssuerDocuments.html" class="nav-link-modern">
+            <i class="bi bi-file-earmark-text-fill"></i> <span class="nav-text">Documents</span>
+        </a>
+        <a href="IssuerVerification.html" class="nav-link-modern">
+            <i class="bi bi-patch-check-fill"></i> <span class="nav-text">Verification</span>
+        </a>
+        <a href="IssuerSettings.html" class="nav-link-modern active">
+            <i class="bi bi-gear-fill"></i> <span class="nav-text">Settings</span>
+        </a>
+        <a href="IssuerHelp.html" class="nav-link-modern">
+            <i class="bi bi-question-circle-fill"></i> <span class="nav-text">Help</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer px-3 pb-4">
+        <div class="profile-card-modern d-flex align-items-center p-2 mb-3">
+            <div class="avatar-modern me-2">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div class="profile-details">
+                <div class="fw-bold small">NHI Admin</div>
+                <div class="text-muted extra-small">Official Issuer</div>
+            </div>
+        </div>
+        <a href="index.html" class="btn-logout-modern w-100">
+            <i class="bi bi-box-arrow-left me-2"></i> Logout
+        </a>
+    </div>
+</aside>
+
+<main class="main-content" id="mainContent">
+    <header class="dashboard-header" id="dashboardHeader">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-light rounded-circle me-3 shadow-sm" id="sidebarToggle">
+                    <i class="bi bi-text-indent-left fs-5"></i>
+                </button>
+                <h5 class="fw-bold mb-0">Organization Settings</h5>
+            </div>
+            <div class="header-actions">
+                <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">NHI-ORG-2026</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper p-4 pt-2">
+        <div class="row g-4 mb-4">
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                    <h6 class="fw-bold mb-4"><i class="bi bi-shield-lock-fill me-2 text-indigo"></i> Security & API Access</h6>
+                    <div class="mb-4 p-3 bg-light rounded-4">
+                        <label class="small fw-bold text-muted mb-2">ISSUER API KEY (AUTOMATION)</label>
+                        <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                            <input type="password" id="apiKeyInput" class="form-control border-0" value="7894561230X-PV-SECRET" readonly>
+                            <button class="btn btn-primary btn-modern px-3" id="copyKeyBtn"><i class="bi bi-copy"></i></button>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-3 border-top">
+                        <div>
+                            <h6 class="mb-0 fw-bold small">Audit Log Tracking</h6>
+                            <p class="extra-small text-muted mb-0">Record all issuance activities for legal compliance.</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill px-4">Download PDF</button>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h6 class="fw-bold mb-3">Data Retention Policy</h6>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" checked id="autoArchive">
+                        <label class="form-check-label small" for="autoArchive">Auto-archive documents after expiry</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="twoFactor">
+                        <label class="form-check-label small" for="twoFactor">Enforce 2FA for all staff members</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h6 class="fw-bold mb-0">Staff Access</h6>
+                        <button class="btn btn-primary btn-sm rounded-circle shadow-sm"><i class="bi bi-plus-lg"></i></button>
+                    </div>
+                    
+                    <div class="staff-list">
+                        <div class="d-flex align-items-center p-3 rounded-4 bg-light mb-3">
+                            <div class="avatar-modern-sm me-3 bg-indigo text-white">SA</div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">Sarah Admin</div>
+                                <div class="extra-small text-muted">Owner</div>
+                            </div>
+                            <i class="bi bi-patch-check-fill text-primary"></i>
+                        </div>
+
+                        <div class="d-flex align-items-center p-3 rounded-4 bg-light mb-3">
+                            <div class="avatar-modern-sm me-3 bg-secondary text-white">MJ</div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">Mike Jones</div>
+                                <div class="extra-small text-muted">Operator</div>
+                            </div>
+                            <button class="btn btn-link text-muted btn-sm"><i class="bi bi-three-dots-vertical"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="danger-zone mt-auto pt-4 border-top">
+                        <h6 class="text-danger fw-bold extra-small mb-2">DANGER ZONE</h6>
+                        <button class="btn btn-outline-danger w-100 btn-sm rounded-pill">Deactivate Organization Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="height: 800px;"></div>
+    </div>
+</main>
+
+<script src="../Main/script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mainContent = document.getElementById('mainContent');
+        const dashboardHeader = document.getElementById('dashboardHeader');
+
+        if (!mainContent || !dashboardHeader) return;
+
+        const scrollHandler = () => {
+            dashboardHeader.classList.toggle('header-scrolled', mainContent.scrollTop > 0);
+        };
+
+        mainContent.addEventListener('scroll', scrollHandler, { passive: true });
+        scrollHandler();
+    });
+</script>
+</body>
+</html>

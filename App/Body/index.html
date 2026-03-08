@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PapirVault | Secure & Verified</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="../Styles/fonts.css">
+    <link rel="stylesheet" href="../Styles/themes.css">
+    <link rel="stylesheet" href="../Styles/style.css">
+</head>
+<body class="modern-bg">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="../Assets/logo.png" alt="PapirVault Logo" class="me-2" style="height: 35px; width: auto;">
+                <div class="lh-1">
+                    <h5 class="mb-0 fw-bold"><span class="text-primary-blue">Papir</span><span class="text-primary-purple">Vault</span></h5>
+                    <small class="text-muted extra-small">Secure . Verify . Trust</small>
+                </div>
+            </a>
+        </div>
+    </nav>
+
+    <main class="container text-center py-5">
+        <div class="mb-5 animate-up">
+            <div class="hero-logo-wrapper mb-4">
+                <img src="../Assets/logo.png" alt="PapirVault Logo" class="hero-main-logo">
+            </div>
+            <h1 class="display-4 fw-bold mb-3">Welcome to <span class="text-primary-blue">Papir</span><span class="text-primary-purple">Vault</span></h1>
+            <p class="lead text-secondary mb-4">Secure Your Official Documents. Verified Instantly.</p>
+            <p class="text-muted mx-auto hero-description">
+                A highly secure digital vault where official documents are uploaded directly by authorized issuers, ensuring authenticity and instant verification.
+            </p>
+        </div>
+
+        <h3 class="fw-bold mb-5 section-title">Choose Your Login Type</h3>
+
+        <div class="row g-4 justify-content-center mb-5 pb-4">
+            <div class="col-md-6 col-lg-5">
+                <div class="card h-100 border-0 shadow-sm rounded-4 selection-card clickable-card client-border">
+                    <div class="card-body p-5">
+                        <div class="icon-box client-bg-soft mx-auto mb-4">
+                            <i class="bi bi-person-fill text-primary-blue fs-1"></i>
+                        </div>
+                        <h2 class="fw-bold mb-2">Client User</h2>
+                        <p class="text-muted mb-4">Access and manage your official documents</p>
+                        
+                        <ul class="list-unstyled text-start feature-list mb-5">
+                            <li><i class="bi bi-check2-circle text-primary-blue"></i> View all your official documents</li>
+                            <li><i class="bi bi-check2-circle text-primary-blue"></i> Get unique verification codes</li>
+                            <li><i class="bi bi-check2-circle text-primary-blue"></i> Track document expiration</li>
+                            <li><i class="bi bi-check2-circle text-primary-blue"></i> Verify documents instantly</li>
+                        </ul>
+                        
+                        <a href="ClientLogin.html" class="btn btn-primary-blue w-100 py-3 rounded-3 fw-bold shadow-sm">
+                            Login as Client <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-5">
+                <div class="card h-100 border-0 shadow-sm rounded-4 selection-card clickable-card issuer-border">
+                    <div class="card-body p-5">
+                        <div class="icon-box issuer-bg-soft mx-auto mb-4">
+                            <i class="bi bi-building-fill text-primary-purple fs-1"></i>
+                        </div>
+                        <h2 class="fw-bold mb-2">Official Issuer</h2>
+                        <p class="text-muted mb-4">Upload official documents for clients</p>
+                        
+                        <ul class="list-unstyled text-start feature-list mb-5">
+                            <li><i class="bi bi-check2-circle text-primary-purple"></i> Upload verified documents</li>
+                            <li><i class="bi bi-check2-circle text-primary-purple"></i> Generate verification codes</li>
+                            <li><i class="bi bi-check2-circle text-primary-purple"></i> Manage issued documents</li>
+                            <li><i class="bi bi-check2-circle text-primary-purple"></i> Track document status</li>
+                        </ul>
+                        
+                        <a href="IssuerLogin.html" class="btn btn-primary-purple w-100 py-3 rounded-3 fw-bold shadow-sm">
+                            Login as Issuer <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-panel mx-auto p-4 p-md-5 rounded-4 border bg-white shadow-sm">
+            <div class="d-flex align-items-center mb-4 justify-content-center justify-content-md-start">
+                <div class="security-badge me-3">
+                    <i class="bi bi-shield-lock-fill fs-3"></i>
+                </div>
+                <h4 class="mb-0 fw-bold">Why PapirVault is Secure</h4>
+            </div>
+            <div class="row text-start g-4">
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <i class="bi bi-patch-check-fill text-success fs-5 me-3"></i>
+                        <div>
+                            <p class="mb-1 fw-bold">Issuer-Only Uploads</p>
+                            <p class="text-muted extra-small">Documents uploaded directly by official issuers only</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <i class="bi bi-lock-fill text-success fs-5 me-3"></i>
+                        <div>
+                            <p class="mb-1 fw-bold">Bank-Level Security</p>
+                            <p class="text-muted extra-small">256-bit SSL encryption for all data</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <i class="bi bi-qr-code text-success fs-5 me-3"></i>
+                        <div>
+                            <p class="mb-1 fw-bold">Unique Verification</p>
+                            <p class="text-muted extra-small">Each document has a unique verification code</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <i class="bi bi-lightning-fill text-success fs-5 me-3"></i>
+                        <div>
+                            <p class="mb-1 fw-bold">Instant Authentication</p>
+                            <p class="text-muted extra-small">Verify authenticity without sharing files</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="container pb-4">
+        <div class="rounded-4 shadow-sm px-4 py-3 d-flex flex-column flex-md-row justify-content-between align-items-center" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(124, 58, 237, 0.12) 100%); border: 1px solid rgba(99, 102, 241, 0.25);">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <i class="bi bi-shield-check text-primary-blue me-2"></i>
+                <span class="small text-secondary">Trusted Digital Document Platform</span>
+            </div>
+            <div class="fw-bold text-primary-purple small">
+                <i class="bi bi-c-circle me-1"></i>2026 CULS Prague
+            </div>
+        </div>
+    </footer>
+
+    <script src="..Main/script.js"></script>
+</body>
+</html>

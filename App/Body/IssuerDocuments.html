@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Issuer Documents | PapirVault</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="../Styles/style.css">
+
+	<style>
+		body.dashboard-body {
+			overflow: hidden;
+		}
+
+		#mainContent {
+			height: 100vh;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+
+		#mainContent .content-wrapper {
+			min-height: calc(100vh + 8px);
+		}
+
+		#dashboardHeader {
+			position: sticky;
+			top: 0;
+			z-index: 1020;
+			background-color: #ffffff;
+		}
+
+		#dashboardHeader.header-scrolled {
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+		}
+
+		.upload-dropzone {
+			border: 2px dashed #cbd5e1;
+			border-radius: 16px;
+			background: #f8fafc;
+			transition: all 0.2s ease;
+			text-align: center;
+			padding: 2rem 1rem;
+		}
+
+		.upload-dropzone:hover {
+			border-color: #6366f1;
+			background: #eef2ff;
+		}
+
+		.upload-icon {
+			width: 56px;
+			height: 56px;
+			border-radius: 14px;
+			background: #e0e7ff;
+			color: #4f46e5;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.5rem;
+			margin-bottom: 0.75rem;
+		}
+	</style>
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar shadow-sm" id="sidebar">
+	<div class="sidebar-header px-4 pt-4 mb-4">
+		<div class="d-flex align-items-center">
+			<div class="brand-icon-modern me-2">
+				<i class="bi bi-shield-shaded"></i>
+			</div>
+			<div class="brand-info">
+				<h5 class="fw-bold mb-0 brand-name" style="color: #6366f1;">PapirVault</h5>
+				<small class="text-muted extra-small brand-subtext">Secure & Verified</small>
+			</div>
+		</div>
+	</div>
+
+	<nav class="sidebar-nav flex-grow-1 px-3">
+		<a href="IssuerDashboard.html" class="nav-link-modern">
+			<i class="bi bi-grid-fill"></i> <span class="nav-text">Dashboard</span>
+		</a>
+		<a href="IssuerDocuments.html" class="nav-link-modern active">
+			<i class="bi bi-file-earmark-text-fill"></i> <span class="nav-text">Documents</span>
+		</a>
+		<a href="IssuerVerification.html" class="nav-link-modern">
+			<i class="bi bi-patch-check-fill"></i> <span class="nav-text">Verification</span>
+		</a>
+		<a href="IssuerSettings.html" class="nav-link-modern">
+			<i class="bi bi-gear-fill"></i> <span class="nav-text">Settings</span>
+		</a>
+		<a href="IssuerHelp.html" class="nav-link-modern">
+			<i class="bi bi-question-circle-fill"></i> <span class="nav-text">Help</span>
+		</a>
+	</nav>
+
+	<div class="sidebar-footer px-3 pb-4">
+		<div class="profile-card-modern d-flex align-items-center p-2 mb-3">
+			<div class="avatar-modern me-2">
+				<i class="bi bi-person-fill"></i>
+			</div>
+			<div class="profile-details">
+				<div class="fw-bold small">NHI Admin</div>
+				<div class="text-muted extra-small">Official Issuer</div>
+			</div>
+		</div>
+		<a href="index.html" class="btn-logout-modern w-100">
+			<i class="bi bi-box-arrow-left me-2"></i> Logout
+		</a>
+	</div>
+</aside>
+
+<main class="main-content" id="mainContent">
+	<header class="dashboard-header" id="dashboardHeader">
+		<div class="d-flex justify-content-between align-items-center">
+			<div class="d-flex align-items-center">
+				<button class="btn btn-light rounded-circle me-3 shadow-sm" id="sidebarToggle">
+					<i class="bi bi-text-indent-left fs-5"></i>
+				</button>
+				<div>
+					<h5 class="fw-bold mb-0">Issuer Documents</h5>
+					<small class="text-muted">Upload and manage legally issued records</small>
+				</div>
+			</div>
+			<div class="d-none d-md-flex align-items-center gap-2">
+				<span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">Compliance Ready</span>
+				<span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">92 / 100 Used</span>
+				<a href="IssuerUpgrade.html" class="btn btn-outline-warning btn-modern px-3">Upgrade</a>
+				<button class="btn btn-primary btn-modern px-3">Export Register</button>
+			</div>
+		</div>
+	</header>
+
+	<div class="content-wrapper p-4 pt-2">
+		<div class="row g-4 mb-4">
+			<div class="col-md-4">
+				<div class="stat-card bg-purple-light shadow-sm">
+					<small class="fw-bold opacity-75">TOTAL ISSUED</small>
+					<h2 class="fw-bold mb-0">1,124</h2>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="stat-card bg-green-light shadow-sm">
+					<small class="fw-bold opacity-75">PUBLISHED TODAY</small>
+					<h2 class="fw-bold mb-0">37</h2>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="stat-card bg-yellow-light shadow-sm">
+					<small class="fw-bold opacity-75">PENDING REVIEW</small>
+					<h2 class="fw-bold mb-0">9</h2>
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-4">
+			<div class="col-lg-7">
+				<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<h6 class="fw-bold mb-0">Legal Document Upload</h6>
+						<span class="badge bg-primary-subtle text-primary rounded-pill">Issuer Channel</span>
+					</div>
+
+					<div class="upload-dropzone mb-4">
+						<div class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+						<div class="fw-bold mb-1">Drag & drop legal documents</div>
+						<div class="text-muted extra-small mb-3">Supported: PDF, DOCX, PNG (max 10MB)</div>
+						<input id="issuerFileInput" class="form-control form-control-sm" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+					</div>
+
+					<form id="issuerUploadForm">
+						<div id="issuerUploadFeedback" class="alert d-none py-2 small" role="alert"></div>
+						<div class="row g-3 mb-3">
+							<div class="col-md-6">
+								<label class="form-label small fw-bold">Document Type</label>
+								<select id="issuerDocType" class="form-select" required>
+									<option selected>Select type</option>
+									<option>Insurance Policy</option>
+									<option>Health Clearance</option>
+									<option>Identity Confirmation</option>
+									<option>Residence Certificate</option>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<label class="form-label small fw-bold">Client UID</label>
+								<input id="issuerClientUid" type="text" class="form-control" placeholder="Paste Firebase client UID" required>
+							</div>
+						</div>
+
+						<div class="row g-3 mb-3">
+							<div class="col-md-6">
+								<label class="form-label small fw-bold">Issue Date</label>
+								<input id="issuerIssueDate" type="date" class="form-control">
+							</div>
+							<div class="col-md-6">
+								<label class="form-label small fw-bold">Expiry Date</label>
+								<input id="issuerExpiryDate" type="date" class="form-control">
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label small fw-bold">Legal Note / Basis</label>
+							<textarea id="issuerLegalNote" class="form-control" rows="3" placeholder="Reference policy, legal article, or issuance authority details..."></textarea>
+						</div>
+
+						<div class="form-check mb-3">
+							<input class="form-check-input" type="checkbox" id="legalConsent">
+							<label class="form-check-label small" for="legalConsent">
+								I confirm this document is lawfully issued and authorized for secure publication in PapirVault.
+							</label>
+						</div>
+
+						<div class="d-flex gap-2">
+							<button type="submit" id="issuerUploadBtn" class="btn btn-primary btn-modern px-4">Upload & Publish</button>
+							<button type="button" class="btn btn-outline-secondary px-4">Save Draft</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="col-lg-5">
+				<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+					<h6 class="fw-bold mb-3">Submission Checklist</h6>
+					<div class="small text-muted d-flex align-items-center mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Valid issuer identity attached</div>
+					<div class="small text-muted d-flex align-items-center mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Document signed and timestamped</div>
+					<div class="small text-muted d-flex align-items-center mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Correct document category selected</div>
+					<div class="small text-muted d-flex align-items-center"><i class="bi bi-check-circle-fill text-success me-2"></i> Consent statement acknowledged</div>
+				</div>
+
+				<div class="card border-0 shadow-sm rounded-4 p-4">
+					<h6 class="fw-bold mb-3">Quick Actions</h6>
+					<button class="btn btn-light border w-100 text-start mb-2"><i class="bi bi-shield-check me-2 text-primary"></i> Verify Uploaded File</button>
+					<button class="btn btn-light border w-100 text-start mb-2"><i class="bi bi-link-45deg me-2 text-primary"></i> Generate Verification Code</button>
+					<button class="btn btn-light border w-100 text-start"><i class="bi bi-download me-2 text-primary"></i> Download Legal Receipt</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="card border-0 shadow-sm rounded-4 p-4 mt-4">
+			<div class="d-flex justify-content-between align-items-center mb-3">
+				<h6 class="fw-bold mb-0">Recent Uploads</h6>
+				<div class="input-group input-group-sm" style="max-width: 280px;">
+					<span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+					<input type="text" class="form-control" placeholder="Search uploads...">
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-hover align-middle mb-0">
+					<thead class="table-light">
+						<tr class="small text-muted">
+							<th>REFERENCE</th>
+							<th>CLIENT ID</th>
+							<th>TYPE</th>
+							<th>STATUS</th>
+							<th>DATE</th>
+							<th class="text-end">ACTION</th>
+						</tr>
+					</thead>
+					<tbody id="issuerRecentUploadsBody">
+						<tr>
+							<td class="fw-bold">DOC-ISS-9021</td>
+							<td>CL-2026-1942</td>
+							<td>Insurance Policy</td>
+							<td><span class="badge bg-success-subtle text-success rounded-pill px-3">Published</span></td>
+							<td class="text-muted">Mar 03, 2026</td>
+							<td class="text-end">
+								<a class="btn btn-sm btn-light border rounded-pill px-3"
+								   href="IssuerVerification.html?referenceId=DOC-ISS-9021&clientId=CL-2026-1942&docType=Insurance%20Policy&verificationCode=INS-2026-K7P4V9&issueDate=2026-03-01&expiryDate=2027-03-01">
+									<i class="bi bi-shield-check me-1 text-primary"></i>Verify
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td class="fw-bold">DOC-ISS-9020</td>
+							<td>CL-2026-1938</td>
+							<td>Health Clearance</td>
+							<td><span class="badge bg-warning-subtle text-warning rounded-pill px-3">Review</span></td>
+							<td class="text-muted">Mar 03, 2026</td>
+							<td class="text-end">
+								<a class="btn btn-sm btn-light border rounded-pill px-3"
+								   href="IssuerVerification.html?referenceId=DOC-ISS-9020&clientId=CL-2026-1938&docType=Health%20Clearance&verificationCode=HLC-2026-R2N8D1&issueDate=2026-03-02&expiryDate=2026-12-31">
+									<i class="bi bi-shield-check me-1 text-primary"></i>Verify
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../Main/script.js"></script>
+<script src="../Main/firebase-env.js"></script>
+<script type="module">
+	import "../Main/firebase-auth.js";
+	import "../Main/firebase-documents.js";
+
+	document.addEventListener("DOMContentLoaded", () => {
+		sessionStorage.setItem("papirvaultIssuerSession", "active");
+		localStorage.setItem("papirvaultIssuerSession", "active");
+
+		const logoutButton = document.querySelector(".btn-logout-modern");
+		logoutButton?.addEventListener("click", (event) => {
+			event.preventDefault();
+			sessionStorage.removeItem("papirvaultIssuerSession");
+			localStorage.removeItem("papirvaultIssuerSession");
+			window.location.href = "IssuerLogin.html";
+		});
+
+		const docsApi = window.PapirVaultDocs;
+		const form = document.getElementById("issuerUploadForm");
+		const fileInput = document.getElementById("issuerFileInput");
+		const docType = document.getElementById("issuerDocType");
+		const clientUid = document.getElementById("issuerClientUid");
+		const issueDate = document.getElementById("issuerIssueDate");
+		const expiryDate = document.getElementById("issuerExpiryDate");
+		const legalNote = document.getElementById("issuerLegalNote");
+		const legalConsent = document.getElementById("legalConsent");
+		const uploadBtn = document.getElementById("issuerUploadBtn");
+		const feedback = document.getElementById("issuerUploadFeedback");
+		const tableBody = document.getElementById("issuerRecentUploadsBody");
+
+		const showFeedback = (message, type = "info") => {
+			feedback.className = `alert alert-${type} py-2 small`;
+			feedback.textContent = message;
+			feedback.classList.remove("d-none");
+		};
+
+		const addRecentRow = (record) => {
+			const createdAt = new Date();
+			const row = document.createElement("tr");
+			row.innerHTML = `
+				<td class="fw-bold">${record.id}</td>
+				<td>${record.ownerUid}</td>
+				<td>${record.category}</td>
+				<td><span class="badge bg-success-subtle text-success rounded-pill px-3">Published</span></td>
+				<td class="text-muted">${createdAt.toLocaleDateString()}</td>
+				<td class="text-end">
+					<button class="btn btn-sm btn-light border rounded-pill px-3 copy-code-btn" data-code="${record.verificationCode}">
+						<i class="bi bi-copy me-1 text-primary"></i>${record.verificationCode}
+					</button>
+				</td>
+			`;
+
+			tableBody.prepend(row);
+		};
+
+		tableBody?.addEventListener("click", async (event) => {
+			const copyBtn = event.target.closest(".copy-code-btn");
+			if (!copyBtn) return;
+
+			const code = copyBtn.getAttribute("data-code") || "";
+			if (!code) return;
+
+			await navigator.clipboard.writeText(code);
+			const original = copyBtn.innerHTML;
+			copyBtn.innerHTML = `<i class="bi bi-check2 me-1 text-success"></i>Copied`;
+			setTimeout(() => {
+				copyBtn.innerHTML = original;
+			}, 1000);
+		});
+
+		form?.addEventListener("submit", async (event) => {
+			event.preventDefault();
+			feedback.classList.add("d-none");
+
+			if (!docsApi?.isReady()) {
+				showFeedback("Firebase is not configured yet.", "danger");
+				return;
+			}
+
+			if (!fileInput.files?.[0]) {
+				showFeedback("Please choose a file before upload.", "warning");
+				return;
+			}
+
+			if (!legalConsent.checked) {
+				showFeedback("Please confirm legal consent first.", "warning");
+				return;
+			}
+
+			if (!clientUid.value.trim()) {
+				showFeedback("Please enter client UID.", "warning");
+				return;
+			}
+
+			const userName = document.querySelector(".profile-details .fw-bold")?.textContent?.trim() || "Authorized Issuer";
+
+			try {
+				uploadBtn.disabled = true;
+				uploadBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Registering...';
+
+				if (typeof docsApi.registerIssuerDocumentWithoutFile !== "function") {
+					showFeedback("App update not loaded yet. Please redeploy and hard refresh (Ctrl+Shift+R), then try again.", "danger");
+					return;
+				}
+
+				const registerPromise = docsApi.registerIssuerDocumentWithoutFile({
+					title: docType.value,
+					category: docType.value,
+					clientUid: clientUid.value,
+					expiryDate: expiryDate.value,
+					issueDate: issueDate.value,
+					legalNote: legalNote.value,
+					issuerName: userName,
+					issuerUid: "",
+					warningMessage: fileInput.files?.[0]
+						? `File \"${fileInput.files[0].name}\" not uploaded in demo mode.`
+						: "Registered without attached file."
+				});
+
+				const timeoutPromise = new Promise((_, reject) => {
+					setTimeout(() => {
+						reject(new Error("Register timed out after 20 seconds. Check Firestore rules/network and try again."));
+					}, 20000);
+				});
+
+				const record = await Promise.race([registerPromise, timeoutPromise]);
+
+				showFeedback(`Registered successfully. Verification code: ${record.verificationCode}`, "success");
+				addRecentRow(record);
+				form.reset();
+			} catch (error) {
+				showFeedback(error.message || "Register failed. Please try again.", "danger");
+			} finally {
+				uploadBtn.disabled = false;
+				uploadBtn.innerHTML = "Upload & Publish";
+			}
+		});
+	});
+</script>
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const mainContent = document.getElementById('mainContent');
+		const dashboardHeader = document.getElementById('dashboardHeader');
+
+		if (!mainContent || !dashboardHeader) return;
+
+		const scrollHandler = () => {
+			dashboardHeader.classList.toggle('header-scrolled', mainContent.scrollTop > 0);
+		};
+
+		mainContent.addEventListener('scroll', scrollHandler, { passive: true });
+		scrollHandler();
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Issuer Help & Policies | PapirVault</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="../Styles/style.css">
+
+	<style>
+		body.dashboard-body {
+			overflow: hidden;
+		}
+
+		#mainContent {
+			height: 100vh;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+
+		#mainContent .content-wrapper {
+			min-height: calc(100vh + 8px);
+		}
+
+		#dashboardHeader {
+			position: sticky;
+			top: 0;
+			z-index: 1020;
+			background-color: #ffffff;
+		}
+
+		#dashboardHeader.header-scrolled {
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+		}
+
+		.help-hero {
+			background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
+			border-radius: 18px;
+			color: #fff;
+		}
+
+		.doc-card {
+			border: 1px solid #e2e8f0;
+			border-radius: 14px;
+			background: #ffffff;
+			transition: all 0.2s ease;
+		}
+
+		.doc-card:hover {
+			border-color: #6366f1;
+			box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+		}
+
+		.policy-scroll {
+			max-height: 420px;
+			overflow-y: auto;
+			border: 1px solid #e2e8f0;
+			border-radius: 14px;
+			background: #f8fafc;
+		}
+
+		.policy-scroll h6 {
+			font-weight: 700;
+		}
+
+		.quick-link {
+			border: 1px solid #e2e8f0;
+			border-radius: 12px;
+			padding: 0.75rem 1rem;
+			background: #fff;
+		}
+	</style>
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar shadow-sm" id="sidebar">
+	<div class="sidebar-header px-4 pt-4 mb-4">
+		<div class="d-flex align-items-center">
+			<div class="brand-icon-modern me-2">
+				<i class="bi bi-shield-shaded"></i>
+			</div>
+			<div class="brand-info">
+				<h5 class="fw-bold mb-0 brand-name" style="color: #6366f1;">PapirVault</h5>
+				<small class="text-muted extra-small brand-subtext">Secure & Verified</small>
+			</div>
+		</div>
+	</div>
+
+	<nav class="sidebar-nav flex-grow-1 px-3">
+		<a href="IssuerDashboard.html" class="nav-link-modern">
+			<i class="bi bi-grid-fill"></i> <span class="nav-text">Dashboard</span>
+		</a>
+		<a href="IssuerDocuments.html" class="nav-link-modern">
+			<i class="bi bi-file-earmark-text-fill"></i> <span class="nav-text">Documents</span>
+		</a>
+		<a href="IssuerVerification.html" class="nav-link-modern">
+			<i class="bi bi-patch-check-fill"></i> <span class="nav-text">Verification</span>
+		</a>
+		<a href="IssuerSettings.html" class="nav-link-modern">
+			<i class="bi bi-gear-fill"></i> <span class="nav-text">Settings</span>
+		</a>
+		<a href="IssuerHelp.html" class="nav-link-modern active">
+			<i class="bi bi-question-circle-fill"></i> <span class="nav-text">Help</span>
+		</a>
+	</nav>
+
+	<div class="sidebar-footer px-3 pb-4">
+		<div class="profile-card-modern d-flex align-items-center p-2 mb-3">
+			<div class="avatar-modern me-2">
+				<i class="bi bi-person-fill"></i>
+			</div>
+			<div class="profile-details">
+				<div class="fw-bold small">NHI Admin</div>
+				<div class="text-muted extra-small">Official Issuer</div>
+			</div>
+		</div>
+		<a href="index.html" class="btn-logout-modern w-100">
+			<i class="bi bi-box-arrow-left me-2"></i> Logout
+		</a>
+	</div>
+</aside>
+
+<main class="main-content" id="mainContent">
+	<header class="dashboard-header" id="dashboardHeader">
+		<div class="d-flex justify-content-between align-items-center">
+			<div class="d-flex align-items-center">
+				<button class="btn btn-light rounded-circle me-3 shadow-sm" id="sidebarToggle">
+					<i class="bi bi-text-indent-left fs-5"></i>
+				</button>
+				<div>
+					<h5 class="fw-bold mb-0">Issuer Help Center</h5>
+					<small class="text-muted">Policies, legal guidance, and support for issuing teams</small>
+				</div>
+			</div>
+			<div class="input-group w-50 d-none d-md-flex shadow-sm rounded-pill overflow-hidden">
+				<span class="input-group-text border-0 bg-white"><i class="bi bi-search text-muted"></i></span>
+				<input type="text" id="headerSearch" class="form-control border-0 px-1" placeholder="Search FAQ or policy topic...">
+			</div>
+		</div>
+	</header>
+
+	<div class="content-wrapper p-4 pt-2">
+		<div class="help-hero p-4 mb-4 shadow-sm">
+			<div class="row align-items-center">
+				<div class="col-lg-8">
+					<h4 class="fw-bold mb-2">Issuer Compliance & Support Portal</h4>
+					<p class="mb-0 opacity-75">Find policy requirements, verification standards, and practical guidance for lawful document issuance and handling.</p>
+				</div>
+				<div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+					<span class="badge rounded-pill bg-light text-dark px-3 py-2">Updated: Mar 2026</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-4 mb-4">
+			<div class="col-lg-8">
+				<div class="card border-0 shadow-sm rounded-4 p-4">
+					<ul class="nav nav-pills mb-3" id="issuerHelpTabs" role="tablist">
+						<li class="nav-item" role="presentation">
+							<button class="nav-link active rounded-pill px-4 me-2" data-bs-toggle="pill" data-bs-target="#faqPane" type="button">FAQ</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link rounded-pill px-4 me-2" data-bs-toggle="pill" data-bs-target="#privacyPane" type="button">Privacy Policy</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link rounded-pill px-4" data-bs-toggle="pill" data-bs-target="#compliancePane" type="button">Compliance Guide</button>
+						</li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane fade show active" id="faqPane">
+							<div class="accordion accordion-flush" id="issuerFaqAccordion">
+								<div class="accordion-item border-0 mb-2">
+									<h2 class="accordion-header">
+										<button class="accordion-button collapsed fw-bold small rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#q1">
+											What makes a document legally valid for publishing?
+										</button>
+									</h2>
+									<div id="q1" class="accordion-collapse collapse" data-bs-parent="#issuerFaqAccordion">
+										<div class="accordion-body text-muted small">
+											A record must come from an authorized issuing officer, include a traceable reference ID, clear issue date, document type, and supporting legal basis. Records without legal context should remain in draft status.
+										</div>
+									</div>
+								</div>
+
+								<div class="accordion-item border-0 mb-2">
+									<h2 class="accordion-header">
+										<button class="accordion-button collapsed fw-bold small rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#q2">
+											How should we handle corrections after publication?
+										</button>
+									</h2>
+									<div id="q2" class="accordion-collapse collapse" data-bs-parent="#issuerFaqAccordion">
+										<div class="accordion-body text-muted small">
+											Issue a new version with a new reference ID, mark the prior version as superseded, and retain both entries in the audit trail. Avoid overwriting historical records.
+										</div>
+									</div>
+								</div>
+
+								<div class="accordion-item border-0 mb-2">
+									<h2 class="accordion-header">
+										<button class="accordion-button collapsed fw-bold small rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#q3">
+											When should verification be rejected?
+										</button>
+									</h2>
+									<div id="q3" class="accordion-collapse collapse" data-bs-parent="#issuerFaqAccordion">
+										<div class="accordion-body text-muted small">
+											Reject when core fields are missing, reference IDs are invalid, consent is absent, or legal basis is unclear. These conditions prevent lawful verification and should trigger re-submission.
+										</div>
+									</div>
+								</div>
+
+								<div class="accordion-item border-0">
+									<h2 class="accordion-header">
+										<button class="accordion-button collapsed fw-bold small rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#q4">
+											What records must be retained for audits?
+										</button>
+									</h2>
+									<div id="q4" class="accordion-collapse collapse" data-bs-parent="#issuerFaqAccordion">
+										<div class="accordion-body text-muted small">
+											Keep upload metadata, verification outcomes, decision timestamps, and operator identity. Retention must follow your institutional policy and applicable legal timelines.
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="tab-pane fade" id="privacyPane">
+							<div class="policy-scroll p-3">
+								<h6>1. Purpose and Scope</h6>
+								<p class="text-muted small">This policy governs how issuer organizations process personal and document-related data in PapirVault for lawful issuance and verification.</p>
+
+								<h6>2. Lawful Processing</h6>
+								<p class="text-muted small">Issuers must only upload records with a valid legal basis, purpose limitation, and authorized operational need. Data entry without legal context is prohibited.</p>
+
+								<h6>3. Data Minimization</h6>
+								<p class="text-muted small">Upload only fields required for verification: reference ID, client identifier, document type, issue/expiry dates, and legal note. Avoid excessive or unrelated personal data.</p>
+
+								<h6>4. Access and Confidentiality</h6>
+								<p class="text-muted small">Access must be role-based. Staff accounts should use strong authentication, and issuer teams must regularly review inactive access.</p>
+
+								<h6>5. Retention and Deletion</h6>
+								<p class="text-muted small">Documents and logs are retained according to issuer legal obligations and internal records policy. Expired or superseded records require controlled archival.</p>
+
+								<h6>6. Incident Reporting</h6>
+								<p class="text-muted small mb-0">Any suspected misuse, unauthorized access, or integrity issue must be escalated immediately to compliance/security officers and logged for audit review.</p>
+							</div>
+						</div>
+
+						<div class="tab-pane fade" id="compliancePane">
+							<div class="doc-card p-3 mb-3">
+								<h6 class="mb-2">Verification Standard</h6>
+								<p class="text-muted small mb-0">A document is considered <strong>well verified</strong> only when uploaded metadata matches verification input, dates are valid, legal basis is present, and issuer confirmation is recorded.</p>
+							</div>
+
+							<div class="doc-card p-3 mb-3">
+								<h6 class="mb-2">Operational Checklist</h6>
+								<ul class="text-muted small mb-0 ps-3">
+									<li>Confirm the source upload reference exists.</li>
+									<li>Match client ID and document type exactly.</li>
+									<li>Confirm issue date is not after expiry date.</li>
+									<li>Ensure legal note references authority or policy.</li>
+									<li>Capture final decision and operator identity.</li>
+								</ul>
+							</div>
+
+							<div class="doc-card p-3">
+								<h6 class="mb-2">Decision Framework</h6>
+								<div class="small mb-1"><span class="badge bg-success-subtle text-success me-2">Approve</span>All checks pass.</div>
+								<div class="small mb-1"><span class="badge bg-warning-subtle text-warning me-2">Review</span>Missing non-critical details.</div>
+								<div class="small"><span class="badge bg-danger-subtle text-danger me-2">Reject</span>Missing legal basis or core metadata mismatch.</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-4">
+				<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+					<h6 class="fw-bold mb-3">Quick Links</h6>
+					<a href="IssuerDocuments.html" class="quick-link d-flex justify-content-between align-items-center text-decoration-none mb-2">
+						<span class="small text-dark"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Document Upload</span>
+						<i class="bi bi-chevron-right text-muted small"></i>
+					</a>
+					<a href="IssuerVerification.html" class="quick-link d-flex justify-content-between align-items-center text-decoration-none mb-2">
+						<span class="small text-dark"><i class="bi bi-patch-check me-2 text-primary"></i>Verification Desk</span>
+						<i class="bi bi-chevron-right text-muted small"></i>
+					</a>
+					<a href="IssuerSettings.html" class="quick-link d-flex justify-content-between align-items-center text-decoration-none">
+						<span class="small text-dark"><i class="bi bi-shield-lock me-2 text-primary"></i>Security Settings</span>
+						<i class="bi bi-chevron-right text-muted small"></i>
+					</a>
+				</div>
+
+				<div class="card border-0 shadow-sm rounded-4 p-4">
+					<h6 class="fw-bold mb-3">Contact Compliance Support</h6>
+					<p class="small text-muted">Need legal clarification on issuance or verification?</p>
+					<form id="issuerSupportForm">
+						<div class="mb-2">
+							<label class="form-label extra-small fw-bold">Topic</label>
+							<select class="form-select form-select-sm">
+								<option>Policy Clarification</option>
+								<option>Verification Dispute</option>
+								<option>Data Retention Request</option>
+								<option>Security Incident</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label extra-small fw-bold">Message</label>
+							<textarea class="form-control form-control-sm" rows="4" placeholder="Describe your issue and include reference ID if available..."></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary btn-modern w-100">Send Request</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../Main/script.js"></script>
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const mainContent = document.getElementById('mainContent');
+		const dashboardHeader = document.getElementById('dashboardHeader');
+		const issuerSupportForm = document.getElementById('issuerSupportForm');
+
+		if (mainContent && dashboardHeader) {
+			const scrollHandler = () => {
+				dashboardHeader.classList.toggle('header-scrolled', mainContent.scrollTop > 0);
+			};
+
+			mainContent.addEventListener('scroll', scrollHandler, { passive: true });
+			scrollHandler();
+		}
+
+		if (issuerSupportForm) {
+			issuerSupportForm.addEventListener('submit', (event) => {
+				event.preventDefault();
+				const submitBtn = issuerSupportForm.querySelector('button[type="submit"]');
+				const originalText = submitBtn.innerHTML;
+
+				submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Request Sent';
+				submitBtn.classList.add('btn-success');
+				submitBtn.classList.remove('btn-primary', 'btn-modern');
+
+				setTimeout(() => {
+					submitBtn.innerHTML = originalText;
+					submitBtn.classList.remove('btn-success');
+					submitBtn.classList.add('btn-primary', 'btn-modern');
+					issuerSupportForm.reset();
+				}, 2200);
+			});
+		}
+	});
+</script>
+</body>
+</html>

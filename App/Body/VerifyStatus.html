@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Verification | PapirVault</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../Styles/fonts.css">
+    <link rel="stylesheet" href="../Styles/themes.css">
+    <link rel="stylesheet" href="../Styles/style.css">
+</head>
+<body class="dashboard-body">
+    <main class="container py-5" style="max-width: 760px;">
+        <div class="text-center mb-4">
+            <h3 class="fw-bold mb-1">PapirVault Verification</h3>
+            <p class="text-muted small mb-2">Public verification result for scanned document QR</p>
+            <span id="statusChip" class="badge rounded-pill px-3 py-2 bg-secondary-subtle text-secondary">
+                <i class="bi bi-patch-check me-1"></i>Checking status
+            </span>
+        </div>
+
+        <div id="verifyCard" class="card border-0 shadow-sm rounded-4 p-4">
+            <div id="verifyState" class="d-flex align-items-center gap-3 mb-3">
+                <div id="verifyIcon" class="p-3 rounded-3 bg-light text-dark"><i class="bi bi-shield-check fs-4"></i></div>
+                <div>
+                    <h5 class="fw-bold mb-0" id="verifyTitle">Checking document...</h5>
+                    <p class="text-muted small mb-0" id="verifySubtitle">Please wait</p>
+                </div>
+            </div>
+
+            <div class="bg-light rounded-4 px-3 py-2 d-flex align-items-center justify-content-between mb-3">
+                <div class="small text-muted"><i class="bi bi-qr-code-scan me-1"></i>Scanned from verification QR</div>
+                <div class="small fw-semibold"><i class="bi bi-shield-lock me-1"></i>Secure Check</div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                    <div class="border rounded-3 p-3 h-100">
+                        <div class="text-muted extra-small">Document</div>
+                        <div class="fw-semibold" id="docName">-</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="border rounded-3 p-3 h-100">
+                        <div class="text-muted extra-small">Verification Code</div>
+                        <div class="fw-semibold" id="docCode">-</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="border rounded-3 p-3 h-100">
+                        <div class="text-muted extra-small">Issuer</div>
+                        <div class="fw-semibold" id="docIssuer">-</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="border rounded-3 p-3 h-100">
+                        <div class="text-muted extra-small">Valid Until</div>
+                        <div class="fw-semibold" id="docValidUntil">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="verifyMessage" class="alert rounded-3 mt-4 mb-0" role="alert"></div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const status = (params.get('status') || '').trim().toLowerCase();
+            const doc = params.get('doc') || 'Unknown document';
+            const issuer = params.get('issuer') || 'Unknown issuer';
+            const validUntil = params.get('validUntil') || 'Unknown';
+            const code = params.get('code') || 'N/A';
+
+            document.getElementById('docName').textContent = doc;
+            document.getElementById('docIssuer').textContent = issuer;
+            document.getElementById('docValidUntil').textContent = validUntil;
+            document.getElementById('docCode').textContent = code;
+
+            const verifyTitle = document.getElementById('verifyTitle');
+            const verifySubtitle = document.getElementById('verifySubtitle');
+            const verifyIcon = document.getElementById('verifyIcon');
+            const verifyMessage = document.getElementById('verifyMessage');
+            const statusChip = document.getElementById('statusChip');
+
+            if (!params.has('doc') && !params.has('status')) {
+                verifyTitle.textContent = 'Verification data not found';
+                verifySubtitle.textContent = 'Invalid or incomplete QR link';
+                verifyIcon.className = 'p-3 rounded-3 bg-secondary-subtle text-secondary';
+                verifyIcon.innerHTML = '<i class="bi bi-question-circle fs-4"></i>';
+                verifyMessage.className = 'alert alert-secondary rounded-3 mt-4 mb-0';
+                verifyMessage.textContent = 'This QR code does not include enough verification information.';
+                statusChip.className = 'badge rounded-pill px-3 py-2 bg-secondary-subtle text-secondary';
+                statusChip.innerHTML = '<i class="bi bi-question-circle me-1"></i>Unknown';
+                return;
+            }
+
+            if (status === 'verified') {
+                verifyTitle.textContent = 'Document Verified';
+                verifySubtitle.textContent = 'Authenticity confirmed by issuer';
+                verifyIcon.className = 'p-3 rounded-3 bg-success-subtle text-success';
+                verifyIcon.innerHTML = '<i class="bi bi-shield-check fs-4"></i>';
+                verifyMessage.className = 'alert alert-success rounded-3 mt-4 mb-0';
+                verifyMessage.innerHTML = `<strong>${doc}</strong> is verified by <strong>${issuer}</strong> and is valid until <strong>${validUntil}</strong>.`;
+                statusChip.className = 'badge rounded-pill px-3 py-2 bg-success-subtle text-success';
+                statusChip.innerHTML = '<i class="bi bi-patch-check me-1"></i>Verified';
+            } else {
+                verifyTitle.textContent = 'Document Not Verified';
+                verifySubtitle.textContent = 'Manual issuer confirmation recommended';
+                verifyIcon.className = 'p-3 rounded-3 bg-warning-subtle text-warning';
+                verifyIcon.innerHTML = '<i class="bi bi-exclamation-triangle fs-4"></i>';
+                verifyMessage.className = 'alert alert-warning rounded-3 mt-4 mb-0';
+                verifyMessage.innerHTML = `<strong>${doc}</strong> is currently marked as <strong>${status || 'unverified'}</strong>. Please confirm with <strong>${issuer}</strong>.`;
+                statusChip.className = 'badge rounded-pill px-3 py-2 bg-warning-subtle text-warning';
+                statusChip.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Needs Review';
+            }
+        });
+    </script>
+</body>
+</html>

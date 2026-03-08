@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Login | PapirVault</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../Styles/fonts.css">
+    <link rel="stylesheet" href="../Styles/themes.css">
+    <link rel="stylesheet" href="../Styles/style.css">
+</head>
+<body class="modern-bg">
+
+    <div class="container-fluid min-vh-100 d-flex flex-column">
+        <nav class="py-4 px-4">
+            <a href="index.html" class="back-link text-decoration-none text-secondary fw-bold">
+                <i class="bi bi-arrow-left-circle-fill me-2"></i>Exit to Home
+            </a>
+        </nav>
+
+        <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+            <div class="login-web-card animate-up">
+                <div class="row g-0">
+                    <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-center p-5 branding-section text-white">
+                        <img src="../Assets/logo.png" alt="Logo" class="mb-4 login-brand-img">
+                        <h1 class="fw-bold">Secure <br>Access.</h1>
+                        <p class="opacity-75">Enter your credentials to manage your digital vault and verify documents in real-time.</p>
+                    </div>
+
+                    <div class="col-lg-7 p-4 p-md-5 bg-white">
+                        <div class="form-header mb-4">
+                            <h2 class="fw-bold text-dark">Client Login</h2>
+                            <p class="text-muted">Welcome back! Please enter your details.</p>
+                        </div>
+
+                        <form id="clientLoginForm" data-firebase-auth="true">
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase tracking-wider">Email Address</label>
+                                <div class="modern-input-group">
+                                    <i class="bi bi-envelope"></i>
+                                    <input type="email" id="loginEmail" class="form-control shadow-none" placeholder="name@company.com" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase tracking-wider">Password</label>
+                                <div class="modern-input-group">
+                                    <i class="bi bi-shield-lock"></i>
+                                    <input type="password" id="loginPassword" class="form-control shadow-none" placeholder="••••••••" required>
+                                    <button type="button" class="eye-toggle" id="eyeToggleBtn">
+                                        <i class="bi bi-eye" id="eyeIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="rem">
+                                    <label class="form-check-label small text-muted" for="rem">Keep me signed in</label>
+                                </div>
+                                <a href="ClientForgot.html" class="small text-primary-blue text-decoration-none fw-bold">Forgot Password?</a>
+                            </div>
+
+<button type="submit" id="signInBtn" class="btn btn-primary-blue w-100 py-3 fw-bold rounded-3 mb-4">
+    Sign In to Vault
+</button>
+
+                            <div class="d-flex align-items-center mb-3">
+                                <hr class="flex-grow-1 my-0">
+                                <span class="px-3 small text-muted">or</span>
+                                <hr class="flex-grow-1 my-0">
+                            </div>
+
+                            <button type="button" id="googleSignInBtn" class="btn btn-outline-primary-blue w-100 py-3 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2">
+                                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.73 1.22 9.24 3.6l6.9-6.9C35.93 2.3 30.38 0 24 0 14.62 0 6.51 5.38 2.56 13.22l8.03 6.23C12.58 13.3 17.86 9.5 24 9.5z"/>
+                                    <path fill="#4285F4" d="M46.5 24.55c0-1.6-.14-3.14-.4-4.64H24v9.28h12.67c-.55 2.97-2.22 5.48-4.74 7.16l7.36 5.72C43.62 38.06 46.5 31.84 46.5 24.55z"/>
+                                    <path fill="#FBBC05" d="M10.59 28.55A14.47 14.47 0 0 1 9.5 24c0-1.58.39-3.08 1.09-4.55l-8.03-6.23A23.9 23.9 0 0 0 0 24c0 3.86.92 7.51 2.56 10.78l8.03-6.23z"/>
+                                    <path fill="#34A853" d="M24 48c6.38 0 11.75-2.1 15.67-5.93l-7.36-5.72c-2.05 1.37-4.68 2.15-8.31 2.15-6.14 0-11.42-3.8-13.41-9.95l-8.03 6.23C6.51 42.62 14.62 48 24 48z"/>
+                                </svg>
+                                Continue with Google
+                            </button>
+                            <div id="emailAuthError" class="small text-danger mt-2 d-none"></div>
+                            <div id="emailAuthSuccess" class="small text-success mt-2 d-none"></div>
+                            <div id="googleAuthError" class="small text-danger mt-2 d-none"></div>
+                        </form>
+
+                       <div class="registration-footer p-4 rounded-4 d-flex align-items-center justify-content-between mt-4">
+    <div class="d-flex align-items-center">
+        <div class="icon-circle me-3">
+            <i class="bi bi-person-plus-fill text-primary-blue"></i>
+        </div>
+        <div>
+            <p class="mb-0 fw-bold small text-dark">Don't have an account?</p>
+            <p class="mb-0 extra-small text-muted">Join the secure network today.</p>
+        </div>
+    </div>
+    <a href="ClientSignUp.html" class="btn btn-outline-primary-blue btn-sm px-4 fw-bold rounded-3">
+        Sign Up
+    </a>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../Main/script.js"></script>
+    <script src="../Main/firebase-env.js"></script>
+    <script type="module">
+        import "../Main/firebase-auth.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.PapirVaultAuth) {
+                window.PapirVaultAuth.initEmailPasswordLogin({
+                    formSelector: "#clientLoginForm",
+                    emailSelector: "#loginEmail",
+                    passwordSelector: "#loginPassword",
+                    submitButtonSelector: "#signInBtn",
+                    errorSelector: "#emailAuthError",
+                    successSelector: "#emailAuthSuccess",
+                    successRedirect: "ClientDashboard.html"
+                });
+
+                window.PapirVaultAuth.initGoogleLogin({
+                    buttonSelector: "#googleSignInBtn",
+                    errorSelector: "#googleAuthError",
+                    successRedirect: "ClientDashboard.html"
+                });
+            }
+        });
+    </script>
+</body>
+</html>

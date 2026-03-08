@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Issuer Upgrade | PapirVault</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="../Styles/style.css">
+
+	<style>
+		body.dashboard-body {
+			overflow: hidden;
+		}
+
+		#mainContent {
+			height: 100vh;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+
+		#mainContent .content-wrapper {
+			min-height: calc(100vh + 8px);
+		}
+
+		#dashboardHeader {
+			position: sticky;
+			top: 0;
+			z-index: 1020;
+			background-color: #ffffff;
+		}
+
+		#dashboardHeader.header-scrolled {
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+		}
+
+		.upgrade-hero {
+			background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+			color: #ffffff;
+			border-radius: 18px;
+		}
+
+		.plan-card {
+			border: 1px solid #e2e8f0;
+			border-radius: 14px;
+			background: #ffffff;
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
+
+		.plan-card:hover {
+			border-color: #6366f1;
+			box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+		}
+
+		.plan-card.active-plan {
+			border-color: #4f46e5;
+			background: #eef2ff;
+			box-shadow: 0 10px 24px rgba(79, 70, 229, 0.2);
+		}
+
+		.quota-card {
+			border: 1px dashed #cbd5e1;
+			border-radius: 12px;
+			background: #f8fafc;
+		}
+	</style>
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar shadow-sm" id="sidebar">
+	<div class="sidebar-header px-4 pt-4 mb-4">
+		<div class="d-flex align-items-center">
+			<div class="brand-icon-modern me-2">
+				<i class="bi bi-shield-shaded"></i>
+			</div>
+			<div class="brand-info">
+				<h5 class="fw-bold mb-0 brand-name" style="color: #6366f1;">PapirVault</h5>
+				<small class="text-muted extra-small brand-subtext">Secure & Verified</small>
+			</div>
+		</div>
+	</div>
+
+	<nav class="sidebar-nav flex-grow-1 px-3">
+		<a href="IssuerDashboard.html" class="nav-link-modern">
+			<i class="bi bi-grid-fill"></i> <span class="nav-text">Dashboard</span>
+		</a>
+		<a href="IssuerDocuments.html" class="nav-link-modern">
+			<i class="bi bi-file-earmark-text-fill"></i> <span class="nav-text">Documents</span>
+		</a>
+		<a href="IssuerVerification.html" class="nav-link-modern">
+			<i class="bi bi-patch-check-fill"></i> <span class="nav-text">Verification</span>
+		</a>
+		<a href="IssuerSettings.html" class="nav-link-modern">
+			<i class="bi bi-gear-fill"></i> <span class="nav-text">Settings</span>
+		</a>
+		<a href="IssuerUpgrade.html" class="nav-link-modern active">
+			<i class="bi bi-stars"></i> <span class="nav-text">Upgrade</span>
+		</a>
+		<a href="IssuerHelp.html" class="nav-link-modern">
+			<i class="bi bi-question-circle-fill"></i> <span class="nav-text">Help</span>
+		</a>
+	</nav>
+
+	<div class="sidebar-footer px-3 pb-4">
+		<div class="profile-card-modern d-flex align-items-center p-2 mb-3">
+			<div class="avatar-modern me-2">
+				<i class="bi bi-person-fill"></i>
+			</div>
+			<div class="profile-details">
+				<div class="fw-bold small">NHI Admin</div>
+				<div class="text-muted extra-small">Official Issuer</div>
+			</div>
+		</div>
+		<a href="index.html" class="btn-logout-modern w-100">
+			<i class="bi bi-box-arrow-left me-2"></i> Logout
+		</a>
+	</div>
+</aside>
+
+<main class="main-content" id="mainContent">
+	<header class="dashboard-header" id="dashboardHeader">
+		<div class="d-flex justify-content-between align-items-center">
+			<div class="d-flex align-items-center">
+				<button class="btn btn-light rounded-circle me-3 shadow-sm" id="sidebarToggle">
+					<i class="bi bi-text-indent-left fs-5"></i>
+				</button>
+				<div>
+					<h5 class="fw-bold mb-0">Issuer Capacity Upgrade</h5>
+					<small class="text-muted">Expand document issuance limits and retention</small>
+				</div>
+			</div>
+			<span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">Quota Near Limit</span>
+		</div>
+	</header>
+
+	<div class="content-wrapper p-4 pt-2">
+		<div class="upgrade-hero p-4 mb-4 shadow-sm">
+			<div class="row align-items-center">
+				<div class="col-lg-8">
+					<h4 class="fw-bold mb-2">Current Issuer Rule: 100 Documents / 180 Days</h4>
+					<p class="mb-0 opacity-75">Your current quota allows up to 100 issued documents with 180-day retention. To issue more than 100 documents or extend operational capacity, select an upgrade package below.</p>
+				</div>
+				<div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+					<div class="small opacity-75">Current Usage</div>
+					<div class="fw-bold">92 / 100 documents</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-4 mb-4">
+			<div class="col-lg-6">
+				<div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+					<h6 class="fw-bold mb-3">Select Upgrade Package</h6>
+
+					<div class="plan-card p-3 mb-3" data-plan="plus250">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<div class="fw-bold">Issuer Plus 250</div>
+								<div class="extra-small text-muted">250 documents / 180 days</div>
+							</div>
+							<span class="badge bg-primary-subtle text-primary">Popular</span>
+						</div>
+						<div class="mt-2"><span class="fw-bold fs-5">$19.00</span><span class="text-muted small"> / cycle</span></div>
+						<ul class="small text-muted mt-2 mb-0 ps-3">
+							<li>Issue up to 250 documents</li>
+							<li>180-day secure retention</li>
+							<li>Priority verification queue</li>
+						</ul>
+					</div>
+
+					<div class="plan-card p-3 mb-3" data-plan="pro500">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<div class="fw-bold">Issuer Pro 500</div>
+								<div class="extra-small text-muted">500 documents / 180 days</div>
+							</div>
+							<span class="badge bg-success-subtle text-success">Best Value</span>
+						</div>
+						<div class="mt-2"><span class="fw-bold fs-5">$34.00</span><span class="text-muted small"> / cycle</span></div>
+						<ul class="small text-muted mt-2 mb-0 ps-3">
+							<li>Issue up to 500 documents</li>
+							<li>180-day secure retention</li>
+							<li>Extended API throughput</li>
+						</ul>
+					</div>
+
+					<div class="plan-card p-3" data-plan="enterprise1000">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<div class="fw-bold">Enterprise 1000</div>
+								<div class="extra-small text-muted">1000 documents / 180 days</div>
+							</div>
+							<span class="badge bg-dark text-white">Advanced</span>
+						</div>
+						<div class="mt-2"><span class="fw-bold fs-5">$59.00</span><span class="text-muted small"> / cycle</span></div>
+						<ul class="small text-muted mt-2 mb-0 ps-3">
+							<li>Issue up to 1000 documents</li>
+							<li>180-day secure retention</li>
+							<li>Dedicated issuer support channel</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-6">
+				<div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+					<h6 class="fw-bold mb-3">Secure Payment</h6>
+					<form id="issuerUpgradeForm">
+						<div class="mb-3">
+							<label class="form-label small fw-bold">Organization Billing Name</label>
+							<input type="text" class="form-control" placeholder="National Health Insurance" required>
+						</div>
+						<div class="mb-3">
+							<label class="form-label small fw-bold">Card Number</label>
+							<div class="input-group">
+								<span class="input-group-text bg-white"><i class="bi bi-credit-card-2-front"></i></span>
+								<input type="text" class="form-control" placeholder="1234 5678 9012 3456" required>
+							</div>
+						</div>
+						<div class="row g-3 mb-3">
+							<div class="col-6">
+								<label class="form-label small fw-bold">Expiry</label>
+								<input type="text" class="form-control" placeholder="MM/YY" required>
+							</div>
+							<div class="col-6">
+								<label class="form-label small fw-bold">CVV</label>
+								<input type="password" class="form-control" placeholder="***" required>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label class="form-label small fw-bold">Billing Email</label>
+							<input type="email" class="form-control" placeholder="billing@issuer.org" required>
+						</div>
+						<div class="form-check mb-3">
+							<input class="form-check-input" type="checkbox" id="issuerConsent" required>
+							<label class="form-check-label small" for="issuerConsent">
+								I confirm authorized payment and agree to PapirVault issuer billing terms.
+							</label>
+						</div>
+						<button type="submit" id="issuerUpgradeBtn" class="btn btn-primary btn-modern w-100 py-2">Upgrade Capacity</button>
+					</form>
+
+					<div class="quota-card p-3 mt-3 small text-muted">
+						<i class="bi bi-shield-lock me-2 text-primary"></i>Payments are encrypted, audited, and securely processed. Issuer billing receipts are generated after successful payment.
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-4">
+			<div class="col-lg-7">
+				<div class="card border-0 shadow-sm rounded-4 p-4">
+					<h6 class="fw-bold mb-3">Why upgrade now?</h6>
+					<ul class="small text-muted mb-0 ps-3">
+						<li>Continue issuing new documents once 100-document base quota is reached.</li>
+						<li>Avoid issuance pauses during high-demand periods.</li>
+						<li>Maintain continuous client verification flow and trust.</li>
+						<li>Keep operations compliant with documented issuance capacity.</li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-lg-5">
+				<div class="card border-0 shadow-sm rounded-4 p-4">
+					<h6 class="fw-bold mb-3">Support & Sales</h6>
+					<p class="small text-muted mb-3">Need a custom volume package or annual contract?</p>
+					<a href="IssuerHelp.html" class="btn btn-outline-primary w-100 rounded-3 fw-bold">Contact Issuer Support</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../Main/script.js"></script>
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const mainContent = document.getElementById('mainContent');
+		const dashboardHeader = document.getElementById('dashboardHeader');
+		const planCards = document.querySelectorAll('.plan-card');
+		const issuerUpgradeForm = document.getElementById('issuerUpgradeForm');
+		const issuerUpgradeBtn = document.getElementById('issuerUpgradeBtn');
+
+		if (mainContent && dashboardHeader) {
+			const scrollHandler = () => {
+				dashboardHeader.classList.toggle('header-scrolled', mainContent.scrollTop > 0);
+			};
+
+			mainContent.addEventListener('scroll', scrollHandler, { passive: true });
+			scrollHandler();
+		}
+
+		if (planCards.length > 0) {
+			planCards[0].classList.add('active-plan');
+			planCards.forEach((card) => {
+				card.addEventListener('click', () => {
+					planCards.forEach((item) => item.classList.remove('active-plan'));
+					card.classList.add('active-plan');
+				});
+			});
+		}
+
+		if (issuerUpgradeForm && issuerUpgradeBtn) {
+			issuerUpgradeForm.addEventListener('submit', (event) => {
+				event.preventDefault();
+				const originalText = issuerUpgradeBtn.innerHTML;
+
+				issuerUpgradeBtn.disabled = true;
+				issuerUpgradeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing Secure Payment...';
+
+				setTimeout(() => {
+					issuerUpgradeBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Upgrade Activated';
+					issuerUpgradeBtn.classList.remove('btn-primary');
+					issuerUpgradeBtn.classList.add('btn-success');
+
+					setTimeout(() => {
+						issuerUpgradeBtn.disabled = false;
+						issuerUpgradeBtn.innerHTML = originalText;
+						issuerUpgradeBtn.classList.remove('btn-success');
+						issuerUpgradeBtn.classList.add('btn-primary');
+					}, 2200);
+				}, 1800);
+			});
+		}
+	});
+</script>
+</body>
+</html>

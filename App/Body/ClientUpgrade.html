@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Upgrade Storage | PapirVault</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="../Styles/fonts.css">
+	<link rel="stylesheet" href="../Styles/themes.css">
+	<link rel="stylesheet" href="../Styles/style.css">
+
+	<style>
+		body.dashboard-body {
+			overflow: hidden;
+		}
+
+		#mainContent {
+			height: 100vh;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+
+		#mainContent .content-wrapper {
+			min-height: calc(100vh + 8px);
+		}
+
+		#dashboardHeader {
+			position: sticky;
+			top: 0;
+			z-index: 1020;
+			background-color: #ffffff;
+		}
+
+		#dashboardHeader.header-scrolled {
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+		}
+
+		.upgrade-hero {
+			background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+			color: #ffffff;
+			border-radius: 18px;
+		}
+
+		.plan-card {
+			border: 1px solid #e2e8f0;
+			border-radius: 16px;
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
+
+		.plan-card:hover {
+			border-color: #6366f1;
+			box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+		}
+
+		.plan-card.active-plan {
+			border-color: #4f46e5;
+			box-shadow: 0 10px 26px rgba(79, 70, 229, 0.2);
+			background: #eef2ff;
+		}
+
+		.secure-badge {
+			border: 1px dashed #cbd5e1;
+			border-radius: 12px;
+			background: #f8fafc;
+		}
+	</style>
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar shadow-sm" id="sidebar">
+	<div class="sidebar-header d-flex flex-column align-items-start px-4 pt-4 mb-4">
+		<div class="d-flex align-items-center w-100 mb-1">
+			<div class="brand-icon me-2">
+				<i class="bi bi-shield-check-fill"></i>
+			</div>
+			<h4 class="fw-bold mb-0 brand-name">PapirVault</h4>
+		</div>
+		<small class="text-muted extra-small">Secure &amp; Verified</small>
+	</div>
+
+	<nav class="sidebar-nav flex-grow-1">
+		<a href="ClientDashboard.html" class="nav-link-custom">
+			<i class="bi bi-grid-fill"></i> <span class="nav-text">Dashboard</span>
+		</a>
+		<a href="ClientDocuments.html" class="nav-link-custom">
+			<i class="bi bi-file-earmark-text-fill"></i> <span class="nav-text">Documents</span>
+		</a>
+		<a href="ClientVerification.html" class="nav-link-custom">
+			<i class="bi bi-patch-check-fill"></i> <span class="nav-text">Verification</span>
+		</a>
+		<a href="ClientSettings.html" class="nav-link-custom">
+			<i class="bi bi-gear-fill"></i> <span class="nav-text">Settings</span>
+		</a>
+		<a href="ClientUpgrade.html" class="nav-link-custom active mt-3">
+			<i class="bi bi-stars"></i> <span class="nav-text">Upgrade</span>
+		</a>
+	</nav>
+
+	<div class="sidebar-footer px-3 border-top pt-4 pb-4">
+		<div class="profile-card d-flex align-items-center p-2 rounded-3 mb-3 border bg-white">
+			<div class="avatar me-2">JD</div>
+			<div class="profile-details">
+				<div class="fw-bold small">John Doe</div>
+				<div class="text-muted extra-small">Trial User</div>
+			</div>
+		</div>
+		<a href="ClientLogin.html" class="logout-btn text-danger text-decoration-none small fw-bold d-flex align-items-center px-3">
+			<i class="bi bi-box-arrow-left me-2"></i> <span class="nav-text">Logout</span>
+		</a>
+	</div>
+</aside>
+
+<main class="main-content" id="mainContent">
+	<header class="dashboard-header sticky-header" id="dashboardHeader">
+		<div class="d-flex justify-content-between align-items-center w-100">
+			<div class="header-left d-flex align-items-center">
+				<button class="btn btn-header me-3" id="sidebarToggle">
+					<i class="bi bi-list"></i>
+				</button>
+				<div class="header-title me-4">
+					<h5 class="fw-bold mb-0">Upgrade Storage</h5>
+					<p class="text-muted extra-small mb-0">Continue secure storage and verification code access</p>
+				</div>
+			</div>
+			<div class="header-right d-flex align-items-center">
+				<span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2">Trial Expired</span>
+			</div>
+		</div>
+	</header>
+
+	<div class="content-wrapper p-4">
+		<div class="upgrade-hero p-4 mb-4 shadow-sm">
+			<div class="row align-items-center">
+				<div class="col-lg-8">
+					<h4 class="fw-bold mb-2">Free Trial Limit Reached (180 Days)</h4>
+					<p class="mb-0 opacity-75">Your free vault retention period has ended. To keep documents saved in the system and maintain uninterrupted issuer verification-code access, please upgrade your storage plan.</p>
+				</div>
+				<div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+					<div class="small opacity-75">Account Status</div>
+					<div class="fw-bold">Read-only in 7 days</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-4 mb-4">
+			<div class="col-lg-6">
+				<div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+					<h6 class="fw-bold mb-3">Choose Your Plan</h6>
+					<div class="plan-card p-3 mb-3" data-plan="monthly">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<div class="fw-bold">Vault Plus (Monthly)</div>
+								<div class="extra-small text-muted">Best for flexible usage</div>
+							</div>
+							<span class="badge bg-primary-subtle text-primary">Recommended</span>
+						</div>
+						<div class="mt-2"><span class="fw-bold fs-5">$4.99</span><span class="text-muted small"> / month</span></div>
+						<ul class="small text-muted mt-2 mb-0 ps-3">
+							<li>20GB encrypted storage</li>
+							<li>Unlimited verification code lookups</li>
+							<li>Priority support response</li>
+						</ul>
+					</div>
+
+					<div class="plan-card p-3" data-plan="yearly">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<div class="fw-bold">Vault Plus (Yearly)</div>
+								<div class="extra-small text-muted">Best value and lowest cost</div>
+							</div>
+							<span class="badge bg-success-subtle text-success">Save 20%</span>
+						</div>
+						<div class="mt-2"><span class="fw-bold fs-5">$47.90</span><span class="text-muted small"> / year</span></div>
+						<ul class="small text-muted mt-2 mb-0 ps-3">
+							<li>20GB encrypted storage</li>
+							<li>Unlimited verification code lookups</li>
+							<li>Annual compliance receipt</li>
+						</ul>
+					</div>
+
+					<div class="secure-badge p-3 mt-3 small text-muted">
+						<i class="bi bi-shield-lock me-2 text-primary"></i>All payments are processed over encrypted channels. No card data is stored in plain text.
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-6">
+				<div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+					<h6 class="fw-bold mb-3">Secure Payment</h6>
+					<form id="upgradePaymentForm">
+						<div class="mb-3">
+							<label class="form-label small fw-bold">Cardholder Name</label>
+							<input type="text" class="form-control" placeholder="John Doe" required>
+						</div>
+						<div class="mb-3">
+							<label class="form-label small fw-bold">Card Number</label>
+							<div class="input-group">
+								<span class="input-group-text bg-white"><i class="bi bi-credit-card-2-front"></i></span>
+								<input type="text" class="form-control" placeholder="1234 5678 9012 3456" required>
+							</div>
+						</div>
+						<div class="row g-3 mb-3">
+							<div class="col-6">
+								<label class="form-label small fw-bold">Expiry</label>
+								<input type="text" class="form-control" placeholder="MM/YY" required>
+							</div>
+							<div class="col-6">
+								<label class="form-label small fw-bold">CVV</label>
+								<input type="password" class="form-control" placeholder="***" required>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label class="form-label small fw-bold">Billing Email</label>
+							<input type="email" class="form-control" placeholder="john.doe@example.com" required>
+						</div>
+						<div class="form-check mb-3">
+							<input class="form-check-input" type="checkbox" id="billingConsent" required>
+							<label class="form-check-label small" for="billingConsent">
+								I agree to PapirVault billing terms and confirm recurring billing for the selected plan.
+							</label>
+						</div>
+						<button type="submit" id="upgradeBtn" class="btn btn-primary w-100 py-2 fw-bold rounded-3">
+							Upgrade Now
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-4">
+			<div class="col-lg-7">
+				<div class="card border-0 shadow-sm rounded-4 p-4">
+					<h6 class="fw-bold mb-3">What happens if you do not upgrade?</h6>
+					<ul class="small text-muted mb-0 ps-3">
+						<li>Documents may be archived after your grace period.</li>
+						<li>Verification code access from issuers may be limited.</li>
+						<li>You can still log in, but storage and retrieval actions may be restricted.</li>
+						<li>Upgrading restores full document retention and unlimited code access.</li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-lg-5">
+				<div class="card border-0 shadow-sm rounded-4 p-4">
+					<h6 class="fw-bold mb-3">Need Help?</h6>
+					<p class="small text-muted mb-3">Our support team can help with billing, account migration, and storage retention questions.</p>
+					<a href="HelpCenter.html" class="btn btn-outline-primary w-100 rounded-3 fw-bold">Contact Support</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../Main/script.js"></script>
+<script src="../Main/firebase-env.js"></script>
+<script type="module">
+	import "../Main/firebase-auth.js";
+
+	document.addEventListener("DOMContentLoaded", () => {
+		if (window.PapirVaultAuth) {
+			window.PapirVaultAuth.protectPage({ redirectTo: "ClientLogin.html" });
+			window.PapirVaultAuth.attachLogout({ selector: ".logout-btn, .btn-outline-danger", redirectTo: "ClientLogin.html" });
+		}
+	});
+</script>
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const mainContent = document.getElementById('mainContent');
+		const dashboardHeader = document.getElementById('dashboardHeader');
+		const planCards = document.querySelectorAll('.plan-card');
+		const paymentForm = document.getElementById('upgradePaymentForm');
+		const upgradeBtn = document.getElementById('upgradeBtn');
+
+		if (mainContent && dashboardHeader) {
+			const scrollHandler = () => {
+				dashboardHeader.classList.toggle('header-scrolled', mainContent.scrollTop > 0);
+			};
+
+			mainContent.addEventListener('scroll', scrollHandler, { passive: true });
+			scrollHandler();
+		}
+
+		if (planCards.length > 0) {
+			planCards[0].classList.add('active-plan');
+			planCards.forEach((card) => {
+				card.addEventListener('click', () => {
+					planCards.forEach((item) => item.classList.remove('active-plan'));
+					card.classList.add('active-plan');
+				});
+			});
+		}
+
+		if (paymentForm && upgradeBtn) {
+			paymentForm.addEventListener('submit', (event) => {
+				event.preventDefault();
+				const originalText = upgradeBtn.innerHTML;
+
+				upgradeBtn.disabled = true;
+				upgradeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing Secure Payment...';
+
+				setTimeout(() => {
+					upgradeBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Upgrade Successful';
+					upgradeBtn.classList.remove('btn-primary');
+					upgradeBtn.classList.add('btn-success');
+
+					setTimeout(() => {
+						upgradeBtn.disabled = false;
+						upgradeBtn.innerHTML = originalText;
+						upgradeBtn.classList.remove('btn-success');
+						upgradeBtn.classList.add('btn-primary');
+					}, 2200);
+				}, 1800);
+			});
+		}
+	});
+</script>
+</body>
+</html>

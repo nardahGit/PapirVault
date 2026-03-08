@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issuer Recovery | PapirVault</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../Styles/fonts.css">
+    <link rel="stylesheet" href="../Styles/themes.css">
+    <link rel="stylesheet" href="../Styles/style.css">
+</head>
+<body class="modern-bg">
+
+    <div class="container-fluid min-vh-100 d-flex flex-column">
+        <nav class="py-4 px-4">
+            <a href="IssuerLogin.html" class="back-link text-decoration-none text-secondary fw-bold">
+                <i class="bi bi-arrow-left-circle-fill me-2"></i>Back to Issuer Portal
+            </a>
+        </nav>
+
+        <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+            <div class="login-web-card animate-up">
+                <div class="row g-0">
+                    <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-center p-5 branding-section-issuer text-white">
+                        <div class="mb-4">
+                            <img src="../Assets/logo.png" alt="Logo" class="login-brand-img">
+                        </div>
+                        <h1 class="fw-bold mb-3">Portal <br>Recovery.</h1>
+                        <p class="opacity-75">Secure access recovery for administrative accounts. We will verify your institutional credentials before issuing a reset link.</p>
+                    </div>
+
+                    <div class="col-lg-7 p-4 p-md-5 bg-white">
+                        <div class="text-center text-lg-start mb-4">
+                            <div class="icon-circle-lg bg-light text-primary-purple mb-3 d-lg-none mx-auto">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            <h2 class="fw-bold text-dark">Issuer Recovery</h2>
+                            <p class="text-muted">Enter your official organization email to recover access to the issuing portal.</p>
+                        </div>
+
+                        <form id="issuerForgotForm">
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase tracking-wider">Official Email</label>
+                                <div class="modern-input-group">
+                                    <i class="bi bi-building-lock"></i>
+                                    <input type="email" id="issuerRecoveryEmail" class="form-control shadow-none" placeholder="admin@organization.gov" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-purple w-100 py-3 fw-bold rounded-3 mb-4 shadow-sm">
+                                Request Secure Link <i class="bi bi-shield-shaded ms-2"></i>
+                            </button>
+                        </form>
+
+                        <div id="issuerSuccessMessage" class="alert alert-success d-none rounded-4 border-0 p-3" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-patch-check-fill fs-4 me-3 text-success"></i>
+                                <div>
+                                    <p class="mb-0 fw-bold">Recovery Initiated</p>
+                                    <p class="mb-0 extra-small">If this email is registered, you will receive instructions shortly.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="security-footer-purple p-3 rounded-4 d-flex align-items-center mt-3">
+                            <i class="bi bi-exclamation-triangle-fill text-primary-purple fs-5 me-3"></i>
+                            <span class="extra-small text-muted">For security reasons, recovery requests are logged and reviewed by the PapirVault security team.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../Main/script.js"></script>
+</body>
+</html>

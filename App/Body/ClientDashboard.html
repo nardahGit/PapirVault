@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | PapirVault</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="../Styles/fonts.css">
+    <link rel="stylesheet" href="../Styles/themes.css">
+    <link rel="stylesheet" href="../Styles/style.css">
+</head>
+<body class="dashboard-body">
+    
+    <aside class="sidebar shadow-sm" id="sidebar">
+        <div class="sidebar-header d-flex flex-column align-items-start px-4 pt-4 mb-4">
+            <div class="d-flex align-items-center w-100 mb-1">
+                <div class="brand-icon me-2">
+                    <i class="bi bi-shield-check-fill"></i>
+                </div>
+                <h4 class="fw-bold mb-0 brand-name">PapirVault</h4>
+            </div>
+            <small class="text-muted extra-small">Secure &amp; Verified</small>
+        </div>
+
+        <nav class="sidebar-nav flex-grow-1">
+            <a href="ClientDashboard.html" class="nav-link-custom active">
+                <i class="bi bi-grid-fill"></i> <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="ClientDocuments.html" class="nav-link-custom">
+                <i class="bi bi-file-earmark-text-fill"></i> <span class="nav-text">Documents</span>
+            </a>
+            <a href="ClientVerification.html" class="nav-link-custom">
+                <i class="bi bi-patch-check-fill"></i> <span class="nav-text">Verification</span>
+            </a>
+            <a href="ClientSettings.html" class="nav-link-custom">
+                <i class="bi bi-gear-fill"></i> <span class="nav-text">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer px-3 border-top pt-4 pb-4">
+            <div class="profile-card d-flex align-items-center p-2 rounded-3 mb-3 border bg-white">
+                <div class="avatar me-2">JD</div>
+                <div class="profile-details">
+                    <div class="fw-bold small">John Doe</div>
+                    <div class="text-muted extra-small">Premium Member</div>
+                </div>
+            </div>
+            <a href="ClientLogin.html" class="logout-btn text-danger text-decoration-none small fw-bold d-flex align-items-center px-3">
+                <i class="bi bi-box-arrow-left me-2"></i> <span class="nav-text">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+
+<header class="dashboard-header sticky-header" id="dashboardHeader">
+    <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="header-left d-flex align-items-center">
+            <button class="btn btn-header me-3" id="sidebarToggle">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="header-title me-4">
+                <h5 class="fw-bold mb-0">Dashboard</h5>
+                <p class="text-muted extra-small mb-0">Manage your official documents securely</p>
+            </div>
+            <div class="header-search-container flex-grow-1 d-none d-md-block" style="max-width: 400px;">
+                <div class="input-group bg-white rounded-pill shadow-sm border overflow-hidden">
+                    <span class="input-group-text bg-white border-0 ps-3">
+                        <i class="bi bi-search text-muted small"></i>
+                    </span>
+                    <input type="text" id="headerSearch" class="form-control border-0 bg-white small" placeholder="Search...">
+                </div>
+            </div>
+        </div>
+
+        <div class="header-right d-flex align-items-center">
+            <div class="dropdown">
+                <div class="position-relative cursor-pointer me-4" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-bell fs-5"></i>
+                    <span class="notification-dot"></span>
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-3 p-0 overflow-hidden" aria-labelledby="notifDropdown" style="width: 320px;">
+                    <li class="p-3 border-bottom bg-light">
+                        <h6 class="fw-bold mb-0">Notifications</h6>
+                    </li>
+                    <li>
+                        <a class="dropdown-item p-3 d-flex align-items-start gap-3" href="#">
+                            <div class="notif-icon bg-warning-subtle text-warning p-2 rounded-3">
+                                <i class="bi bi-cloud-arrow-up-fill"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold small">Storage Almost Full</div>
+                                <div class="text-muted extra-small">You have used 90% of your 5GB. Expand now.</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="p-2 text-center bg-light">
+                        <a href="#" class="text-primary extra-small fw-bold text-decoration-none">View All Notifications</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- additional controls (e.g. avatar) could go here -->
+        </div>
+    </div>
+</header>
+
+        <div class="content-wrapper p-4">
+            
+            <div class="dashboard-hero card border-0 rounded-4 text-white mb-4 p-4 shadow-sm">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold">Vault Security: Active</h2>
+                        <p class="opacity-75">Your documents are secured with end-to-end encryption. Only you and authorized issuers can interact with these files.</p>
+                        <a href="ClientUpgrade.html" class="btn btn-light btn-sm rounded-pill fw-bold px-4">Upgrade Storage</a>
+                    </div>
+                    <div class="col-md-4 text-end d-none d-md-block">
+                        <i class="bi bi-shield-lock display-2 opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-6 col-xl-3">
+                    <div class="stat-widget stat-total p-3 rounded-4 shadow-sm border-bottom border-primary border-4">
+                        <small class="text-muted fw-bold">TOTAL FILES</small>
+                        <h3 class="fw-bold mb-0" id="statTotal">0</h3>
+                    </div>
+                </div>
+                <div class="col-6 col-xl-3">
+                    <div class="stat-widget stat-verified p-3 rounded-4 shadow-sm border-bottom border-success border-4">
+                        <small class="text-muted fw-bold">VERIFIED</small>
+                        <h3 class="fw-bold mb-0" id="statVerified">0</h3>
+                    </div>
+                </div>
+                <div class="col-6 col-xl-3">
+                    <div class="stat-widget stat-pending p-3 rounded-4 shadow-sm border-bottom border-warning border-4">
+                        <small class="text-muted fw-bold">PENDING</small>
+                        <h3 class="fw-bold mb-0" id="statPending">0</h3>
+                    </div>
+                </div>
+                <div class="col-6 col-xl-3">
+                    <div class="stat-widget stat-expired p-3 rounded-4 shadow-sm border-bottom border-danger border-4">
+                        <small class="text-muted fw-bold">EXPIRED</small>
+                        <h3 class="fw-bold mb-0" id="statExpired">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                        <h6 class="fw-bold mb-4">Categories</h6>
+                        <div class="category-list">
+                            <div class="category-item d-flex align-items-center p-3 mb-2 rounded-3 bg-light">
+                                <i class="bi bi-heart-pulse-fill text-primary me-3"></i>
+                                <div class="flex-grow-1 small fw-bold">Health</div>
+                                <span class="badge bg-white text-dark border">4</span>
+                            </div>
+                            <div class="category-item d-flex align-items-center p-3 mb-2 rounded-3 bg-light">
+                                <i class="bi bi-briefcase-fill text-info me-3"></i>
+                                <div class="flex-grow-1 small fw-bold">Professional</div>
+                                <span class="badge bg-white text-dark border">6</span>
+                            </div>
+                            <div class="category-item d-flex align-items-center p-3 mb-2 rounded-3 bg-light">
+                                <i class="bi bi-mortarboard-fill text-purple me-3"></i>
+                                <div class="flex-grow-1 small fw-bold">Education</div>
+                                <span class="badge bg-white text-dark border">2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h6 class="fw-bold mb-0">Recent Activity</h6>
+                            <button id="viewAllDocs" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">View All</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle" id="docsTable">
+                                <thead>
+                                    <tr class="text-muted extra-small">
+                                        <th>DOCUMENT</th>
+                                        <th>ISSUER</th>
+                                        <th>STATUS</th>
+                                        <th>ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="small">
+                                    <tr id="clientDocsLoading">
+                                        <td colspan="4" class="text-muted">Loading your documents...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="height: 400px;"></div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="clientQrModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <div>
+                        <h6 class="modal-title fw-bold mb-1">Share Verification</h6>
+                        <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1 extra-small">
+                            <i class="bi bi-shield-check me-1"></i>Trusted QR
+                        </span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="text-muted extra-small mb-2" id="clientQrDocName">Document</p>
+                    <div class="rounded-4 border bg-light p-3 mb-3">
+                        <img id="clientQrImage" alt="QR Code" class="img-fluid rounded-3 bg-white p-2 border" style="max-width: 210px;" />
+                    </div>
+                    <div class="verif-code mt-2 py-2" id="clientQrCodeText">---</div>
+                    <p class="extra-small text-muted mt-2 mb-3">Only share with authorized verifiers.</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm rounded-pill w-100" id="clientCopyCodeBtn">
+                            <i class="bi bi-copy me-1"></i>Copy Code
+                        </button>
+                        <button class="btn btn-primary btn-sm rounded-pill w-100" id="clientCopyLinkBtn">
+                            <i class="bi bi-share me-1"></i>Copy Link
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../Main/script.js"></script>
+    <script src="../Main/firebase-env.js"></script>
+    <script type="module">
+        import "../Main/firebase-auth.js";
+        import "../Main/firebase-documents.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.PapirVaultAuth) {
+                window.PapirVaultAuth.protectPage({ redirectTo: "ClientLogin.html" });
+                window.PapirVaultAuth.attachLogout({ selector: ".logout-btn", redirectTo: "ClientLogin.html" });
+            }
+
+            const docsApi = window.PapirVaultDocs;
+            const searchInput = document.getElementById("headerSearch");
+            const tableBody = document.querySelector("#docsTable tbody");
+            const viewAllButton = document.getElementById("viewAllDocs");
+            const clientQrModalEl = document.getElementById("clientQrModal");
+            const clientQrImage = document.getElementById("clientQrImage");
+            const clientQrCodeText = document.getElementById("clientQrCodeText");
+            const clientQrDocName = document.getElementById("clientQrDocName");
+            const clientCopyCodeBtn = document.getElementById("clientCopyCodeBtn");
+            const clientCopyLinkBtn = document.getElementById("clientCopyLinkBtn");
+            const clientQrModal = clientQrModalEl ? new bootstrap.Modal(clientQrModalEl) : null;
+
+            const statTotal = document.getElementById("statTotal");
+            const statVerified = document.getElementById("statVerified");
+            const statPending = document.getElementById("statPending");
+            const statExpired = document.getElementById("statExpired");
+
+            let currentUserUid = "";
+            let currentVerifyUrl = "";
+
+            const buildVerifyUrl = (item) => {
+                const base = (window.PAPIRVAULT_PUBLIC_VERIFY_BASE_URL || "").trim();
+                const fallback = `${window.location.origin}/Body/VerifyStatus.html`;
+                const target = base || fallback;
+                const verifyUrl = new URL(target);
+
+                verifyUrl.searchParams.set("verify", "1");
+                verifyUrl.searchParams.set("doc", item.title || "Document");
+                verifyUrl.searchParams.set("issuer", item.issuerName || "Authorized Issuer");
+                verifyUrl.searchParams.set("validUntil", item.expiryDate || "N/A");
+                verifyUrl.searchParams.set("status", item.status || "Verified");
+                verifyUrl.searchParams.set("code", item.verificationCode || "N/A");
+
+                return verifyUrl.toString();
+            };
+
+            const getStatusBadge = (status = "") => {
+                const value = status.toLowerCase();
+                if (value === "verified") return '<span class="badge bg-success-subtle text-success p-2">Verified</span>';
+                if (value === "expired") return '<span class="badge bg-danger-subtle text-danger p-2">Expired</span>';
+                return '<span class="badge bg-warning-subtle text-warning p-2">Pending</span>';
+            };
+
+            const updateStats = (documents) => {
+                const stats = documents.reduce((acc, item) => {
+                    const status = (item.status || "").toLowerCase();
+                    acc.total += 1;
+                    if (status === "verified") acc.verified += 1;
+                    else if (status === "pending") acc.pending += 1;
+                    else if (status === "expired") acc.expired += 1;
+                    return acc;
+                }, { total: 0, verified: 0, pending: 0, expired: 0 });
+
+                statTotal.textContent = stats.total;
+                statVerified.textContent = stats.verified;
+                statPending.textContent = stats.pending;
+                statExpired.textContent = stats.expired;
+            };
+
+            const renderDocuments = (documents) => {
+                if (!documents.length) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-muted">No documents found for your account yet.</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = documents.map((item) => {
+                    const safeTitle = item.title || "Untitled";
+                    const safeIssuer = item.issuerName || "Authorized Issuer";
+                    const safeCode = item.verificationCode || "N/A";
+                    const verifyUrl = item.qrPayload || buildVerifyUrl(item);
+
+                    return `
+                        <tr data-doc-id="${item.id || ""}">
+                            <td>
+                                <i class="bi bi-file-pdf text-danger me-2"></i>
+                                ${safeTitle}
+                                <div class="extra-small text-muted mt-1">Code: ${safeCode}</div>
+                            </td>
+                            <td class="text-muted">${safeIssuer}</td>
+                            <td>${getStatusBadge(item.status)}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-2 copy-code-btn" data-code="${safeCode}">Copy Code</button>
+                                <button class="btn btn-sm btn-outline-dark rounded-pill px-2 ms-1 show-qr-btn" data-code="${safeCode}" data-title="${safeTitle}" data-verify-url="${verifyUrl.replaceAll('"', '&quot;')}">QR</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join("");
+            };
+
+            const loadDocuments = async (keyword = "") => {
+                if (!docsApi?.isReady() || !currentUserUid) {
+                    return;
+                }
+
+                const docs = keyword
+                    ? await docsApi.searchClientDocuments({ clientUid: currentUserUid, keyword })
+                    : await docsApi.listClientDocuments({ clientUid: currentUserUid });
+
+                updateStats(docs);
+                renderDocuments(docs);
+            };
+
+            docsApi?.onUserChanged((user) => {
+                if (!user?.uid) return;
+                currentUserUid = user.uid;
+                loadDocuments();
+            });
+
+            searchInput?.addEventListener("input", () => {
+                loadDocuments(searchInput.value);
+            });
+
+            tableBody?.addEventListener("click", async (event) => {
+                const copyBtn = event.target.closest(".copy-code-btn");
+                const qrBtn = event.target.closest(".show-qr-btn");
+
+                if (copyBtn) {
+                    const code = copyBtn.getAttribute("data-code") || "";
+                    await navigator.clipboard.writeText(code);
+                    const original = copyBtn.textContent;
+                    copyBtn.textContent = "Copied";
+                    setTimeout(() => {
+                        copyBtn.textContent = original;
+                    }, 1000);
+                    return;
+                }
+
+                if (qrBtn) {
+                    const code = qrBtn.getAttribute("data-code") || "";
+                    const title = qrBtn.getAttribute("data-title") || "Document";
+                    const verifyUrl = qrBtn.getAttribute("data-verify-url") || code;
+                    if (!clientQrModal || !code) return;
+
+                    clientQrDocName.textContent = title;
+                    clientQrCodeText.textContent = code;
+                    currentVerifyUrl = verifyUrl;
+                    clientQrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=${encodeURIComponent(verifyUrl)}`;
+                    clientQrModal.show();
+                }
+            });
+
+            clientCopyCodeBtn?.addEventListener("click", async () => {
+                const code = clientQrCodeText?.textContent?.trim() || "";
+                if (!code || code === "---") return;
+                await navigator.clipboard.writeText(code);
+                const original = clientCopyCodeBtn.innerHTML;
+                clientCopyCodeBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied';
+                setTimeout(() => {
+                    clientCopyCodeBtn.innerHTML = original;
+                }, 1000);
+            });
+
+            clientCopyLinkBtn?.addEventListener("click", async () => {
+                if (!currentVerifyUrl) return;
+                await navigator.clipboard.writeText(currentVerifyUrl);
+                const original = clientCopyLinkBtn.innerHTML;
+                clientCopyLinkBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied';
+                setTimeout(() => {
+                    clientCopyLinkBtn.innerHTML = original;
+                }, 1000);
+            });
+
+            viewAllButton?.addEventListener("click", () => {
+                window.location.href = "ClientDocuments.html";
+            });
+        });
+    </script>
+</body>
+</html>

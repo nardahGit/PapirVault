@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issuer Dashboard | PapirVault</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../Styles/style.css">
+
+    <style>
+        body.dashboard-body {
+            overflow: hidden;
+        }
+
+        #mainContent {
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #mainContent .content-wrapper {
+            min-height: calc(100vh + 8px);
+        }
+
+        #dashboardHeader {
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            background-color: #ffffff;
+        }
+
+        #dashboardHeader.header-scrolled {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar shadow-sm" id="sidebar">
+    <div class="sidebar-header px-4 pt-4 mb-4">
+        <div class="d-flex align-items-center">
+            <div class="brand-icon-modern me-2">
+                <i class="bi bi-shield-shaded"></i>
+            </div>
+            <div class="brand-info">
+                <h5 class="fw-bold mb-0 brand-name" style="color: #6366f1;">PapirVault</h5>
+                <small class="text-muted extra-small brand-subtext">Secure & Verified</small>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav flex-grow-1 px-3">
+        <a href="#" class="nav-link-modern active">
+            <i class="bi bi-grid-fill"></i> <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="IssuerDocuments.html?issuer=1" class="nav-link-modern">
+            <i class="bi bi-file-earmark-text-fill"></i> <span class="nav-text">Documents</span>
+        </a>
+        <a href="IssuerVerification.html" class="nav-link-modern">
+            <i class="bi bi-patch-check-fill"></i> <span class="nav-text">Verification</span>
+        </a>
+        <a href="IssuerSettings.html" class="nav-link-modern">
+            <i class="bi bi-gear-fill"></i> <span class="nav-text">Settings</span>
+        </a>
+        <a href="#" class="nav-link-modern">
+            <i class="bi bi-question-circle-fill"></i> <span class="nav-text">Help</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer px-3 pb-4">
+        <div class="profile-card-modern d-flex align-items-center p-2 mb-3">
+            <div class="avatar-modern me-2">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div class="profile-details">
+                <div class="fw-bold small">NHI Admin</div>
+                <div class="text-muted extra-small">Official Issuer</div>
+            </div>
+        </div>
+        <a href="index.html" class="btn-logout-modern w-100">
+            <i class="bi bi-box-arrow-left me-2"></i> Logout
+        </a>
+    </div>
+</aside>
+
+    <main class="main-content" id="mainContent">
+        <header class="dashboard-header" id="dashboardHeader">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-light rounded-circle me-3 shadow-sm" id="sidebarToggle">
+                        <i class="bi bi-text-indent-left fs-5"></i>
+                    </button>
+                    <h5 class="fw-bold mb-0">Issuer Overview</h5>
+                </div>
+                <div class="input-group w-50 d-none d-md-flex shadow-sm rounded-pill overflow-hidden">
+                    <span class="input-group-text border-0 bg-white"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="searchInput" class="form-control border-0 px-1" placeholder="Search document name or client...">
+                </div>
+            </div>
+        </header>
+
+        <div class="content-wrapper p-4 pt-2">
+            <div class="alert alert-warning border-0 shadow-sm rounded-4 d-flex justify-content-between align-items-center mb-4" role="alert">
+                <div class="small mb-0">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    You are close to the base limit of 100 documents per 180 days.
+                </div>
+                <a href="IssuerUpgrade.html" class="btn btn-sm btn-outline-warning fw-bold rounded-pill px-3">Upgrade Capacity</a>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-3">
+                    <div class="stat-card bg-purple-light shadow-sm">
+                        <small class="fw-bold opacity-75">TOTAL CLIENTS</small>
+                        <h2 class="fw-bold mb-0">1,284</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card bg-green-light shadow-sm">
+                        <small class="fw-bold opacity-75">ACTIVE DOCS</small>
+                        <h2 class="fw-bold mb-0">850</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card bg-yellow-light shadow-sm">
+                        <small class="fw-bold opacity-75">PENDING/EXPIRING</small>
+                        <h2 class="fw-bold mb-0">42</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card bg-red-light shadow-sm">
+                        <small class="fw-bold opacity-75">EXPIRED</small>
+                        <h2 class="fw-bold mb-0">12</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h6 class="fw-bold mb-0">Recent Issuances</h6>
+                    <button id="viewAllBtn" class="btn btn-primary btn-modern shadow-sm">View All</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle" id="issuerTable">
+                        <thead class="table-light">
+                            <tr class="small text-muted">
+                                <th>CLIENT NAME</th>
+                                <th>DOCUMENT TYPE</th>
+                                <th>STATUS</th>
+                                <th>DATE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">John Wick</td>
+                                <td>Health Clearance</td>
+                                <td><span class="badge bg-success-subtle text-success rounded-pill px-3">Active</span></td>
+                                <td class="text-muted">Feb 22, 2026</td>
+                            </tr>
+                            <tr class="extra-row d-none">
+                                <td class="fw-bold">Jane Watson</td>
+                                <td>Insurance Policy</td>
+                                <td><span class="badge bg-danger-subtle text-danger rounded-pill px-3">Expired</span></td>
+                                <td class="text-muted">Jan 10, 2026</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div style="height: 1000px;"></div> </div>
+    </main>
+
+    <script src="../Main/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const hasIssuerFlag = params.get('issuer') === '1';
+
+            if (hasIssuerFlag) {
+                sessionStorage.setItem('papirvaultIssuerSession', 'active');
+                localStorage.setItem('papirvaultIssuerSession', 'active');
+            }
+
+            if (!sessionStorage.getItem('papirvaultIssuerSession') && !localStorage.getItem('papirvaultIssuerSession')) {
+                sessionStorage.setItem('papirvaultIssuerSession', 'active');
+                localStorage.setItem('papirvaultIssuerSession', 'active');
+            }
+
+            const logoutBtn = document.querySelector('.btn-logout-modern');
+            logoutBtn?.addEventListener('click', (event) => {
+                event.preventDefault();
+                sessionStorage.removeItem('papirvaultIssuerSession');
+                localStorage.removeItem('papirvaultIssuerSession');
+                window.location.href = 'IssuerLogin.html';
+            });
+
+            const mainContent = document.getElementById('mainContent');
+            const dashboardHeader = document.getElementById('dashboardHeader');
+
+            if (!mainContent || !dashboardHeader) return;
+
+            const scrollHandler = () => {
+                dashboardHeader.classList.toggle('header-scrolled', mainContent.scrollTop > 0);
+            };
+
+            mainContent.addEventListener('scroll', scrollHandler, { passive: true });
+            scrollHandler();
+        });
+    </script>
+</body>
+</html>
