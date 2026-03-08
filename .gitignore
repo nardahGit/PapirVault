@@ -67,3 +67,6 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+# My Private Firebase Keys
+App/Main/firebase-env.js
+.firebaserc
