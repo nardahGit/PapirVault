@@ -33,6 +33,43 @@
         #dashboardHeader.header-scrolled {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
         }
+
+        .request-status-pill {
+            border-radius: 999px;
+            padding: 0.35rem 0.72rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .issuer-feed-item {
+            border: 1px solid #eef2ff;
+            border-radius: 0.9rem;
+            padding: 0.7rem 0.8rem;
+            background: #ffffff;
+        }
+
+        .issuer-feed-item + .issuer-feed-item {
+            margin-top: 0.55rem;
+        }
+
+        .issuer-feed-item .item-time {
+            font-size: 0.72rem;
+            color: #667085;
+        }
+
+        .issuer-action-btn {
+            min-width: 80px;
+        }
+
+        .request-detail-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #667085;
+            margin-bottom: 0.2rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body class="dashboard-body">
@@ -93,14 +130,24 @@
                     </button>
                     <h5 class="fw-bold mb-0">Issuer Overview</h5>
                 </div>
-                <div class="input-group w-50 d-none d-md-flex shadow-sm rounded-pill overflow-hidden">
-                    <span class="input-group-text border-0 bg-white"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" id="searchInput" class="form-control border-0 px-1" placeholder="Search document name or client...">
+                <div class="d-flex align-items-center gap-3 w-50 justify-content-end">
+                    <div class="input-group d-none d-md-flex shadow-sm rounded-pill overflow-hidden" style="max-width: 420px;">
+                        <span class="input-group-text border-0 bg-white"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" id="searchInput" class="form-control border-0 px-1" placeholder="Search request by client or document...">
+                    </div>
+                    <div class="position-relative">
+                        <button class="btn btn-light rounded-circle shadow-sm" type="button">
+                            <i class="bi bi-bell fs-6"></i>
+                        </button>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="issuerNotifCount">0</span>
+                    </div>
                 </div>
             </div>
         </header>
 
         <div class="content-wrapper p-4 pt-2">
+            <div id="issuerActionResult" class="alert d-none rounded-4 shadow-sm border-0 mb-4" role="alert"></div>
+
             <div class="alert alert-warning border-0 shadow-sm rounded-4 d-flex justify-content-between align-items-center mb-4" role="alert">
                 <div class="small mb-0">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -113,25 +160,25 @@
                 <div class="col-md-3">
                     <div class="stat-card bg-purple-light shadow-sm">
                         <small class="fw-bold opacity-75">TOTAL CLIENTS</small>
-                        <h2 class="fw-bold mb-0">1,284</h2>
+                        <h2 class="fw-bold mb-0" id="issuerStatTotalClients">0</h2>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stat-card bg-green-light shadow-sm">
                         <small class="fw-bold opacity-75">ACTIVE DOCS</small>
-                        <h2 class="fw-bold mb-0">850</h2>
+                        <h2 class="fw-bold mb-0" id="issuerStatActiveDocs">0</h2>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stat-card bg-yellow-light shadow-sm">
                         <small class="fw-bold opacity-75">PENDING/EXPIRING</small>
-                        <h2 class="fw-bold mb-0">42</h2>
+                        <h2 class="fw-bold mb-0" id="issuerStatPendingExpiring">0</h2>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stat-card bg-red-light shadow-sm">
                         <small class="fw-bold opacity-75">EXPIRED</small>
-                        <h2 class="fw-bold mb-0">12</h2>
+                        <h2 class="fw-bold mb-0" id="issuerStatExpired">0</h2>
                     </div>
                 </div>
             </div>
@@ -169,23 +216,502 @@
                     </table>
                 </div>
             </div>
-            <div style="height: 1000px;"></div> </div>
+
+            <div class="row g-4 mt-1">
+                <div class="col-xl-8">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold mb-0">Incoming Appointment Requests</h6>
+                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3" id="issuerRequestCount">0 Requests</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr class="small text-muted">
+                                        <th>CLIENT</th>
+                                        <th>ORG TYPE</th>
+                                        <th>DOCUMENT</th>
+                                        <th>BOOKING</th>
+                                        <th>STATUS</th>
+                                        <th class="text-end">ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="issuerRequestsTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-muted small">Loading live requests...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold mb-0">Issuer Notifications</h6>
+                            <span class="extra-small text-muted">Live</span>
+                        </div>
+                        <div id="issuerLiveNotifications">
+                            <div class="text-muted small">Waiting for new notifications...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 220px;"></div>
+        </div>
     </main>
 
+    <div class="modal fade" id="requestDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <div>
+                        <h5 class="modal-title fw-bold mb-1">Request Details</h5>
+                        <small class="text-muted">Review and decide on this appointment request.</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <div class="mb-3">
+                        <div class="request-detail-label">Client</div>
+                        <div class="small fw-bold" id="detailClientIdentity">-</div>
+                        <div class="small text-muted" id="detailClientEmail">-</div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <div class="request-detail-label">Organization Type</div>
+                            <div class="small" id="detailIssuerName">-</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="request-detail-label">Booking Date</div>
+                            <div class="small" id="detailBookingDate">-</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="request-detail-label">Document Requested</div>
+                        <div class="small" id="detailDocumentName">-</div>
+                    </div>
+                    <div>
+                        <label for="rejectReasonInput" class="request-detail-label">Reject Reason (Optional)</label>
+                        <textarea id="rejectReasonInput" class="form-control" rows="3" maxlength="240" placeholder="Add a reason if you reject this request (optional)"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-danger rounded-pill px-3" id="modalRejectBtn">Reject</button>
+                    <button type="button" class="btn btn-success rounded-pill px-3" id="modalAcceptBtn">Accept</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="../Main/script.js"></script>
+    <script src="../Main/firebase-env.js"></script>
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, where, doc, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const result = document.getElementById("issuerActionResult");
+            const requestsBody = document.getElementById("issuerRequestsTableBody");
+            const notificationsBox = document.getElementById("issuerLiveNotifications");
+            const requestCount = document.getElementById("issuerRequestCount");
+            const notifCount = document.getElementById("issuerNotifCount");
+            const searchInput = document.getElementById("searchInput");
+            const detailsModalEl = document.getElementById("requestDetailsModal");
+            const modalAcceptBtn = document.getElementById("modalAcceptBtn");
+            const modalRejectBtn = document.getElementById("modalRejectBtn");
+            const rejectReasonInput = document.getElementById("rejectReasonInput");
+            const detailClientIdentity = document.getElementById("detailClientIdentity");
+            const detailClientEmail = document.getElementById("detailClientEmail");
+            const detailIssuerName = document.getElementById("detailIssuerName");
+            const detailBookingDate = document.getElementById("detailBookingDate");
+            const detailDocumentName = document.getElementById("detailDocumentName");
+            const issuerStatTotalClients = document.getElementById("issuerStatTotalClients");
+            const issuerStatActiveDocs = document.getElementById("issuerStatActiveDocs");
+            const issuerStatPendingExpiring = document.getElementById("issuerStatPendingExpiring");
+            const issuerStatExpired = document.getElementById("issuerStatExpired");
+
+            if (!result || !requestsBody || !notificationsBox || !requestCount || !notifCount) return;
+
+            const issuerProfileRaw = sessionStorage.getItem("papirvaultIssuerProfile") || localStorage.getItem("papirvaultIssuerProfile") || "";
+            let issuerProfile = null;
+            try {
+                issuerProfile = issuerProfileRaw ? JSON.parse(issuerProfileRaw) : null;
+            } catch {
+                issuerProfile = null;
+            }
+
+            const organizationType = String(issuerProfile?.organizationType || "").trim();
+            const organizationTypeKey = organizationType.toLowerCase().replace(/\s+/g, " ").trim();
+            if (!organizationTypeKey) {
+                requestsBody.innerHTML = '<tr><td colspan="6" class="text-danger small">Issuer identity is missing. Please sign in again.</td></tr>';
+                notificationsBox.innerHTML = '<div class="text-danger small">Issuer identity is missing.</div>';
+                return;
+            }
+
+            const issuerName = String(issuerProfile?.issuerName || "").trim();
+            const profileNameEl = document.querySelector(".profile-details .fw-bold");
+            if (issuerName && profileNameEl) {
+                profileNameEl.textContent = issuerName;
+            }
+
+            const config = window.PAPIRVAULT_FIREBASE_CONFIG;
+            const isValidConfig = config && config.apiKey && config.authDomain && config.projectId && config.appId;
+            if (!isValidConfig) {
+                requestsBody.innerHTML = '<tr><td colspan="6" class="text-danger small">Firebase is not configured.</td></tr>';
+                return;
+            }
+
+            const app = getApps().length ? getApp() : initializeApp({
+                ...config,
+                storageBucket: config.storageBucket || `${config.projectId}.appspot.com`
+            });
+            const db = getFirestore(app);
+            const detailsModalApi = detailsModalEl && window.bootstrap?.Modal ? new window.bootstrap.Modal(detailsModalEl) : null;
+
+            let liveRequests = [];
+            let selectedRequestId = "";
+
+            const showResult = (type, message) => {
+                result.classList.remove("d-none", "alert-success", "alert-danger", "alert-warning", "alert-info");
+                result.classList.add(`alert-${type}`);
+                result.textContent = message;
+            };
+
+            const formatDate = (value) => {
+                if (!value) return "N/A";
+                const parsed = new Date(`${value}T00:00:00`);
+                return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+            };
+
+            const badgeByStatus = (status = "") => {
+                const key = status.toLowerCase();
+                if (key === "accepted") return '<span class="request-status-pill text-success bg-success-subtle">Accepted</span>';
+                if (key === "rejected") return '<span class="request-status-pill text-danger bg-danger-subtle">Rejected</span>';
+                return '<span class="request-status-pill text-warning bg-warning-subtle">Pending</span>';
+            };
+
+            const toMillis = (item) => {
+                const sec = item?.createdAt?.seconds || 0;
+                return sec * 1000;
+            };
+
+            const parseDateOnly = (value) => {
+                if (!value) return null;
+                const parsed = new Date(`${value}T00:00:00`);
+                return Number.isNaN(parsed.getTime()) ? null : parsed;
+            };
+
+            const daysBetween = (start, end) => {
+                const ms = end.getTime() - start.getTime();
+                return Math.floor(ms / (1000 * 60 * 60 * 24));
+            };
+
+            const updateIssuerStats = (documents) => {
+                if (!issuerStatTotalClients || !issuerStatActiveDocs || !issuerStatPendingExpiring || !issuerStatExpired) return;
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const uniqueClients = new Set();
+                let active = 0;
+                let pendingExpiring = 0;
+                let expired = 0;
+
+                documents.forEach((item) => {
+                    if (item.ownerUid) uniqueClients.add(String(item.ownerUid));
+
+                    const status = String(item.status || "").toLowerCase();
+                    const expiry = parseDateOnly(item.expiryDate);
+                    const isExpiredByDate = expiry ? expiry < today : false;
+                    const isExpiringSoon = expiry ? !isExpiredByDate && daysBetween(today, expiry) <= 30 : false;
+
+                    if (status === "expired" || isExpiredByDate) {
+                        expired += 1;
+                        return;
+                    }
+
+                    if (status === "pending" || isExpiringSoon) {
+                        pendingExpiring += 1;
+                        return;
+                    }
+
+                    active += 1;
+                });
+
+                issuerStatTotalClients.textContent = String(uniqueClients.size);
+                issuerStatActiveDocs.textContent = String(active);
+                issuerStatPendingExpiring.textContent = String(pendingExpiring);
+                issuerStatExpired.textContent = String(expired);
+            };
+
+            const renderRequests = (searchTerm = "") => {
+                const term = searchTerm.trim().toLowerCase();
+                const filtered = liveRequests.filter((item) => {
+                    if (!term) return true;
+                    return [item.clientIdentity, item.organizationType, item.requestedDocumentName, item.status]
+                        .map((x) => String(x || "").toLowerCase())
+                        .some((x) => x.includes(term));
+                });
+
+                requestCount.textContent = `${filtered.length} Request${filtered.length === 1 ? "" : "s"}`;
+
+                if (!filtered.length) {
+                    requestsBody.innerHTML = '<tr><td colspan="6" class="text-muted small">No appointment requests found.</td></tr>';
+                    return;
+                }
+
+                requestsBody.innerHTML = filtered.map((item) => {
+                    const isPending = String(item.status || "").toLowerCase() === "pending";
+                    return `
+                    <tr data-request-id="${item.id}">
+                        <td>
+                            <div class="fw-bold small">${item.clientIdentity || "Unknown client"}</div>
+                            <div class="extra-small text-muted">${item.clientEmail || "no-email"}</div>
+                        </td>
+                        <td class="small text-muted">${item.organizationType || "N/A"}</td>
+                        <td class="small">${item.requestedDocumentName || "N/A"}</td>
+                        <td class="small text-muted">${formatDate(item.bookingDate)}</td>
+                        <td>${badgeByStatus(item.status)}</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-success rounded-pill issuer-action-btn me-1" data-action="Accept" ${isPending ? "" : "disabled"}>Accept</button>
+                            <button class="btn btn-sm btn-outline-danger rounded-pill issuer-action-btn me-1" data-action="Reject" ${isPending ? "" : "disabled"}>Reject</button>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill issuer-action-btn me-1" data-action="Reason">Reason</button>
+                            <button class="btn btn-sm btn-outline-primary rounded-pill issuer-action-btn" data-action="View">View</button>
+                        </td>
+                    </tr>
+                `;
+                }).join("");
+            };
+
+            const updateRequestStatus = async ({ requestItem, requestId, nextStatus, rejectReason = "" }) => {
+                await updateDoc(doc(db, "verificationRequests", requestId), {
+                    status: nextStatus,
+                    reviewedAt: serverTimestamp(),
+                    reviewedBy: issuerName || "Issuer",
+                    rejectReason: nextStatus === "Rejected" ? rejectReason : "",
+                    updatedAt: serverTimestamp()
+                });
+
+                const reasonSuffix = nextStatus === "Rejected" && rejectReason ? ` Reason: ${rejectReason}` : "";
+                await addDoc(collection(db, "notifications"), {
+                    type: "request-status",
+                    uid: requestItem.clientUid || "",
+                    clientUid: requestItem.clientUid || "",
+                    title: `Request ${nextStatus}`,
+                    message: `${requestItem.organizationType || "Organization"} ${nextStatus.toLowerCase()} your request for '${requestItem.requestedDocumentName || "document"}'.${reasonSuffix}`,
+                    requestId,
+                    status: nextStatus,
+                    organizationType: requestItem.organizationType || organizationType,
+                    organizationTypeKey,
+                    rejectReason: nextStatus === "Rejected" ? rejectReason : "",
+                    recipientRole: "client",
+                    isRead: false,
+                    createdAt: serverTimestamp()
+                });
+            };
+
+            const openDetailsModal = (requestItem) => {
+                if (!detailsModalApi || !requestItem) return;
+                selectedRequestId = requestItem.id;
+                detailClientIdentity.textContent = requestItem.clientIdentity || "Unknown client";
+                detailClientEmail.textContent = requestItem.clientEmail || "no-email";
+                detailIssuerName.textContent = requestItem.organizationType || "N/A";
+                detailBookingDate.textContent = formatDate(requestItem.bookingDate);
+                detailDocumentName.textContent = requestItem.requestedDocumentName || "N/A";
+                rejectReasonInput.value = requestItem.rejectReason || "";
+
+                const isPending = (requestItem.status || "").toLowerCase() === "pending";
+                modalAcceptBtn.disabled = !isPending;
+                modalRejectBtn.disabled = !isPending;
+                detailsModalApi.show();
+            };
+
+            const requestsQuery = query(
+                collection(db, "verificationRequests"),
+                where("type", "==", "verification-appointment"),
+                where("organizationTypeKey", "==", organizationTypeKey)
+            );
+            onSnapshot(requestsQuery, (snapshot) => {
+                liveRequests = snapshot.docs
+                    .map((entry) => ({ id: entry.id, ...entry.data() }))
+                    .sort((a, b) => toMillis(b) - toMillis(a));
+                renderRequests(searchInput?.value || "");
+            });
+
+            const issuerDocsQuery = query(collection(db, "documents"), where("issuerName", "==", issuerName || "Authorized Issuer"));
+            onSnapshot(issuerDocsQuery, (snapshot) => {
+                const docs = snapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() }));
+                updateIssuerStats(docs);
+            });
+
+            const notifQuery = query(
+                collection(db, "notifications"),
+                where("recipientRole", "==", "issuer"),
+                where("organizationTypeKey", "==", organizationTypeKey)
+            );
+            onSnapshot(notifQuery, (snapshot) => {
+                const list = snapshot.docs
+                    .map((entry) => ({ id: entry.id, ...entry.data() }))
+                    .sort((a, b) => (b?.createdAt?.seconds || 0) - (a?.createdAt?.seconds || 0))
+                    .slice(0, 8);
+
+                notifCount.textContent = String(list.length);
+                if (!list.length) {
+                    notificationsBox.innerHTML = '<div class="text-muted small">No notifications yet.</div>';
+                    return;
+                }
+
+                notificationsBox.innerHTML = list.map((item) => {
+                    const when = item?.createdAt?.seconds
+                        ? new Date(item.createdAt.seconds * 1000).toLocaleString()
+                        : "just now";
+                    return `
+                        <div class="issuer-feed-item">
+                            <div class="fw-bold small mb-1">${item.title || "Issuer notification"}</div>
+                            <div class="text-muted small mb-1">${item.message || "New update"}</div>
+                            <div class="item-time">${when}</div>
+                        </div>
+                    `;
+                }).join("");
+            });
+
+            requestsBody.addEventListener("click", async (event) => {
+                const actionBtn = event.target.closest("button[data-action]");
+                if (!actionBtn) return;
+
+                const row = actionBtn.closest("tr[data-request-id]");
+                const requestId = row?.getAttribute("data-request-id");
+                const action = actionBtn.getAttribute("data-action");
+                if (!requestId || !action) return;
+
+                const requestItem = liveRequests.find((item) => item.id === requestId);
+                if (!requestItem) {
+                    showResult("warning", "Request not found. Please refresh and try again.");
+                    return;
+                }
+
+                if (action === "View") {
+                    openDetailsModal(requestItem);
+                    return;
+                }
+
+                if (action === "Accept") {
+                    const initialText = actionBtn.textContent;
+                    actionBtn.disabled = true;
+                    actionBtn.textContent = "Saving...";
+                    try {
+                        await updateRequestStatus({ requestItem, requestId, nextStatus: "Accepted" });
+                        showResult("success", "Request marked as Accepted. Client can now see this status.");
+                    } catch (error) {
+                        showResult("danger", error?.message || "Failed to update request status.");
+                    } finally {
+                        actionBtn.disabled = false;
+                        actionBtn.textContent = initialText;
+                    }
+                    return;
+                }
+
+                if (action === "Reject") {
+                    const initialText = actionBtn.textContent;
+                    actionBtn.disabled = true;
+                    actionBtn.textContent = "Saving...";
+                    try {
+                        await updateRequestStatus({ requestItem, requestId, nextStatus: "Rejected", rejectReason: "" });
+                        showResult("warning", "Request marked as Rejected. Client can now see this status.");
+                    } catch (error) {
+                        showResult("danger", error?.message || "Failed to update request status.");
+                    } finally {
+                        actionBtn.disabled = false;
+                        actionBtn.textContent = initialText;
+                    }
+                    return;
+                }
+
+                if (action === "Reason") {
+                    selectedRequestId = requestId;
+                    rejectReasonInput.value = requestItem.rejectReason || "";
+                    openDetailsModal(requestItem);
+                }
+            });
+
+            modalAcceptBtn?.addEventListener("click", async () => {
+                const requestItem = liveRequests.find((item) => item.id === selectedRequestId);
+                if (!requestItem) {
+                    showResult("warning", "Request not found. Please refresh and try again.");
+                    return;
+                }
+
+                const initialText = modalAcceptBtn.textContent;
+                modalAcceptBtn.disabled = true;
+                modalAcceptBtn.textContent = "Saving...";
+                try {
+                    await updateRequestStatus({ requestItem, requestId: selectedRequestId, nextStatus: "Accepted" });
+                    showResult("success", "Request marked as Accepted. Client has been notified.");
+                    detailsModalApi?.hide();
+                } catch (error) {
+                    showResult("danger", error?.message || "Failed to update request status.");
+                } finally {
+                    modalAcceptBtn.disabled = false;
+                    modalAcceptBtn.textContent = initialText;
+                }
+            });
+
+            modalRejectBtn?.addEventListener("click", async () => {
+                const requestItem = liveRequests.find((item) => item.id === selectedRequestId);
+                if (!requestItem) {
+                    showResult("warning", "Request not found. Please refresh and try again.");
+                    return;
+                }
+
+                const rejectReason = String(rejectReasonInput?.value || "").trim();
+                const initialText = modalRejectBtn.textContent;
+                modalRejectBtn.disabled = true;
+                modalRejectBtn.textContent = "Saving...";
+                try {
+                    await updateRequestStatus({ requestItem, requestId: selectedRequestId, nextStatus: "Rejected", rejectReason });
+                    showResult("warning", "Request marked as Rejected. Client has been notified.");
+                    detailsModalApi?.hide();
+                } catch (error) {
+                    showResult("danger", error?.message || "Failed to update request status.");
+                } finally {
+                    modalRejectBtn.disabled = false;
+                    modalRejectBtn.textContent = initialText;
+                }
+            });
+
+            searchInput?.addEventListener("input", () => {
+                renderRequests(searchInput.value);
+            });
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const hasIssuerFlag = params.get('issuer') === '1';
+            const localProfile = localStorage.getItem('papirvaultIssuerProfile');
 
             if (hasIssuerFlag) {
                 sessionStorage.setItem('papirvaultIssuerSession', 'active');
-                localStorage.setItem('papirvaultIssuerSession', 'active');
+                if (!sessionStorage.getItem('papirvaultIssuerProfile') && localProfile) {
+                    sessionStorage.setItem('papirvaultIssuerProfile', localProfile);
+                }
             }
 
-            if (!sessionStorage.getItem('papirvaultIssuerSession') && !localStorage.getItem('papirvaultIssuerSession')) {
-                sessionStorage.setItem('papirvaultIssuerSession', 'active');
-                localStorage.setItem('papirvaultIssuerSession', 'active');
+            const sessionActive = sessionStorage.getItem('papirvaultIssuerSession');
+            const localActive = localStorage.getItem('papirvaultIssuerSession');
+            const sessionProfile = sessionStorage.getItem('papirvaultIssuerProfile');
+
+            if ((!sessionActive && !localActive) || (!sessionProfile && !localProfile)) {
+                window.location.href = 'IssuerLogin.html';
+                return;
+            }
+
+            if (!sessionStorage.getItem('papirvaultIssuerProfile') && localProfile) {
+                sessionStorage.setItem('papirvaultIssuerProfile', localProfile);
             }
 
             const logoutBtn = document.querySelector('.btn-logout-modern');
@@ -193,6 +719,8 @@
                 event.preventDefault();
                 sessionStorage.removeItem('papirvaultIssuerSession');
                 localStorage.removeItem('papirvaultIssuerSession');
+                sessionStorage.removeItem('papirvaultIssuerProfile');
+                localStorage.removeItem('papirvaultIssuerProfile');
                 window.location.href = 'IssuerLogin.html';
             });
 

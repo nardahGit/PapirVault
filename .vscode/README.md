@@ -142,3 +142,6 @@ Next task: Replace demo-open Firebase rules with secure production rules and add
 - Add role switch helper for classroom demo.
 - Add guided demo overlay (step-by-step hints on the UI).
 - Add polished success/toast messages for every major action.
+
+
+### FIDERANA NARDAH MAMELPHINA

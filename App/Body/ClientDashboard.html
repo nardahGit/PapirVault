@@ -41,10 +41,10 @@
 
         <div class="sidebar-footer px-3 border-top pt-4 pb-4">
             <div class="profile-card d-flex align-items-center p-2 rounded-3 mb-3 border bg-white">
-                <div class="avatar me-2">JD</div>
+                <div class="avatar me-2" id="clientSidebarAvatar">--</div>
                 <div class="profile-details">
-                    <div class="fw-bold small">John Doe</div>
-                    <div class="text-muted extra-small">Premium Member</div>
+                    <div class="fw-bold small" id="clientSidebarName">Loading...</div>
+                    <div class="text-muted extra-small" id="clientSidebarMeta">Client Account</div>
                 </div>
             </div>
             <a href="ClientLogin.html" class="logout-btn text-danger text-decoration-none small fw-bold d-flex align-items-center px-3">
@@ -257,6 +257,9 @@
             const clientCopyCodeBtn = document.getElementById("clientCopyCodeBtn");
             const clientCopyLinkBtn = document.getElementById("clientCopyLinkBtn");
             const clientQrModal = clientQrModalEl ? new bootstrap.Modal(clientQrModalEl) : null;
+            const clientSidebarAvatar = document.getElementById("clientSidebarAvatar");
+            const clientSidebarName = document.getElementById("clientSidebarName");
+            const clientSidebarMeta = document.getElementById("clientSidebarMeta");
 
             const statTotal = document.getElementById("statTotal");
             const statVerified = document.getElementById("statVerified");
@@ -265,6 +268,34 @@
 
             let currentUserUid = "";
             let currentVerifyUrl = "";
+
+            const deriveDisplayName = (user) => {
+                if (!user) return "Client";
+                if (user.displayName && user.displayName.trim()) return user.displayName.trim();
+                const email = (user.email || "").trim();
+                if (!email) return "Client";
+                const local = email.split("@")[0] || "Client";
+                return local
+                    .split(/[._-]+/)
+                    .filter(Boolean)
+                    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+                    .join(" ") || "Client";
+            };
+
+            const toInitials = (name) => {
+                const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+                if (!parts.length) return "CL";
+                if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+                return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+            };
+
+            const renderSidebarProfile = (user) => {
+                if (!clientSidebarName || !clientSidebarAvatar || !clientSidebarMeta) return;
+                const displayName = deriveDisplayName(user);
+                clientSidebarName.textContent = displayName;
+                clientSidebarAvatar.textContent = toInitials(displayName);
+                clientSidebarMeta.textContent = user?.email || "Client Account";
+            };
 
             const buildVerifyUrl = (item) => {
                 const base = (window.PAPIRVAULT_PUBLIC_VERIFY_BASE_URL || "").trim();
@@ -287,6 +318,24 @@
                 if (value === "verified") return '<span class="badge bg-success-subtle text-success p-2">Verified</span>';
                 if (value === "expired") return '<span class="badge bg-danger-subtle text-danger p-2">Expired</span>';
                 return '<span class="badge bg-warning-subtle text-warning p-2">Pending</span>';
+            };
+
+            const escapeHtml = (value) => {
+                return String(value || "")
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;")
+                    .replaceAll("'", "&#39;");
+            };
+
+            const renderStatusCell = (item) => {
+                const base = getStatusBadge(item.status);
+                const reasonRaw = String(item.statusReason || "").trim();
+                if (!reasonRaw) return base;
+
+                const reason = escapeHtml(reasonRaw);
+                return `${base} <i class="bi bi-info-circle ms-1 text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Why: ${reason}"></i>`;
             };
 
             const updateStats = (documents) => {
@@ -325,14 +374,18 @@
                                 <div class="extra-small text-muted mt-1">Code: ${safeCode}</div>
                             </td>
                             <td class="text-muted">${safeIssuer}</td>
-                            <td>${getStatusBadge(item.status)}</td>
+                            <td>${renderStatusCell(item)}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-2 copy-code-btn" data-code="${safeCode}">Copy Code</button>
-                                <button class="btn btn-sm btn-outline-dark rounded-pill px-2 ms-1 show-qr-btn" data-code="${safeCode}" data-title="${safeTitle}" data-verify-url="${verifyUrl.replaceAll('"', '&quot;')}">QR</button>
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-2 copy-code-btn" data-code="${safeCode}" data-status="${String(item.status || "").toLowerCase()}">Copy Code</button>
+                                <button class="btn btn-sm btn-outline-dark rounded-pill px-2 ms-1 show-qr-btn" data-code="${safeCode}" data-title="${safeTitle}" data-status="${String(item.status || "").toLowerCase()}" data-verify-url="${verifyUrl.replaceAll('"', '&quot;')}">QR</button>
                             </td>
                         </tr>
                     `;
                 }).join("");
+
+                tableBody.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
+                    new bootstrap.Tooltip(el);
+                });
             };
 
             const loadDocuments = async (keyword = "") => {
@@ -350,6 +403,7 @@
 
             docsApi?.onUserChanged((user) => {
                 if (!user?.uid) return;
+                renderSidebarProfile(user);
                 currentUserUid = user.uid;
                 loadDocuments();
             });
@@ -364,6 +418,20 @@
 
                 if (copyBtn) {
                     const code = copyBtn.getAttribute("data-code") || "";
+                    const status = (copyBtn.getAttribute("data-status") || "").toLowerCase();
+                    if (status === "expired" || status === "rejected") {
+                        const original = copyBtn.textContent;
+                        copyBtn.textContent = "Code No Longer Valid";
+                        copyBtn.classList.remove("btn-outline-secondary");
+                        copyBtn.classList.add("btn-outline-danger");
+                        setTimeout(() => {
+                            copyBtn.textContent = original;
+                            copyBtn.classList.add("btn-outline-secondary");
+                            copyBtn.classList.remove("btn-outline-danger");
+                        }, 1600);
+                        return;
+                    }
+
                     await navigator.clipboard.writeText(code);
                     const original = copyBtn.textContent;
                     copyBtn.textContent = "Copied";
@@ -377,12 +445,24 @@
                     const code = qrBtn.getAttribute("data-code") || "";
                     const title = qrBtn.getAttribute("data-title") || "Document";
                     const verifyUrl = qrBtn.getAttribute("data-verify-url") || code;
+                    const status = (qrBtn.getAttribute("data-status") || "").toLowerCase();
                     if (!clientQrModal || !code) return;
 
                     clientQrDocName.textContent = title;
                     clientQrCodeText.textContent = code;
                     currentVerifyUrl = verifyUrl;
                     clientQrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=${encodeURIComponent(verifyUrl)}`;
+
+                    if (status === "expired" || status === "rejected") {
+                        clientCopyCodeBtn.disabled = true;
+                        clientCopyCodeBtn.classList.add("disabled");
+                        clientCopyCodeBtn.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Code No Longer Valid';
+                    } else {
+                        clientCopyCodeBtn.disabled = false;
+                        clientCopyCodeBtn.classList.remove("disabled");
+                        clientCopyCodeBtn.innerHTML = '<i class="bi bi-copy me-1"></i>Copy Code';
+                    }
+
                     clientQrModal.show();
                 }
             });

@@ -56,13 +56,13 @@
                             
                             <div class="mb-3">
                                 <label class="form-label small fw-bold">Organization Name</label>
-                                <input type="text" class="form-control-custom" placeholder="e.g., National Health Insurance" required>
+                                <input type="text" id="issuerSignupOrganizationName" class="form-control-custom" placeholder="e.g., National Health Insurance" required>
                             </div>
 
                             <div class="row g-3 mb-4">
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold">Institution Type</label>
-                                    <select class="modern-select w-100 shadow-none">
+                                    <select id="issuerSignupInstitutionType" class="modern-select w-100 shadow-none">
                                         <option>Government Body</option>
                                         <option>Private Insurance</option>
                                         <option>Educational Office</option>
@@ -71,7 +71,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold">Official License ID</label>
-                                    <input type="text" class="form-control-custom" placeholder="ID-000-000" required>
+                                    <input type="text" id="issuerSignupLicenseId" class="form-control-custom" placeholder="ID-000-000" required>
                                 </div>
                             </div>
 
@@ -82,7 +82,7 @@
                                     <label class="form-label small fw-bold">Work Email</label>
                                     <div class="modern-input-group">
                                         <i class="bi bi-envelope-at"></i>
-                                        <input type="email" class="form-control shadow-none" placeholder="admin@institution.gov" required>
+                                        <input type="email" id="issuerSignupEmail" class="form-control shadow-none" placeholder="admin@institution.gov" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -109,6 +109,7 @@
                             <button type="submit" class="btn btn-primary-purple w-100 py-3 fw-bold rounded-3 shadow-sm">
                                 Submit Registration <i class="bi bi-arrow-right ms-2"></i>
                             </button>
+                            <div id="issuerSignupFeedback" class="small mt-2 d-none"></div>
                         </form>
                     </div>
                 </div>

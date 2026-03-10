@@ -89,6 +89,91 @@ const generateVerificationCode = ({ category }) => {
     return `${toCodePrefix(category)}-${year}-${randomCode()}`;
 };
 
+const parseDateOnly = (value) => {
+    if (!value) return null;
+    const parsed = new Date(`${value}T00:00:00`);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const evaluateDocumentStatus = ({ issueDate, expiryDate }) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const issue = parseDateOnly(issueDate) || today;
+    const expiry = parseDateOnly(expiryDate);
+
+    if (!expiry) {
+        return { status: "Verified", statusReason: "No expiry date provided" };
+    }
+
+    const maxAllowed = new Date(issue);
+    maxAllowed.setDate(maxAllowed.getDate() + 180);
+
+    if (expiry > maxAllowed) {
+        return {
+            status: "Expired",
+            statusReason: "Expiry exceeds 180-day issuer policy"
+        };
+    }
+
+    if (expiry < today) {
+        return {
+            status: "Expired",
+            statusReason: "Expiry date is in the past"
+        };
+    }
+
+    return { status: "Verified", statusReason: "Within issuer validity policy" };
+};
+
+const buildQrPayload = ({ title, issuerName, expiryDate, status, verificationCode }) => {
+    return `${window.PAPIRVAULT_PUBLIC_VERIFY_BASE_URL}?verify=1&doc=${encodeURIComponent(title || "Document")}&issuer=${encodeURIComponent(issuerName || "Authorized Issuer")}&validUntil=${encodeURIComponent(expiryDate || "N/A")}&status=${encodeURIComponent(status || "Verified")}&code=${encodeURIComponent(verificationCode || "")}`;
+};
+
+const canAutoEvaluateStatus = (statusValue) => {
+    const normalized = String(statusValue || "").trim().toLowerCase();
+    return !normalized || normalized === "verified" || normalized === "expired";
+};
+
+const syncComputedDocumentFields = async (docItem) => {
+    if (!db || !docItem?.id) return docItem;
+    if (!canAutoEvaluateStatus(docItem.status)) return docItem;
+
+    const evaluated = evaluateDocumentStatus({
+        issueDate: docItem.issueDate,
+        expiryDate: docItem.expiryDate
+    });
+
+    const expectedStatus = evaluated.status;
+    const expectedReason = evaluated.statusReason;
+    const expectedQrPayload = buildQrPayload({
+        title: docItem.title,
+        issuerName: docItem.issuerName,
+        expiryDate: docItem.expiryDate,
+        status: expectedStatus,
+        verificationCode: docItem.verificationCode
+    });
+
+    const hasStatusChanged = String(docItem.status || "") !== String(expectedStatus);
+    const hasReasonChanged = String(docItem.statusReason || "") !== String(expectedReason);
+    const hasQrChanged = String(docItem.qrPayload || "") !== String(expectedQrPayload);
+
+    if (hasStatusChanged || hasReasonChanged || hasQrChanged) {
+        await setDoc(doc(collection(db, "documents"), docItem.id), {
+            status: expectedStatus,
+            statusReason: expectedReason,
+            qrPayload: expectedQrPayload
+        }, { merge: true });
+    }
+
+    return {
+        ...docItem,
+        status: expectedStatus,
+        statusReason: expectedReason,
+        qrPayload: expectedQrPayload
+    };
+};
+
 const createDocumentRecord = async ({
     documentId,
     clientUid,
@@ -114,7 +199,13 @@ const createDocumentRecord = async ({
         category: category.trim(),
         status: "Verified",
         verificationCode,
-        qrPayload: `${window.PAPIRVAULT_PUBLIC_VERIFY_BASE_URL}?verify=1&doc=${encodeURIComponent(title.trim())}&issuer=${encodeURIComponent(issuerName || "Authorized Issuer")}&validUntil=${encodeURIComponent(expiryDate || "N/A")}&status=Verified&code=${encodeURIComponent(verificationCode)}`,
+        qrPayload: buildQrPayload({
+            title: title.trim(),
+            issuerName,
+            expiryDate,
+            status: "Verified",
+            verificationCode
+        }),
         issueDate: issueDate || "",
         expiryDate: expiryDate || "",
         legalNote: legalNote || "",
@@ -125,6 +216,17 @@ const createDocumentRecord = async ({
         uploadWarning: uploadWarning || "",
         createdAt: serverTimestamp()
     };
+
+    const evaluated = evaluateDocumentStatus({ issueDate, expiryDate });
+    payload.status = evaluated.status;
+    payload.statusReason = evaluated.statusReason;
+    payload.qrPayload = buildQrPayload({
+        title: title.trim(),
+        issuerName,
+        expiryDate,
+        status: evaluated.status,
+        verificationCode
+    });
 
     const docRef = doc(collection(db, "documents"), documentId);
     await withTimeout(
@@ -273,13 +375,15 @@ const listClientDocuments = async ({ clientUid }) => {
         ...entry.data()
     }));
 
-    docs.sort((a, b) => {
+    const syncedDocs = await Promise.all(docs.map((docItem) => syncComputedDocumentFields(docItem)));
+
+    syncedDocs.sort((a, b) => {
         const aTime = a?.createdAt?.seconds || 0;
         const bTime = b?.createdAt?.seconds || 0;
         return bTime - aTime;
     });
 
-    return docs;
+    return syncedDocs;
 };
 
 const searchClientDocuments = async ({ clientUid, keyword }) => {
@@ -297,6 +401,29 @@ const searchClientDocuments = async ({ clientUid, keyword }) => {
     });
 };
 
+const listIssuerDocuments = async ({ issuerName }) => {
+    const normalizedName = String(issuerName || "").trim();
+    if (!db || !normalizedName) return [];
+
+    const q = query(collection(db, "documents"), where("issuerName", "==", normalizedName));
+    const snapshot = await getDocs(q);
+
+    const docs = snapshot.docs.map((entry) => ({
+        id: entry.id,
+        ...entry.data()
+    }));
+
+    const syncedDocs = await Promise.all(docs.map((docItem) => syncComputedDocumentFields(docItem)));
+
+    syncedDocs.sort((a, b) => {
+        const aTime = a?.createdAt?.seconds || 0;
+        const bTime = b?.createdAt?.seconds || 0;
+        return bTime - aTime;
+    });
+
+    return syncedDocs;
+};
+
 const onUserChanged = (callback) => {
     if (!auth || typeof callback !== "function") return () => {};
     return onAuthStateChanged(auth, callback);
@@ -308,5 +435,6 @@ window.PapirVaultDocs = {
     uploadIssuerDocument,
     registerIssuerDocumentWithoutFile,
     listClientDocuments,
-    searchClientDocuments
+    searchClientDocuments,
+    listIssuerDocuments
 };

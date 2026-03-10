@@ -106,6 +106,24 @@
                 verifyMessage.innerHTML = `<strong>${doc}</strong> is verified by <strong>${issuer}</strong> and is valid until <strong>${validUntil}</strong>.`;
                 statusChip.className = 'badge rounded-pill px-3 py-2 bg-success-subtle text-success';
                 statusChip.innerHTML = '<i class="bi bi-patch-check me-1"></i>Verified';
+            } else if (status === 'expired') {
+                verifyTitle.textContent = 'Document Expired';
+                verifySubtitle.textContent = 'This document is no longer valid';
+                verifyIcon.className = 'p-3 rounded-3 bg-danger-subtle text-danger';
+                verifyIcon.innerHTML = '<i class="bi bi-x-octagon fs-4"></i>';
+                verifyMessage.className = 'alert alert-danger rounded-3 mt-4 mb-0';
+                verifyMessage.innerHTML = `<strong>${doc}</strong> has expired and cannot be accepted as valid. Please request an updated document from <strong>${issuer}</strong>.`;
+                statusChip.className = 'badge rounded-pill px-3 py-2 bg-danger-subtle text-danger';
+                statusChip.innerHTML = '<i class="bi bi-x-octagon me-1"></i>Expired';
+            } else if (status === 'rejected') {
+                verifyTitle.textContent = 'Document Rejected';
+                verifySubtitle.textContent = 'Verification failed by issuer policy';
+                verifyIcon.className = 'p-3 rounded-3 bg-danger-subtle text-danger';
+                verifyIcon.innerHTML = '<i class="bi bi-slash-circle fs-4"></i>';
+                verifyMessage.className = 'alert alert-danger rounded-3 mt-4 mb-0';
+                verifyMessage.innerHTML = `<strong>${doc}</strong> is marked as rejected. Please contact <strong>${issuer}</strong> for clarification.`;
+                statusChip.className = 'badge rounded-pill px-3 py-2 bg-danger-subtle text-danger';
+                statusChip.innerHTML = '<i class="bi bi-slash-circle me-1"></i>Rejected';
             } else {
                 verifyTitle.textContent = 'Document Not Verified';
                 verifySubtitle.textContent = 'Manual issuer confirmation recommended';

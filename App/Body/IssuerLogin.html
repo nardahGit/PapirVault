@@ -40,8 +40,17 @@
 
                         <form id="issuerLoginForm">
                             <div class="mb-3">
+                                <label class="form-label small fw-bold text-uppercase tracking-wider" for="issuerOrganizationName">Issuer Display Name</label>
+                                <div class="modern-input-group">
+                                    <i class="bi bi-building"></i>
+                                    <input type="text" id="issuerOrganizationName" class="form-control shadow-none" placeholder="e.g. National Health Insurance" required>
+                                </div>
+                                <small class="text-muted extra-small">Use the same issuer name clients select when creating requests.</small>
+                            </div>
+
+                            <div class="mb-3">
                                 <label class="form-label small fw-bold text-uppercase tracking-wider">Organization Type</label>
-                                <select class="form-select modern-select shadow-none" required>
+                                <select id="issuerOrganizationType" class="form-select modern-select shadow-none" required>
                                     <option value="" disabled selected>Select organization type</option>
                                     <option>University / Academic Institution</option>
                                     <option>Banking & Financial Institution</option>
@@ -54,7 +63,7 @@
                                 <label class="form-label small fw-bold text-uppercase tracking-wider">Official Email Address</label>
                                 <div class="modern-input-group">
                                     <i class="bi bi-building-lock"></i>
-                                    <input type="email" class="form-control shadow-none" placeholder="admin@organization.gov" required>
+                                    <input type="email" id="issuerOfficialEmail" class="form-control shadow-none" placeholder="admin@organization.gov" required>
                                 </div>
                             </div>
 
@@ -80,6 +89,7 @@
                             <button type="submit" class="btn btn-primary-purple w-100 py-3 fw-bold rounded-3 mb-4 shadow-sm">
                                 Sign In as Issuer <i class="bi bi-box-arrow-in-right ms-2"></i>
                             </button>
+                            <div id="issuerAuthError" class="small text-danger d-none mb-2"></div>
                         </form>
 
                         <div class="security-footer-purple p-3 rounded-4 d-flex align-items-center">

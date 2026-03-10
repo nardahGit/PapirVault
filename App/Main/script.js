@@ -20,6 +20,53 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(securityPanel);
     }
 });
+
+/* --- Global Sidebar Identity Sync (Client + Issuer) --- */
+
+document.addEventListener('DOMContentLoaded', () => {
+    const readJsonStorage = (key) => {
+        const raw = sessionStorage.getItem(key) || localStorage.getItem(key) || '';
+        if (!raw) return null;
+        try {
+            return JSON.parse(raw);
+        } catch {
+            return null;
+        }
+    };
+
+    const clientProfile = readJsonStorage('papirvaultClientProfile');
+    const issuerProfile = readJsonStorage('papirvaultIssuerProfile');
+
+    const clientCard = document.querySelector('.profile-card');
+    if (clientCard && clientProfile) {
+        const nameEl = clientCard.querySelector('.profile-details .fw-bold');
+        const metaEl = clientCard.querySelector('.profile-details .text-muted');
+        const avatarEl = clientCard.querySelector('.avatar, .avatar-circle');
+
+        if (nameEl) {
+            nameEl.textContent = clientProfile.displayName || 'Client';
+        }
+        if (metaEl) {
+            metaEl.textContent = clientProfile.email || 'Client Account';
+        }
+        if (avatarEl && typeof avatarEl.textContent === 'string') {
+            avatarEl.textContent = clientProfile.initials || 'CL';
+        }
+    }
+
+    const issuerCard = document.querySelector('.profile-card-modern');
+    if (issuerCard && issuerProfile) {
+        const nameEl = issuerCard.querySelector('.profile-details .fw-bold');
+        const metaEl = issuerCard.querySelector('.profile-details .text-muted');
+
+        if (nameEl) {
+            nameEl.textContent = issuerProfile.issuerName || 'Issuer Admin';
+        }
+        if (metaEl) {
+            metaEl.textContent = issuerProfile.organizationType || 'Official Issuer';
+        }
+    }
+});
 /*ClientLogin*/
 
 function togglePassword() {
@@ -134,6 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const forgotForm = document.getElementById('forgotPasswordForm');
     const successMsg = document.getElementById('successMessage');
 
+    if (forgotForm && forgotForm.dataset.firebaseReset === 'true') {
+        return;
+    }
+
     if (forgotForm) {
         forgotForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -189,6 +240,54 @@ document.addEventListener('DOMContentLoaded', () => {
     if (issuerForm) {
         issuerForm.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            const issuerNameInput = document.getElementById('issuerOrganizationName');
+            const issuerEmailInput = document.getElementById('issuerOfficialEmail');
+            const issuerTypeInput = document.getElementById('issuerOrganizationType');
+            const rememberInput = document.getElementById('issuerRem');
+            const issuerAuthError = document.getElementById('issuerAuthError');
+
+            const issuerName = issuerNameInput?.value?.trim() || '';
+            const issuerEmail = issuerEmailInput?.value?.trim() || '';
+            const issuerType = issuerTypeInput?.value?.trim() || '';
+
+            if (issuerAuthError) {
+                issuerAuthError.classList.add('d-none');
+                issuerAuthError.textContent = '';
+            }
+
+            if (!issuerName || !issuerEmail || !issuerType) {
+                alert('Please complete issuer name, organization type, and official email.');
+                return;
+            }
+
+            const registeredRaw = localStorage.getItem('papirvaultIssuerAccounts') || '[]';
+            let registeredAccounts = [];
+            try {
+                registeredAccounts = JSON.parse(registeredRaw);
+            } catch {
+                registeredAccounts = [];
+            }
+
+            const normalizedEmail = issuerEmail.toLowerCase();
+            const matchedAccount = registeredAccounts.find((entry) => {
+                return String(entry.email || '').toLowerCase() === normalizedEmail;
+            });
+
+            if (!matchedAccount) {
+                if (issuerAuthError) {
+                    issuerAuthError.textContent = "You don't have an account yet. Sign up first.";
+                    issuerAuthError.classList.remove('d-none');
+                }
+                return;
+            }
+
+            const issuerProfile = {
+                issuerName: matchedAccount.organizationName || issuerName,
+                issuerNameKey: (matchedAccount.organizationName || issuerName).toLowerCase().replace(/\s+/g, ' ').trim(),
+                issuerEmail,
+                organizationType: matchedAccount.institutionType || issuerType
+            };
             
             const loginBtn = issuerForm.querySelector('button[type="submit"]') || document.getElementById('issuerSignInBtn');
             if (!loginBtn) {
@@ -210,7 +309,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Final Redirect to the Issuer Dashboard
                 setTimeout(() => {
                     sessionStorage.setItem('papirvaultIssuerSession', 'active');
-                    localStorage.setItem('papirvaultIssuerSession', 'active');
+                    sessionStorage.setItem('papirvaultIssuerProfile', JSON.stringify(issuerProfile));
+
+                    if (rememberInput?.checked) {
+                        localStorage.setItem('papirvaultIssuerSession', 'active');
+                        localStorage.setItem('papirvaultIssuerProfile', JSON.stringify(issuerProfile));
+                    } else {
+                        localStorage.removeItem('papirvaultIssuerSession');
+                        localStorage.removeItem('papirvaultIssuerProfile');
+                    }
+
                     window.location.href = 'IssuerDashboard.html?issuer=1';
                 }, 1000); 
                 
@@ -271,6 +379,57 @@ document.addEventListener('DOMContentLoaded', () => {
         iSignUpForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const btn = iSignUpForm.querySelector('button[type="submit"]');
+            const feedback = document.getElementById('issuerSignupFeedback');
+            const orgNameInput = document.getElementById('issuerSignupOrganizationName');
+            const institutionTypeInput = document.getElementById('issuerSignupInstitutionType');
+            const licenseIdInput = document.getElementById('issuerSignupLicenseId');
+            const workEmailInput = document.getElementById('issuerSignupEmail');
+
+            const organizationName = orgNameInput?.value?.trim() || '';
+            const institutionType = institutionTypeInput?.value?.trim() || '';
+            const licenseId = licenseIdInput?.value?.trim() || '';
+            const workEmail = workEmailInput?.value?.trim().toLowerCase() || '';
+
+            if (!organizationName || !institutionType || !licenseId || !workEmail) {
+                if (feedback) {
+                    feedback.className = 'small mt-2 text-danger';
+                    feedback.textContent = 'Please complete all required registration fields.';
+                    feedback.classList.remove('d-none');
+                }
+                return;
+            }
+
+            const raw = localStorage.getItem('papirvaultIssuerAccounts') || '[]';
+            let accounts = [];
+            try {
+                accounts = JSON.parse(raw);
+            } catch {
+                accounts = [];
+            }
+
+            const existingIndex = accounts.findIndex((entry) => String(entry.email || '').toLowerCase() === workEmail);
+            const accountRecord = {
+                organizationName,
+                institutionType,
+                licenseId,
+                email: workEmail,
+                updatedAt: Date.now()
+            };
+
+            if (existingIndex >= 0) {
+                accounts[existingIndex] = { ...accounts[existingIndex], ...accountRecord };
+            } else {
+                accounts.push({ ...accountRecord, createdAt: Date.now() });
+            }
+
+            localStorage.setItem('papirvaultIssuerAccounts', JSON.stringify(accounts));
+
+            if (feedback) {
+                feedback.className = 'small mt-2 text-success';
+                feedback.textContent = 'Registration saved. You can now log in with your work email.';
+                feedback.classList.remove('d-none');
+            }
+
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Submitting Request...';
             btn.disabled = true;
 
@@ -288,6 +447,10 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const iForgotForm = document.getElementById('issuerForgotForm');
     const iSuccessMsg = document.getElementById('issuerSuccessMessage');
+
+    if (iForgotForm && iForgotForm.dataset.firebaseReset === 'true') {
+        return;
+    }
 
     if (iForgotForm) {
         iForgotForm.addEventListener('submit', (e) => {

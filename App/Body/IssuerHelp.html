@@ -294,23 +294,28 @@
 
 				<div class="card border-0 shadow-sm rounded-4 p-4">
 					<h6 class="fw-bold mb-3">Contact Compliance Support</h6>
-					<p class="small text-muted">Need legal clarification on issuance or verification?</p>
+					<p class="small text-muted">Need legal clarification on issuance or verification? This opens your real email app so your message is sent directly to the admin mailbox.</p>
 					<form id="issuerSupportForm">
 						<div class="mb-2">
 							<label class="form-label extra-small fw-bold">Topic</label>
-							<select class="form-select form-select-sm">
+							<select id="supportTopic" class="form-select form-select-sm" required>
 								<option>Policy Clarification</option>
 								<option>Verification Dispute</option>
 								<option>Data Retention Request</option>
 								<option>Security Incident</option>
 							</select>
 						</div>
+						<div class="mb-2">
+							<label class="form-label extra-small fw-bold">Reference ID (Optional)</label>
+							<input id="supportReferenceId" type="text" class="form-control form-control-sm" maxlength="120" placeholder="e.g. DOC-2026-00123">
+						</div>
 						<div class="mb-3">
 							<label class="form-label extra-small fw-bold">Message</label>
-							<textarea class="form-control form-control-sm" rows="4" placeholder="Describe your issue and include reference ID if available..."></textarea>
+							<textarea id="supportMessage" class="form-control form-control-sm" rows="4" placeholder="Describe your issue and include reference ID if available..." required></textarea>
 						</div>
-						<button type="submit" class="btn btn-primary btn-modern w-100">Send Request</button>
+						<button type="submit" class="btn btn-primary btn-modern w-100">Compose Email</button>
 					</form>
+					<div id="issuerSupportNotice" class="alert alert-info d-none small mt-3 mb-0" role="alert"></div>
 				</div>
 			</div>
 		</div>
@@ -324,6 +329,13 @@
 		const mainContent = document.getElementById('mainContent');
 		const dashboardHeader = document.getElementById('dashboardHeader');
 		const issuerSupportForm = document.getElementById('issuerSupportForm');
+			const supportTopic = document.getElementById('supportTopic');
+			const supportReferenceId = document.getElementById('supportReferenceId');
+			const supportMessage = document.getElementById('supportMessage');
+			const issuerSupportNotice = document.getElementById('issuerSupportNotice');
+
+			// Update this to your actual admin/compliance inbox.
+			const SUPPORT_EMAIL = 'compliance@papirvault.com';
 
 		if (mainContent && dashboardHeader) {
 			const scrollHandler = () => {
@@ -337,19 +349,37 @@
 		if (issuerSupportForm) {
 			issuerSupportForm.addEventListener('submit', (event) => {
 				event.preventDefault();
-				const submitBtn = issuerSupportForm.querySelector('button[type="submit"]');
-				const originalText = submitBtn.innerHTML;
 
-				submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Request Sent';
-				submitBtn.classList.add('btn-success');
-				submitBtn.classList.remove('btn-primary', 'btn-modern');
+					const topic = String(supportTopic?.value || 'Policy Clarification').trim();
+					const referenceId = String(supportReferenceId?.value || '').trim();
+					const message = String(supportMessage?.value || '').trim();
+					if (!message) return;
 
-				setTimeout(() => {
-					submitBtn.innerHTML = originalText;
-					submitBtn.classList.remove('btn-success');
-					submitBtn.classList.add('btn-primary', 'btn-modern');
-					issuerSupportForm.reset();
-				}, 2200);
+					const requestId = `SUP-${Date.now()}`;
+					const subject = `[PapirVault Issuer Support] ${topic} (${requestId})`;
+
+					const bodyLines = [
+						'Issuer Support Request',
+						`Request ID: ${requestId}`,
+						`Topic: ${topic}`,
+						`Reference ID: ${referenceId || 'N/A'}`,
+						`Submitted From: ${window.location.href}`,
+						'',
+						'Message:',
+						message,
+						'',
+						'---',
+						'Please attach any supporting files if needed.'
+					];
+
+					const mailtoUrl = `mailto:${encodeURIComponent(SUPPORT_EMAIL)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+					window.location.href = mailtoUrl;
+
+					if (issuerSupportNotice) {
+						issuerSupportNotice.classList.remove('d-none', 'alert-danger');
+						issuerSupportNotice.classList.add('alert-info');
+						issuerSupportNotice.textContent = `Your email app should open now. If it does not, send manually to ${SUPPORT_EMAIL} and include Request ID ${requestId}.`;
+					}
 			});
 		}
 	});

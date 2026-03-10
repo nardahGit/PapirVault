@@ -39,7 +39,7 @@
                             <p class="text-muted">Enter your official organization email to recover access to the issuing portal.</p>
                         </div>
 
-                        <form id="issuerForgotForm">
+                        <form id="issuerForgotForm" data-firebase-reset="true">
                             <div class="mb-4">
                                 <label class="form-label small fw-bold text-uppercase tracking-wider">Official Email</label>
                                 <div class="modern-input-group">
@@ -48,10 +48,12 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary-purple w-100 py-3 fw-bold rounded-3 mb-4 shadow-sm">
+                            <button type="submit" id="issuerForgotSubmitBtn" class="btn btn-primary-purple w-100 py-3 fw-bold rounded-3 mb-4 shadow-sm">
                                 Request Secure Link <i class="bi bi-shield-shaded ms-2"></i>
                             </button>
                         </form>
+
+                        <div id="issuerForgotError" class="alert alert-danger d-none rounded-4 border-0 p-3" role="alert"></div>
 
                         <div id="issuerSuccessMessage" class="alert alert-success d-none rounded-4 border-0 p-3" role="alert">
                             <div class="d-flex align-items-center">
@@ -74,5 +76,26 @@
     </div>
 
     <script src="../Main/script.js"></script>
+    <script src="../Main/firebase-env.js"></script>
+    <script type="module">
+        import "../Main/firebase-auth.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const continueUrl = new URL("PasswordReset.html", window.location.href);
+            continueUrl.searchParams.set("role", "issuer");
+
+            window.PapirVaultAuth?.initPasswordResetRequest({
+                formSelector: "#issuerForgotForm",
+                emailSelector: "#issuerRecoveryEmail",
+                submitButtonSelector: "#issuerForgotSubmitBtn",
+                successSelector: "#issuerSuccessMessage",
+                errorSelector: "#issuerForgotError",
+                continueUrl: continueUrl.toString(),
+                sendingLabel: "Sending...",
+                idleLabel: 'Request Secure Link <i class="bi bi-shield-shaded ms-2"></i>',
+                successMessage: "If this official email is registered, a reset link has been sent. Check your inbox."
+            });
+        });
+    </script>
 </body>
 </html>

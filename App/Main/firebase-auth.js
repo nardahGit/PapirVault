@@ -7,7 +7,11 @@ import {
     getRedirectResult,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    fetchSignInMethodsForEmail,
     sendEmailVerification,
+    sendPasswordResetEmail,
+    verifyPasswordResetCode,
+    confirmPasswordReset,
     onAuthStateChanged,
     signOut,
     setPersistence,
@@ -30,6 +34,48 @@ const isValidFirebaseConfig = (value) => {
 
 let auth = null;
 let provider = null;
+
+const toDisplayNameFromUser = (user) => {
+    if (!user) return "Client";
+    if (typeof user.displayName === "string" && user.displayName.trim()) return user.displayName.trim();
+
+    const email = (user.email || "").trim();
+    if (!email) return "Client";
+
+    const local = email.split("@")[0] || "Client";
+    return local
+        .split(/[._-]+/)
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ") || "Client";
+};
+
+const toInitials = (name) => {
+    const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return "CL";
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+};
+
+const saveClientProfile = (user) => {
+    if (!user) return;
+
+    const displayName = toDisplayNameFromUser(user);
+    const profile = {
+        uid: user.uid || "",
+        displayName,
+        email: user.email || "",
+        initials: toInitials(displayName)
+    };
+
+    sessionStorage.setItem("papirvaultClientProfile", JSON.stringify(profile));
+    localStorage.setItem("papirvaultClientProfile", JSON.stringify(profile));
+};
+
+const clearClientProfile = () => {
+    sessionStorage.removeItem("papirvaultClientProfile");
+    localStorage.removeItem("papirvaultClientProfile");
+};
 
 if (isValidFirebaseConfig(config)) {
     const appConfig = {
@@ -97,6 +143,7 @@ const initGoogleLogin = ({
     getRedirectResult(auth)
         .then((result) => {
             if (result && result.user) {
+                saveClientProfile(result.user);
                 window.location.href = successRedirect;
             }
         })
@@ -111,7 +158,8 @@ const initGoogleLogin = ({
         try {
             button.setAttribute("disabled", "true");
             await setPersistence(auth, browserLocalPersistence);
-            await signInWithPopup(auth, provider);
+            const userCredential = await signInWithPopup(auth, provider);
+            saveClientProfile(userCredential.user);
             window.location.href = successRedirect;
         } catch (error) {
             const popupBlocked = error && (error.code === "auth/popup-blocked" || error.code === "auth/cancelled-popup-request");
@@ -217,7 +265,15 @@ const initEmailPasswordLogin = ({
             }
 
             await setPersistence(auth, browserLocalPersistence);
-            const userCredential = await signInWithEmailAndPassword(auth, emailInput.value.trim(), passwordInput.value);
+            const normalizedEmail = emailInput.value.trim();
+            const methods = await fetchSignInMethodsForEmail(auth, normalizedEmail);
+            if (!methods.length) {
+                showMessage(errorSelector, "You don't have an account yet. Please sign up first.");
+                return;
+            }
+
+            const userCredential = await signInWithEmailAndPassword(auth, normalizedEmail, passwordInput.value);
+            saveClientProfile(userCredential.user);
 
             showMessage(successSelector, "Login successful. Redirecting...");
             window.location.href = successRedirect;
@@ -260,14 +316,179 @@ const initResendVerification = ({
     });
 };
 
+const initPasswordResetRequest = ({
+    formSelector,
+    emailSelector,
+    submitButtonSelector,
+    successSelector,
+    errorSelector,
+    continueUrl,
+    sendingLabel = "Sending...",
+    idleLabel = "Send Reset Link",
+    successMessage = "If the email is registered, a reset link has been sent. Please check your inbox."
+} = {}) => {
+    const form = document.querySelector(formSelector);
+    if (!form || !auth) return;
+
+    const emailInput = document.querySelector(emailSelector);
+    const submitBtn = document.querySelector(submitButtonSelector) || form.querySelector('button[type="submit"]');
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        hideMessage(successSelector);
+        hideMessage(errorSelector);
+
+        const email = String(emailInput?.value || "").trim();
+        if (!email) {
+            showMessage(errorSelector, "Please enter your email address.");
+            return;
+        }
+
+        try {
+            if (submitBtn) {
+                submitBtn.setAttribute("disabled", "true");
+                submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${sendingLabel}`;
+            }
+
+            const actionCodeSettings = continueUrl
+                ? { url: continueUrl, handleCodeInApp: false }
+                : undefined;
+
+            await sendPasswordResetEmail(auth, email, actionCodeSettings);
+            showMessage(successSelector, successMessage);
+            form.classList.add("opacity-50");
+            form.style.pointerEvents = "none";
+        } catch (error) {
+            const code = error?.code || "";
+
+            // Avoid account enumeration in UI.
+            if (code === "auth/user-not-found") {
+                showMessage(successSelector, successMessage);
+                form.classList.add("opacity-50");
+                form.style.pointerEvents = "none";
+                return;
+            }
+
+            showMessage(errorSelector, friendlyAuthMessage(error, "generic"));
+        } finally {
+            if (submitBtn) {
+                submitBtn.removeAttribute("disabled");
+                submitBtn.innerHTML = idleLabel;
+            }
+        }
+    }, true);
+};
+
+const initPasswordResetPage = ({
+    formSelector = "#passwordResetForm",
+    passwordSelector = "#newPassword",
+    confirmSelector = "#confirmPassword",
+    submitButtonSelector = "#resetSubmitBtn",
+    errorSelector = "#resetError",
+    successSelector = "#resetSuccess",
+    statusSelector = "#resetStatus",
+    emailHintSelector = "#resetEmailHint",
+    clientLoginHref = "ClientLogin.html",
+    issuerLoginHref = "IssuerLogin.html"
+} = {}) => {
+    if (!auth) return;
+
+    const form = document.querySelector(formSelector);
+    if (!form) return;
+
+    const passwordInput = document.querySelector(passwordSelector);
+    const confirmInput = document.querySelector(confirmSelector);
+    const submitBtn = document.querySelector(submitButtonSelector);
+    const statusEl = document.querySelector(statusSelector);
+    const emailHintEl = document.querySelector(emailHintSelector);
+
+    const params = new URLSearchParams(window.location.search);
+    const oobCode = params.get("oobCode") || "";
+    const role = (params.get("role") || "client").toLowerCase();
+    const loginHref = role === "issuer" ? issuerLoginHref : clientLoginHref;
+
+    const setStatus = (text, type = "info") => {
+        if (!statusEl) return;
+        statusEl.className = `alert alert-${type} rounded-3 py-2 px-3 mb-3`;
+        statusEl.textContent = text;
+        statusEl.classList.remove("d-none");
+    };
+
+    hideMessage(errorSelector);
+    hideMessage(successSelector);
+
+    if (!oobCode) {
+        setStatus("Reset link is invalid or missing. Please request a new password reset email.", "warning");
+        form.classList.add("opacity-50");
+        form.style.pointerEvents = "none";
+        return;
+    }
+
+    verifyPasswordResetCode(auth, oobCode)
+        .then((email) => {
+            if (emailHintEl) {
+                emailHintEl.textContent = `Resetting password for ${email}`;
+            }
+        })
+        .catch(() => {
+            setStatus("This reset link has expired or has already been used. Request a new link.", "danger");
+            form.classList.add("opacity-50");
+            form.style.pointerEvents = "none";
+        });
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        hideMessage(errorSelector);
+        hideMessage(successSelector);
+
+        const newPassword = String(passwordInput?.value || "");
+        const confirmPassword = String(confirmInput?.value || "");
+
+        if (newPassword.length < 6) {
+            showMessage(errorSelector, "Password must be at least 6 characters.");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            showMessage(errorSelector, "Passwords do not match.");
+            return;
+        }
+
+        try {
+            if (submitBtn) {
+                submitBtn.setAttribute("disabled", "true");
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+            }
+
+            await confirmPasswordReset(auth, oobCode, newPassword);
+            showMessage(successSelector, "Password updated successfully. Redirecting to login...");
+            setTimeout(() => {
+                window.location.href = loginHref;
+            }, 1500);
+        } catch (error) {
+            showMessage(errorSelector, friendlyAuthMessage(error, "generic"));
+        } finally {
+            if (submitBtn) {
+                submitBtn.removeAttribute("disabled");
+                submitBtn.innerHTML = "Set New Password";
+            }
+        }
+    });
+};
+
 const protectPage = ({ redirectTo = "ClientLogin.html", requireVerified = false } = {}) => {
     if (!auth) return;
 
     onAuthStateChanged(auth, async (user) => {
         if (!user) {
+            clearClientProfile();
             window.location.href = redirectTo;
             return;
         }
+
+        saveClientProfile(user);
 
         if (requireVerified && !user.emailVerified) {
             await signOut(auth);
@@ -283,6 +504,7 @@ const attachLogout = ({ selector = ".logout-btn", redirectTo = "ClientLogin.html
         element.addEventListener("click", async (event) => {
             event.preventDefault();
             await signOut(auth);
+            clearClientProfile();
             window.location.href = redirectTo;
         });
     });
@@ -293,6 +515,8 @@ window.PapirVaultAuth = {
     initEmailPasswordSignup,
     initEmailPasswordLogin,
     initResendVerification,
+    initPasswordResetRequest,
+    initPasswordResetPage,
     protectPage,
     attachLogout
 };

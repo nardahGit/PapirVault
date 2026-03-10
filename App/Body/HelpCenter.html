@@ -189,7 +189,7 @@
                             <form id="contactForm">
                                 <div class="mb-3">
                                     <label class="form-label extra-small fw-bold">Subject</label>
-                                    <select class="form-select border-light bg-light small">
+                                    <select id="clientSupportTopic" class="form-select border-light bg-light small" required>
                                         <option>Technical Issue</option>
                                         <option>Billing Question</option>
                                         <option>Document Verification</option>
@@ -198,12 +198,13 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label extra-small fw-bold">Message</label>
-                                    <textarea class="form-control border-light bg-light small" rows="4" placeholder="How can we help?"></textarea>
+                                    <textarea id="clientSupportMessage" class="form-control border-light bg-light small" rows="4" placeholder="How can we help?" required></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2">
                                     <i class="bi bi-send me-2"></i> Send Email
                                 </button>
                             </form>
+                            <div id="clientSupportNotice" class="alert alert-info d-none small mt-3 mb-0" role="alert"></div>
                         </div>
                     </div>
                 </div>
@@ -217,15 +218,56 @@
         document.addEventListener('DOMContentLoaded', () => {
             const mainContent = document.getElementById('mainContent');
             const dashboardHeader = document.getElementById('dashboardHeader');
+            const contactForm = document.getElementById('contactForm');
+            const clientSupportTopic = document.getElementById('clientSupportTopic');
+            const clientSupportMessage = document.getElementById('clientSupportMessage');
+            const clientSupportNotice = document.getElementById('clientSupportNotice');
 
-            if (!mainContent || !dashboardHeader) return;
+            // Update this to your real client support inbox.
+            const SUPPORT_EMAIL = 'support@papirvault.com';
 
-            const scrollHandler = () => {
-                dashboardHeader.classList.toggle('header-scrolled', mainContent.scrollTop > 0);
-            };
+            if (mainContent && dashboardHeader) {
+                const scrollHandler = () => {
+                    dashboardHeader.classList.toggle('header-scrolled', mainContent.scrollTop > 0);
+                };
 
-            mainContent.addEventListener('scroll', scrollHandler, { passive: true });
-            scrollHandler();
+                mainContent.addEventListener('scroll', scrollHandler, { passive: true });
+                scrollHandler();
+            }
+
+            if (contactForm) {
+                contactForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+
+                    const topic = String(clientSupportTopic?.value || 'Technical Issue').trim();
+                    const message = String(clientSupportMessage?.value || '').trim();
+                    if (!message) return;
+
+                    const requestId = `CUS-${Date.now()}`;
+                    const subject = `[PapirVault Client Support] ${topic} (${requestId})`;
+                    const bodyLines = [
+                        'Client Support Request',
+                        `Request ID: ${requestId}`,
+                        `Topic: ${topic}`,
+                        `Submitted From: ${window.location.href}`,
+                        '',
+                        'Message:',
+                        message,
+                        '',
+                        '---',
+                        'Please include screenshots or document references if relevant.'
+                    ];
+
+                    const mailtoUrl = `mailto:${encodeURIComponent(SUPPORT_EMAIL)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+                    window.location.href = mailtoUrl;
+
+                    if (clientSupportNotice) {
+                        clientSupportNotice.classList.remove('d-none', 'alert-danger');
+                        clientSupportNotice.classList.add('alert-info');
+                        clientSupportNotice.textContent = `Your email app should open now. If it does not, send manually to ${SUPPORT_EMAIL} and include Request ID ${requestId}.`;
+                    }
+                });
+            }
         });
     </script>
 </body>
