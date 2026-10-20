@@ -1,0 +1,340 @@
+/* Shared UI animations for all Body pages */
+:root {
+    --anim-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --anim-fast: 220ms;
+    --anim-base: 420ms;
+    --anim-slow: 760ms;
+    --hover-lift: 4px;
+    --ripple-opacity: 0.36;
+}
+
+/* Motion profiles by page family (set in animations.js) */
+body[data-family="client"] {
+    --anim-ease: cubic-bezier(0.2, 0.9, 0.3, 1);
+    --anim-base: 500ms;
+    --anim-slow: 820ms;
+    --hover-lift: 2px;
+    --ripple-opacity: 0.28;
+}
+
+body[data-family="issuer"] {
+    --anim-ease: cubic-bezier(0.23, 1, 0.32, 1);
+    --anim-fast: 200ms;
+    --anim-base: 380ms;
+    --anim-slow: 700ms;
+    --hover-lift: 6px;
+    --ripple-opacity: 0.4;
+}
+
+body {
+    opacity: 0;
+    animation: page-fade-in var(--anim-slow) var(--anim-ease) forwards;
+}
+
+@keyframes page-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Make key containers animate into place */
+.navbar,
+.dashboard-header,
+.sticky-header,
+.sidebar,
+main > .container,
+.main-content,
+.login-web-card,
+.signup-web-card,
+.security-panel,
+.selection-card,
+.card,
+.stat-widget,
+.stat-card,
+.table-responsive,
+footer {
+    will-change: transform, opacity;
+}
+
+.navbar,
+.dashboard-header,
+.sticky-header {
+    animation: header-drop var(--anim-base) var(--anim-ease) both;
+}
+
+@keyframes header-drop {
+    from { opacity: 0; transform: translateY(-14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.sidebar {
+    animation: sidebar-in calc(var(--anim-base) + 110ms) var(--anim-ease) both;
+}
+
+@keyframes sidebar-in {
+    from { opacity: 0; transform: translateX(-18px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.hero-main-logo {
+    animation: logo-pop 650ms var(--anim-ease) both, logo-float 4.2s ease-in-out 850ms infinite;
+    transform-origin: center;
+}
+
+@keyframes logo-pop {
+    from { opacity: 0; transform: scale(0.88) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes logo-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+}
+
+/* Auto-reveal with stagger */
+.anim-ready {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity var(--anim-base) var(--anim-ease), transform var(--anim-base) var(--anim-ease);
+}
+
+.anim-ready.is-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.anim-stagger-1 { transition-delay: 60ms; }
+.anim-stagger-2 { transition-delay: 120ms; }
+.anim-stagger-3 { transition-delay: 180ms; }
+.anim-stagger-4 { transition-delay: 240ms; }
+.anim-stagger-5 { transition-delay: 300ms; }
+
+/* Card and button interactions */
+.selection-card,
+.card,
+.stat-widget,
+.stat-card {
+    transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease, filter var(--anim-fast) ease;
+}
+
+.selection-card:hover,
+.card:hover,
+.stat-widget:hover,
+.stat-card:hover {
+    transform: translateY(calc(var(--hover-lift) * -1));
+    filter: saturate(1.02);
+}
+
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: transform 120ms ease, box-shadow var(--anim-fast) ease, filter var(--anim-fast) ease;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn::after {
+    content: "";
+    position: absolute;
+    left: var(--ripple-x, 50%);
+    top: var(--ripple-y, 50%);
+    width: 0;
+    height: 0;
+    border-radius: 999px;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, var(--ripple-opacity));
+    opacity: 0;
+    pointer-events: none;
+}
+
+.btn.ripple-on::after {
+    animation: ripple 560ms ease-out;
+}
+
+@keyframes ripple {
+    0% { width: 0; height: 0; opacity: 0.45; }
+    100% { width: 240px; height: 240px; opacity: 0; }
+}
+
+/* Inputs and back links */
+.form-control,
+.form-control-custom,
+.modern-select {
+    transition: border-color var(--anim-fast) ease, box-shadow var(--anim-fast) ease, background-color var(--anim-fast) ease, transform var(--anim-fast) ease;
+}
+
+.form-control:focus,
+.form-control-custom:focus,
+.modern-select:focus {
+    transform: translateY(-1px);
+}
+
+.back-link i,
+.btn i.bi-arrow-right {
+    transition: transform var(--anim-fast) ease;
+}
+
+.back-link:hover i,
+.btn:hover i.bi-arrow-right {
+    transform: translateX(4px);
+}
+
+/* Sidebar/nav motion polish by family */
+body[data-family="client"] .sidebar-nav .nav-link-custom,
+body[data-family="issuer"] .sidebar-nav .nav-link-modern {
+    position: relative;
+    overflow: hidden;
+}
+
+body[data-family="client"] .sidebar-nav .nav-link-custom i,
+body[data-family="client"] .sidebar-nav .nav-link-custom .nav-text,
+body[data-family="issuer"] .sidebar-nav .nav-link-modern i,
+body[data-family="issuer"] .sidebar-nav .nav-link-modern .nav-text {
+    transition: transform var(--anim-fast) var(--anim-ease), opacity var(--anim-fast) ease;
+}
+
+body[data-family="client"] .sidebar-nav .nav-link-custom::before,
+body[data-family="issuer"] .sidebar-nav .nav-link-modern::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    width: 3px;
+    height: 62%;
+    border-radius: 999px;
+    transform: translateY(-50%) scaleY(0);
+    transform-origin: center;
+    opacity: 0;
+    transition: transform var(--anim-fast) var(--anim-ease), opacity var(--anim-fast) ease;
+}
+
+/* Client: softer movement and calmer indicator */
+body[data-family="client"] .sidebar-nav .nav-link-custom::before {
+    background: linear-gradient(180deg, rgba(37, 99, 235, 0.9), rgba(147, 51, 234, 0.65));
+}
+
+body[data-family="client"] .sidebar-nav .nav-link-custom:hover:not(.active) {
+    transform: translateX(2px);
+}
+
+body[data-family="client"] .sidebar-nav .nav-link-custom.active {
+    transform: translateX(2px);
+}
+
+body[data-family="client"] .sidebar-nav .nav-link-custom.active::before,
+body[data-family="client"] .sidebar-nav .nav-link-custom:hover::before {
+    transform: translateY(-50%) scaleY(1);
+    opacity: 0.9;
+}
+
+body[data-family="client"] .sidebar-nav .nav-link-custom:hover i,
+body[data-family="client"] .sidebar-nav .nav-link-custom:hover .nav-text {
+    transform: translateX(1px);
+}
+
+/* Issuer: sharper enterprise-style nudge and clearer active state */
+body[data-family="issuer"] .sidebar-nav .nav-link-modern::before {
+    background: linear-gradient(180deg, rgba(79, 70, 229, 1), rgba(124, 58, 237, 0.9));
+}
+
+body[data-family="issuer"] .sidebar-nav .nav-link-modern:hover:not(.active) {
+    transform: translateX(4px);
+}
+
+body[data-family="issuer"] .sidebar-nav .nav-link-modern.active {
+    transform: translateX(8px);
+    box-shadow: 0 8px 22px rgba(99, 102, 241, 0.24);
+}
+
+body[data-family="issuer"] .sidebar-nav .nav-link-modern.active::before,
+body[data-family="issuer"] .sidebar-nav .nav-link-modern:hover::before {
+    transform: translateY(-50%) scaleY(1);
+    opacity: 1;
+}
+
+body[data-family="issuer"] .sidebar-nav .nav-link-modern:hover i,
+body[data-family="issuer"] .sidebar-nav .nav-link-modern:hover .nav-text,
+body[data-family="issuer"] .sidebar-nav .nav-link-modern.active i,
+body[data-family="issuer"] .sidebar-nav .nav-link-modern.active .nav-text {
+    transform: translateX(2px);
+}
+
+/* Small footer actions get a matching subtle motion */
+body[data-family="client"] .logout-btn,
+body[data-family="issuer"] .btn-logout-modern {
+    transition: transform var(--anim-fast) var(--anim-ease), box-shadow var(--anim-fast) var(--anim-ease);
+}
+
+body[data-family="client"] .logout-btn:hover,
+body[data-family="issuer"] .btn-logout-modern:hover {
+    transform: translateY(-1px);
+}
+
+/* Landing page: richer hero choreography */
+body[data-page="landing"] .hero-logo-wrapper {
+    position: relative;
+}
+
+body[data-page="landing"] .hero-logo-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: min(48vw, 420px);
+    aspect-ratio: 1 / 1;
+    border-radius: 999px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.16) 0%, rgba(124, 58, 237, 0.1) 35%, rgba(255, 255, 255, 0) 70%);
+    filter: blur(1px);
+    z-index: -1;
+    animation: hero-halo 5.8s ease-in-out infinite;
+}
+
+body[data-page="landing"] .hero-main-logo {
+    animation: logo-pop 680ms var(--anim-ease) both, logo-float 4.4s ease-in-out 900ms infinite;
+}
+
+body[data-page="landing"] .hero-anim-title,
+body[data-page="landing"] .hero-anim-tagline,
+body[data-page="landing"] .hero-anim-desc {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: hero-line-in 560ms var(--anim-ease) forwards;
+}
+
+body[data-page="landing"] .hero-anim-title { animation-delay: 140ms; }
+body[data-page="landing"] .hero-anim-tagline { animation-delay: 230ms; }
+body[data-page="landing"] .hero-anim-desc { animation-delay: 330ms; }
+
+@keyframes hero-line-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-halo {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
+    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+}
+
+/* Status feedback */
+.anim-shake {
+    animation: shake-x 350ms ease;
+}
+
+@keyframes shake-x {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+}
+
+/* Respect user accessibility preferences */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+        scroll-behavior: auto !important;
+    }
+}

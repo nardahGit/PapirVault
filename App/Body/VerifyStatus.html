@@ -9,15 +9,31 @@
     <link rel="stylesheet" href="../Styles/fonts.css">
     <link rel="stylesheet" href="../Styles/themes.css">
     <link rel="stylesheet" href="../Styles/style.css">
+    <link rel="stylesheet" href="../Styles/animations.css">
 </head>
 <body class="dashboard-body">
     <main class="container py-5" style="max-width: 760px;">
         <div class="text-center mb-4">
             <h3 class="fw-bold mb-1">PapirVault Verification</h3>
-            <p class="text-muted small mb-2">Public verification result for scanned document QR</p>
+            <p class="text-muted small mb-2">Verify receipt/document validity using verification code</p>
             <span id="statusChip" class="badge rounded-pill px-3 py-2 bg-secondary-subtle text-secondary">
                 <i class="bi bi-patch-check me-1"></i>Checking status
             </span>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 p-3 p-md-4 mb-3">
+            <form id="verifyCodeForm" class="row g-2 align-items-end">
+                <div class="col-md-8">
+                    <label for="verifyCodeInput" class="form-label small fw-bold mb-1">Verification Code</label>
+                    <input id="verifyCodeInput" type="text" class="form-control" placeholder="e.g. INS-2026-K7P4V9" autocomplete="off" required>
+                </div>
+                <div class="col-md-4 d-grid">
+                    <button id="verifyCodeBtn" type="submit" class="btn btn-primary rounded-3">
+                        <i class="bi bi-search me-1"></i>Verify Code
+                    </button>
+                </div>
+            </form>
+            <div id="verifyCodeHint" class="extra-small text-muted mt-2">Paste only the verification code from the receipt.</div>
         </div>
 
         <div id="verifyCard" class="card border-0 shadow-sm rounded-4 p-4">
@@ -65,76 +81,293 @@
         </div>
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    <script src="../Main/firebase-env.js"></script>
+    <script type="module">
+        import "../Main/firebase-documents.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
             const params = new URLSearchParams(window.location.search);
-            const status = (params.get('status') || '').trim().toLowerCase();
-            const doc = params.get('doc') || 'Unknown document';
-            const issuer = params.get('issuer') || 'Unknown issuer';
-            const validUntil = params.get('validUntil') || 'Unknown';
-            const code = params.get('code') || 'N/A';
+            const verifyTitle = document.getElementById("verifyTitle");
+            const verifySubtitle = document.getElementById("verifySubtitle");
+            const verifyIcon = document.getElementById("verifyIcon");
+            const verifyMessage = document.getElementById("verifyMessage");
+            const statusChip = document.getElementById("statusChip");
+            const docName = document.getElementById("docName");
+            const docIssuer = document.getElementById("docIssuer");
+            const docValidUntil = document.getElementById("docValidUntil");
+            const docCode = document.getElementById("docCode");
+            const verifyCodeForm = document.getElementById("verifyCodeForm");
+            const verifyCodeInput = document.getElementById("verifyCodeInput");
+            const verifyCodeBtn = document.getElementById("verifyCodeBtn");
 
-            document.getElementById('docName').textContent = doc;
-            document.getElementById('docIssuer').textContent = issuer;
-            document.getElementById('docValidUntil').textContent = validUntil;
-            document.getElementById('docCode').textContent = code;
+            const setVisualState = ({
+                title,
+                subtitle,
+                iconClass,
+                iconHtml,
+                messageClass,
+                messageHtml,
+                chipClass,
+                chipHtml
+            }) => {
+                verifyTitle.textContent = title;
+                verifySubtitle.textContent = subtitle;
+                verifyIcon.className = iconClass;
+                verifyIcon.innerHTML = iconHtml;
+                verifyMessage.className = messageClass;
+                verifyMessage.innerHTML = messageHtml;
+                statusChip.className = chipClass;
+                statusChip.innerHTML = chipHtml;
+            };
 
-            const verifyTitle = document.getElementById('verifyTitle');
-            const verifySubtitle = document.getElementById('verifySubtitle');
-            const verifyIcon = document.getElementById('verifyIcon');
-            const verifyMessage = document.getElementById('verifyMessage');
-            const statusChip = document.getElementById('statusChip');
+            const setDocumentFields = ({ title, issuer, validUntil, code }) => {
+                docName.textContent = title || "-";
+                docIssuer.textContent = issuer || "-";
+                docValidUntil.textContent = validUntil || "-";
+                docCode.textContent = code || "-";
+            };
 
-            if (!params.has('doc') && !params.has('status')) {
-                verifyTitle.textContent = 'Verification data not found';
-                verifySubtitle.textContent = 'Invalid or incomplete QR link';
-                verifyIcon.className = 'p-3 rounded-3 bg-secondary-subtle text-secondary';
-                verifyIcon.innerHTML = '<i class="bi bi-question-circle fs-4"></i>';
-                verifyMessage.className = 'alert alert-secondary rounded-3 mt-4 mb-0';
-                verifyMessage.textContent = 'This QR code does not include enough verification information.';
-                statusChip.className = 'badge rounded-pill px-3 py-2 bg-secondary-subtle text-secondary';
-                statusChip.innerHTML = '<i class="bi bi-question-circle me-1"></i>Unknown';
+            const normalizeCode = (value) => String(value || "").trim().toUpperCase();
+
+            const applyStatusForRecord = (record) => {
+                const status = String(record?.status || "").trim().toLowerCase();
+                const title = record?.title || record?.category || "Unknown document";
+                const issuer = record?.issuerName || "Unknown issuer";
+                const orgType = record?.organizationType ? String(record.organizationType).trim() : "";
+                const issuerDisplay = orgType ? `${issuer} (${orgType})` : issuer;
+                const validUntil = record?.expiryDate || "N/A";
+                const code = record?.verificationCode || "N/A";
+
+                setDocumentFields({ title, issuer: issuerDisplay, validUntil, code });
+
+                if (status === "verified") {
+                    setVisualState({
+                        title: "Document Verified",
+                        subtitle: "Authenticity confirmed from PapirVault records",
+                        iconClass: "p-3 rounded-3 bg-success-subtle text-success",
+                        iconHtml: '<i class="bi bi-shield-check fs-4"></i>',
+                        messageClass: "alert alert-success rounded-3 mt-4 mb-0",
+                        messageHtml: `<strong>${title}</strong> is verified by <strong>${issuerDisplay}</strong> and is valid until <strong>${validUntil}</strong>.`,
+                        chipClass: "badge rounded-pill px-3 py-2 bg-success-subtle text-success",
+                        chipHtml: '<i class="bi bi-patch-check me-1"></i>Verified'
+                    });
+                    return;
+                }
+
+                if (status === "expired") {
+                    setVisualState({
+                        title: "Document Expired",
+                        subtitle: "Record found, but validity period has ended",
+                        iconClass: "p-3 rounded-3 bg-danger-subtle text-danger",
+                        iconHtml: '<i class="bi bi-x-octagon fs-4"></i>',
+                        messageClass: "alert alert-danger rounded-3 mt-4 mb-0",
+                        messageHtml: `<strong>${title}</strong> has expired and cannot be accepted as valid. Please request an updated document from <strong>${issuerDisplay}</strong>.`,
+                        chipClass: "badge rounded-pill px-3 py-2 bg-danger-subtle text-danger",
+                        chipHtml: '<i class="bi bi-x-octagon me-1"></i>Expired'
+                    });
+                    return;
+                }
+
+                if (status === "rejected") {
+                    setVisualState({
+                        title: "Document Rejected",
+                        subtitle: "Record found, but marked as rejected",
+                        iconClass: "p-3 rounded-3 bg-danger-subtle text-danger",
+                        iconHtml: '<i class="bi bi-slash-circle fs-4"></i>',
+                        messageClass: "alert alert-danger rounded-3 mt-4 mb-0",
+                        messageHtml: `<strong>${title}</strong> is marked as rejected. Please contact <strong>${issuerDisplay}</strong> for clarification.`,
+                        chipClass: "badge rounded-pill px-3 py-2 bg-danger-subtle text-danger",
+                        chipHtml: '<i class="bi bi-slash-circle me-1"></i>Rejected'
+                    });
+                    return;
+                }
+
+                setVisualState({
+                    title: "Needs Manual Review",
+                    subtitle: "Record found, but status requires issuer confirmation",
+                    iconClass: "p-3 rounded-3 bg-warning-subtle text-warning",
+                    iconHtml: '<i class="bi bi-exclamation-triangle fs-4"></i>',
+                    messageClass: "alert alert-warning rounded-3 mt-4 mb-0",
+                    messageHtml: `<strong>${title}</strong> is currently marked as <strong>${status || "unverified"}</strong>. Please confirm with <strong>${issuerDisplay}</strong>.`,
+                    chipClass: "badge rounded-pill px-3 py-2 bg-warning-subtle text-warning",
+                    chipHtml: '<i class="bi bi-exclamation-triangle me-1"></i>Needs Review'
+                });
+            };
+
+            const verifyByCode = async (codeInput) => {
+                const code = normalizeCode(codeInput);
+                if (!code) {
+                    setVisualState({
+                        title: "Verification code required",
+                        subtitle: "Enter a code to continue",
+                        iconClass: "p-3 rounded-3 bg-secondary-subtle text-secondary",
+                        iconHtml: '<i class="bi bi-search fs-4"></i>',
+                        messageClass: "alert alert-secondary rounded-3 mt-4 mb-0",
+                        messageHtml: "Paste the verification code from your receipt and click Verify Code.",
+                        chipClass: "badge rounded-pill px-3 py-2 bg-secondary-subtle text-secondary",
+                        chipHtml: '<i class="bi bi-search me-1"></i>Waiting Input'
+                    });
+                    return;
+                }
+
+                verifyCodeBtn.disabled = true;
+                verifyCodeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Checking';
+
+                setVisualState({
+                    title: "Checking document...",
+                    subtitle: "Searching verification records",
+                    iconClass: "p-3 rounded-3 bg-secondary-subtle text-secondary",
+                    iconHtml: '<i class="bi bi-hourglass-split fs-4"></i>',
+                    messageClass: "alert alert-secondary rounded-3 mt-4 mb-0",
+                    messageHtml: `Checking code <strong>${code}</strong> against PapirVault records...`,
+                    chipClass: "badge rounded-pill px-3 py-2 bg-secondary-subtle text-secondary",
+                    chipHtml: '<i class="bi bi-hourglass-split me-1"></i>Checking'
+                });
+
+                try {
+                    if (!window.PapirVaultDocs?.isReady?.()) {
+                        throw new Error("Verification service is not configured.");
+                    }
+
+                    const record = await window.PapirVaultDocs.getDocumentByVerificationCode({ verificationCode: code });
+
+                    if (!record) {
+                        setDocumentFields({ title: "-", issuer: "-", validUntil: "-", code });
+                        setVisualState({
+                            title: "Record Not Found",
+                            subtitle: "No matching code in verified records",
+                            iconClass: "p-3 rounded-3 bg-danger-subtle text-danger",
+                            iconHtml: '<i class="bi bi-x-circle fs-4"></i>',
+                            messageClass: "alert alert-danger rounded-3 mt-4 mb-0",
+                            messageHtml: `No document found for verification code <strong>${code}</strong>. Please confirm the code and issuer source.`,
+                            chipClass: "badge rounded-pill px-3 py-2 bg-danger-subtle text-danger",
+                            chipHtml: '<i class="bi bi-x-circle me-1"></i>Not Found'
+                        });
+                        return;
+                    }
+
+                    applyStatusForRecord(record);
+                } catch (error) {
+                    setVisualState({
+                        title: "Verification Failed",
+                        subtitle: "Unable to check this code right now",
+                        iconClass: "p-3 rounded-3 bg-danger-subtle text-danger",
+                        iconHtml: '<i class="bi bi-exclamation-octagon fs-4"></i>',
+                        messageClass: "alert alert-danger rounded-3 mt-4 mb-0",
+                        messageHtml: error?.message || "Verification service unavailable. Try again shortly.",
+                        chipClass: "badge rounded-pill px-3 py-2 bg-danger-subtle text-danger",
+                        chipHtml: '<i class="bi bi-exclamation-octagon me-1"></i>Error'
+                    });
+                } finally {
+                    verifyCodeBtn.disabled = false;
+                    verifyCodeBtn.innerHTML = '<i class="bi bi-search me-1"></i>Verify Code';
+                }
+            };
+
+            verifyCodeForm?.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                await verifyByCode(verifyCodeInput.value);
+            });
+
+            const codeFromUrl = normalizeCode(params.get("code") || "");
+            if (codeFromUrl) {
+                verifyCodeInput.value = codeFromUrl;
+                verifyByCode(codeFromUrl);
                 return;
             }
 
-            if (status === 'verified') {
-                verifyTitle.textContent = 'Document Verified';
-                verifySubtitle.textContent = 'Authenticity confirmed by issuer';
-                verifyIcon.className = 'p-3 rounded-3 bg-success-subtle text-success';
-                verifyIcon.innerHTML = '<i class="bi bi-shield-check fs-4"></i>';
-                verifyMessage.className = 'alert alert-success rounded-3 mt-4 mb-0';
-                verifyMessage.innerHTML = `<strong>${doc}</strong> is verified by <strong>${issuer}</strong> and is valid until <strong>${validUntil}</strong>.`;
-                statusChip.className = 'badge rounded-pill px-3 py-2 bg-success-subtle text-success';
-                statusChip.innerHTML = '<i class="bi bi-patch-check me-1"></i>Verified';
-            } else if (status === 'expired') {
-                verifyTitle.textContent = 'Document Expired';
-                verifySubtitle.textContent = 'This document is no longer valid';
-                verifyIcon.className = 'p-3 rounded-3 bg-danger-subtle text-danger';
-                verifyIcon.innerHTML = '<i class="bi bi-x-octagon fs-4"></i>';
-                verifyMessage.className = 'alert alert-danger rounded-3 mt-4 mb-0';
-                verifyMessage.innerHTML = `<strong>${doc}</strong> has expired and cannot be accepted as valid. Please request an updated document from <strong>${issuer}</strong>.`;
-                statusChip.className = 'badge rounded-pill px-3 py-2 bg-danger-subtle text-danger';
-                statusChip.innerHTML = '<i class="bi bi-x-octagon me-1"></i>Expired';
-            } else if (status === 'rejected') {
-                verifyTitle.textContent = 'Document Rejected';
-                verifySubtitle.textContent = 'Verification failed by issuer policy';
-                verifyIcon.className = 'p-3 rounded-3 bg-danger-subtle text-danger';
-                verifyIcon.innerHTML = '<i class="bi bi-slash-circle fs-4"></i>';
-                verifyMessage.className = 'alert alert-danger rounded-3 mt-4 mb-0';
-                verifyMessage.innerHTML = `<strong>${doc}</strong> is marked as rejected. Please contact <strong>${issuer}</strong> for clarification.`;
-                statusChip.className = 'badge rounded-pill px-3 py-2 bg-danger-subtle text-danger';
-                statusChip.innerHTML = '<i class="bi bi-slash-circle me-1"></i>Rejected';
-            } else {
-                verifyTitle.textContent = 'Document Not Verified';
-                verifySubtitle.textContent = 'Manual issuer confirmation recommended';
-                verifyIcon.className = 'p-3 rounded-3 bg-warning-subtle text-warning';
-                verifyIcon.innerHTML = '<i class="bi bi-exclamation-triangle fs-4"></i>';
-                verifyMessage.className = 'alert alert-warning rounded-3 mt-4 mb-0';
-                verifyMessage.innerHTML = `<strong>${doc}</strong> is currently marked as <strong>${status || 'unverified'}</strong>. Please confirm with <strong>${issuer}</strong>.`;
-                statusChip.className = 'badge rounded-pill px-3 py-2 bg-warning-subtle text-warning';
-                statusChip.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Needs Review';
+            // Fallback mode for legacy links without verification-code lookup.
+            const legacyStatus = normalizeCode(params.get("status") || "").toLowerCase();
+            if (params.has("doc") || params.has("status")) {
+                // Compute status from expiry and issue date if present
+                const title = params.get("doc") || "Unknown document";
+                const issuer = params.get("issuer") || "Unknown issuer";
+                const validUntil = params.get("validUntil") || "Unknown";
+                const code = params.get("code") || "N/A";
+                setDocumentFields({ title, issuer, validUntil, code });
+
+                // Parse dates for 180-day logic
+                const expiryDate = validUntil !== "Unknown" ? new Date(validUntil) : null;
+                const issueDateParam = params.get("issueDate") || null;
+                const issueDate = issueDateParam ? new Date(issueDateParam) : null;
+                const today = new Date(); today.setHours(0,0,0,0);
+                let status = legacyStatus;
+                let statusReason = "";
+                if (expiryDate && !isNaN(expiryDate)) {
+                    // 180-day rule
+                    let maxAllowed = null;
+                    if (issueDate && !isNaN(issueDate)) {
+                        maxAllowed = new Date(issueDate);
+                        maxAllowed.setDate(maxAllowed.getDate() + 180);
+                    }
+                    if (maxAllowed && expiryDate > maxAllowed) {
+                        status = "expired";
+                        statusReason = "Expiry exceeds 180-day issuer policy";
+                    } else if (expiryDate < today) {
+                        status = "expired";
+                        statusReason = "Expiry date is in the past";
+                    } else if (legacyStatus === "verified") {
+                        status = "verified";
+                        statusReason = "Within issuer validity policy";
+                    } else {
+                        status = legacyStatus || "needs review";
+                        statusReason = "Manual review required";
+                    }
+                } else {
+                    status = legacyStatus || "needs review";
+                    statusReason = "No expiry date provided";
+                }
+
+                // Set color and message
+                if (status === "verified") {
+                    setVisualState({
+                        title: "Document Verified",
+                        subtitle: "Authenticity confirmed from QR data",
+                        iconClass: "p-3 rounded-3 bg-success-subtle text-success",
+                        iconHtml: '<i class="bi bi-shield-check fs-4"></i>',
+                        messageClass: "alert alert-success rounded-3 mt-4 mb-0",
+                        messageHtml: `<strong>${title}</strong> is verified by <strong>${issuer}</strong> and is valid until <strong>${validUntil}</strong>.` + (statusReason ? `<br><span class='small text-muted'>${statusReason}</span>` : ""),
+                        chipClass: "badge rounded-pill px-3 py-2 bg-success-subtle text-success",
+                        chipHtml: '<i class="bi bi-patch-check me-1"></i>Verified'
+                    });
+                } else if (status === "expired") {
+                    setVisualState({
+                        title: "Document Expired",
+                        subtitle: "Record found, but validity period has ended",
+                        iconClass: "p-3 rounded-3 bg-danger-subtle text-danger",
+                        iconHtml: '<i class="bi bi-x-octagon fs-4"></i>',
+                        messageClass: "alert alert-danger rounded-3 mt-4 mb-0",
+                        messageHtml: `<strong>${title}</strong> has expired and cannot be accepted as valid. Please request an updated document from <strong>${issuer}</strong>.` + (statusReason ? `<br><span class='small text-muted'>${statusReason}</span>` : ""),
+                        chipClass: "badge rounded-pill px-3 py-2 bg-danger-subtle text-danger",
+                        chipHtml: '<i class="bi bi-x-octagon me-1"></i>Expired'
+                    });
+                } else {
+                    setVisualState({
+                        title: "Needs Manual Review",
+                        subtitle: "Record found, but status requires issuer confirmation",
+                        iconClass: "p-3 rounded-3 bg-warning-subtle text-warning",
+                        iconHtml: '<i class="bi bi-exclamation-triangle fs-4"></i>',
+                        messageClass: "alert alert-warning rounded-3 mt-4 mb-0",
+                        messageHtml: `<strong>${title}</strong> is currently marked as <strong>${status || "unverified"}</strong>. Please confirm with <strong>${issuer}</strong>.` + (statusReason ? `<br><span class='small text-muted'>${statusReason}</span>` : ""),
+                        chipClass: "badge rounded-pill px-3 py-2 bg-warning-subtle text-warning",
+                        chipHtml: '<i class="bi bi-exclamation-triangle me-1"></i>Needs Review'
+                    });
+                }
+                return;
             }
+
+            setVisualState({
+                title: "Ready to Verify",
+                subtitle: "Enter a verification code to start",
+                iconClass: "p-3 rounded-3 bg-secondary-subtle text-secondary",
+                iconHtml: '<i class="bi bi-search fs-4"></i>',
+                messageClass: "alert alert-secondary rounded-3 mt-4 mb-0",
+                messageHtml: "Paste the verification code from a receipt and click Verify Code.",
+                chipClass: "badge rounded-pill px-3 py-2 bg-secondary-subtle text-secondary",
+                chipHtml: '<i class="bi bi-search me-1"></i>Ready'
+            });
         });
     </script>
+    <script src="../Main/animations.js"></script>
 </body>
 </html>

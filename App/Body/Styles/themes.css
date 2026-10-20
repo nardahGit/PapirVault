@@ -1,0 +1,36 @@
+/*index.html*/
+:root {
+    --primary-blue: #2563eb;
+    --primary-purple: #8b5cf6;
+    --extra-small: 11px;
+    --bg-beige: #f5f5f0;
+}
+
+.text-primary-blue { color: var(--primary-blue) !important; }
+.text-primary-purple { color: var(--primary-purple) !important; }
+
+.btn-primary-blue {
+    background: var(--primary-blue);
+    border: none;
+    color: white;
+}
+
+.btn-primary-blue:hover {
+    background: #1d4ed8;
+    color: white;
+}
+
+.btn-primary-purple {
+    background: var(--primary-purple);
+    border: none;
+    color: rgb(255, 255, 255);
+}
+
+.btn-primary-purple:hover {
+    background: #7c3aed;
+    color: white;
+}
+
+.extra-small {
+    font-size: var(--extra-small);
+}

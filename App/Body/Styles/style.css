@@ -1,0 +1,1671 @@
+/*index.html*/
+.modern-bg {
+    /* We replace the white background with your beige variable */
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.05), transparent 400px),
+                radial-gradient(circle at bottom left, rgba(147, 51, 234, 0.05), transparent 400px),
+                var(--bg-beige);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.hero-main-logo {
+    height: 300px;
+    width: auto;
+    filter: drop-shadow(0 10px 20px rgba(99, 102, 241, 0.15));
+}
+.navbar-brand img {
+    height: 100px !important; /* Increase or decrease this value */
+    width: auto;}
+
+.hero-description {
+    max-width: 700px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+.section-title {
+    letter-spacing: -0.5px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, var(--primary-blue), var(--primary-purple));
+    border-radius: 10px;
+}
+
+/* Card Styling */
+.selection-card {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid rgba(0,0,0,0.03) !important;
+}
+
+.clickable-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.12), 0 18px 36px -18px rgba(0, 0, 0, 0.1) !important;
+}
+
+.client-border:hover { border-bottom: 5px solid var(--primary-blue) !important; }
+.issuer-border:hover { border-bottom: 5px solid var(--primary-purple) !important; }
+
+.icon-box {
+    width: 85px;
+    height: 85px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.client-bg-soft { background: rgba(147, 51, 231, 0.08); }
+.issuer-bg-soft { background: rgba(147, 51, 234, 0.08); }
+
+.feature-list li {
+    padding: 10px 0;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+}
+
+.feature-list i {
+    margin-right: 12px;
+    font-size: 1.2rem;
+}
+
+/* Security Panel */
+.security-panel {
+    max-width: 900px;
+    border-color: #e2e8f0 !important;
+}
+
+.security-badge {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animations */
+.animate-up {
+    animation: slideUp 0.8s ease-out forwards;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .p-5 { padding: 2rem !important; }
+    .display-4 { font-size: 2.2rem; }
+    .hero-main-logo { height: 70px; }
+}
+
+/* 1. Enhanced Shadow for the Navbar */
+.navbar.sticky-top {
+    /* Multi-layered shadow for a "softer" but more prominent depth */
+    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08), 
+                0 8px 15px -10px rgba(0, 0, 0, 0.05) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s ease;
+}
+
+/* 2. Logo Sizing (Updated) */
+.navbar-brand img {
+    height: 100px !important; /* Slightly larger for better visibility */
+    width: auto;
+    /* Ensuring it stays crisp */
+    image-rendering: -webkit-optimize-contrast}
+
+/* 3. Subtitle Styling (Secure . Verify . Trust) */
+.navbar-brand .extra-small {
+    display: block;
+    margin-top: 2px;
+    font-size: 20px;           /* Medium size as requested */
+    font-weight: 800;          /* Medium thickness */
+    letter-spacing: 1.2px;     /* Modern spread */
+    font-style: italic;        /* Stylish italic look */
+    color: black !important; /* Clearer slate-grey color */
+    /* Optional: Small Caps effect for premium feel */
+    text-transform: lowercase;
+    font-variant: small-caps;
+}
+
+/* 4. Brand Name Alignment Fix */
+.navbar-brand h5 {
+    font-size: 1.35rem;        /* Making the main title bold and clear */
+    letter-spacing: -0.5px;
+}
+.navbar .container { max-width: 100% !important; margin: 0 !important; padding-left: 10px !important; }
+
+
+
+.login-web-card {
+    width: 100%;
+    max-width: 900px; /* Much wider than mobile */
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.branding-section {
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+    min-height: 500px;
+}
+
+.login-brand-img {
+    height: 60px;
+    width: auto;
+    filter: brightness(0) invert(1); /* Makes logo white for the blue bg */
+}
+
+/* Modern Input Group Styling */
+.modern-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.modern-input-group i:not(.bi-eye):not(.bi-eye-slash) {
+    position: absolute;
+    left: 16px;
+    color: #94a3b8;
+    z-index: 5;
+}
+
+.modern-input-group .form-control {
+    padding: 14px 16px 14px 48px;
+    background: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.modern-input-group .form-control:focus {
+    background: #fff;
+    border-color: var(--primary-blue);
+}
+
+/* Perfectly Aligned Eye Button */
+.eye-toggle {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    padding: 8px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.eye-toggle:hover {
+    color: var(--primary-blue);
+}
+
+.security-footer {
+    background: #f0f7ff;
+    border: 1px dashed #cfe2ff;
+}
+
+.tracking-wider { letter-spacing: 0.05em; }
+.registration-footer {
+    background: #f8fafc; /* Very light slate */
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.registration-footer:hover {
+    border-color: var(--primary-blue);
+    background: #f0f7ff; /* Slight blue tint on hover */
+}
+
+.icon-circle {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.btn-outline-primary-blue {
+    color: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-primary-blue:hover {
+    background: var(--primary-blue);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ClientSignUp Specific Styles */
+.signup-web-card {
+    width: 100%;
+    max-width: 1000px; /* Slightly wider to accommodate dual inputs */
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.form-control-custom {
+    padding: 12px 16px;
+    background: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.form-control-custom:focus {
+    background: #fff;
+    border-color: var(--primary-blue);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* Password strength transitions */
+.progress-bar {
+    transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+/* ClientForgot Styles */
+.icon-circle-lg {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background-color: #f0f7ff;
+}
+
+
+/* Issuer Specific Layouts */
+
+.branding-section-issuer {
+    background: linear-gradient(135deg, var(--primary-purple), #4c1d95);
+    min-height: 500px;
+}
+
+.security-footer-purple {
+    background: #f5f3ff; /* Light purple tint */
+    border: 1px solid #ddd6fe;
+}
+
+.text-primary-purple {
+    color: var(--primary-purple) !important;
+}
+
+.btn-primary-purple {
+    background: var(--primary-purple);
+    border: none;
+    color: white;
+}
+
+.btn-primary-purple:hover {
+    background: #7c3aed;
+    color: white;
+}
+
+/* Modern Select Styling */
+.modern-select {
+    padding: 12px 16px;
+    background: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.modern-select:focus {
+    border-color: var(--primary-purple);
+}
+
+/* Issuer Registration Expanded */
+.signup-web-card {
+    width: 100%;
+    max-width: 1050px; /* Slightly wider for the two-column inputs */
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+}
+
+.text-primary-purple {
+    color: var(--primary-purple) !important;
+}
+
+.tracking-wider {
+    letter-spacing: 0.1em;
+}
+
+
+/* --- ClientDashboard Styles (consolidated elsewhere) --- */
+/*  earlier duplicated rules were removed to avoid conflict.  */
+
+/* 4. Handle the Collapsed State */
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed);
+}
+
+.main-content.expanded {
+    margin-left: var(--sidebar-collapsed);
+}
+
+/* 5. Sticky Header Transparency logic */
+.header-scrolled {
+    background: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar.collapsed {
+    width: 80px;
+}
+
+.sidebar.collapsed .nav-text, 
+.sidebar.collapsed .brand-name,
+.sidebar.collapsed .profile-details {
+    display: none;
+}
+
+.brand-icon {
+    font-size: 1.5rem;
+    color: var(--primary-blue);
+}
+
+.nav-link-custom {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    margin: 4px 15px;
+    color: #64748b;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+/* Navigation Container */
+.sidebar-nav {
+    position: relative; /* Essential for the slider to calculate position */
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Base Link Style (Transparent background) */
+.nav-link-custom {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 12px;
+    color: #475569;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    z-index: 1; /* Keeps text above the moving pill */
+    transition: color 0.3s ease;
+}
+
+/* Ensure the container has relative positioning */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+/* Base link style */
+.sidebar-nav .nav-link-custom {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    margin: 4px 15px;
+    border-radius: 12px;
+    color: #475569 !important; /* Dark gray text */
+    text-decoration: none !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* THE ACTIVE STATE: Blue-Purple Gradient */
+.sidebar-nav .nav-link-custom.active {
+    background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
+}
+
+/* Ensure the icon turns white when active */
+.sidebar-nav .nav-link-custom.active i {
+    color: #ffffff !important;
+}
+
+/* Hover state for non-active links */
+.sidebar-nav .nav-link-custom:hover:not(.active) {
+    background-color: #f1f5f9 !important;
+    color: #2563eb !important;
+}
+
+/* Main Area Logic */
+.main-content {
+    margin-left: var(--sidebar-width);
+    height: 100vh;
+    overflow-y: auto;
+    transition: all 0.3s;
+}
+
+.sidebar.collapsed + .main-content {
+    margin-left: var(--sidebar-collapsed);
+}
+
+/* Sticky Header Glassmorphism */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background: rgba(248, 250, 252, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 999;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid transparent;
+}
+
+.header-scrolled {
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+/* Widgets */
+.dashboard-hero {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #a855f7 100%);
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+
+/* --- ClientDashboard Updates --- */
+
+/* Subtle Widget Coloring */
+.stat-total { background-color: #f0f7ff !important; }
+.stat-verified { background-color: #f0fdf4 !important; }
+.stat-pending { background-color: #fffbeb !important; }
+.stat-expired { background-color: #fef2f2 !important; }
+
+/* Sticky Header with Glassmorphism */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.header-active {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Document Table Hover */
+#docsTable tr {
+    transition: background 0.2s;
+}
+
+.notification-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+
+}
+/* --- ClientDashboard Styles --- */
+
+/* Subtle Stat Colors */
+.stat-total { background-color: #f0f7ff !important; }
+.stat-verified { background-color: #f0fdf4 !important; }
+.stat-pending { background-color: #fffbeb !important; }
+.stat-expired { background-color: #fef2f2 !important; }
+
+/* Notification Popup Styling */
+.dropdown-menu {
+    animation: slideIn 0.3s ease-out;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.dropdown-item {
+    transition: background 0.2s ease;
+    white-space: normal; /* Allows text to wrap */
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notif-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* Ensure the container doesn't cut off the menu */
+.header-right {
+    position: relative;
+    overflow: visible !important; /* This allows the dropdown to pop out */
+}
+
+/* Add this to make the menu look like your image */
+.dropdown-menu {
+    border: 1px solid rgba(0,0,0,0.05);
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    margin-top: 15px !important; /* Space below the bell icon */
+    z-index: 2000; /* Make sure it stays on top of the content */
+}
+
+/* 1. Define the Animation */
+@keyframes fadeInUpNotif {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- 1. THE DEFINITION --- */
+@keyframes fadeInUpNotif {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- 2. THE APPLICATION --- */
+/* We apply this to a specific class so we can control it */
+.animate-item {
+    animation: fadeInUpNotif 0.4s ease forwards !important;
+}
+
+/* --- 3. CONTAINER FIX --- */
+#notifContainer {
+    max-height: 350px;
+    overflow-y: auto;
+    display: block; /* Ensures it's not hidden */
+}
+
+/* 2. Apply it to the items */
+.dropdown-item {
+    transition: background 0.2s ease;
+    /* This tells the browser to use the keyframes defined above */
+    animation: fadeInUpNotif 0.4s ease forwards; 
+}
+
+/* 3. Ensure the container allows the movement */
+#notifContainer {
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin; /* For Firefox */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#notifContainer {
+    max-height: 400px; /* Limits height so it doesn't cover the whole screen */
+    overflow-y: auto;  /* Adds a scrollbar if there are too many notifications */
+}
+
+/* Custom scrollbar for the notification container */
+#notifContainer::-webkit-scrollbar {
+    width: 4px;
+}
+#notifContainer::-webkit-scrollbar-thumb {
+    background: #e0e0da;
+    border-radius: 10px;
+}
+
+/* Red Pulsing Dot Animation */
+.notification-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* --- Dashboard Hero Section --- */
+.dashboard-hero {
+    /* This creates the blue-to-purple gradient theme */
+    background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%) !important;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    /* Optional: adds a slight glow to match the sidebar active state */
+    box-shadow: 0 10px 20px rgba(147, 51, 234, 0.2); 
+}
+
+/* Header Search Bar Styling */
+.header-search-container .input-group {
+    transition: all 0.3s ease;
+    height: 40px;
+}
+
+.header-search-container .input-group:focus-within {
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15) !important;
+    border-color: #6366f1 !important;
+}
+
+.header-search-container input::placeholder {
+    font-size: 0.85rem;
+    color: #adb5bd;
+}
+
+/* On Mobile: Hide the search bar to prioritize the 'Overview' title */
+@media (max-width: 768px) {
+    .header-search-container {
+        display: none !important;
+    }
+}
+
+
+.dashboard-hero h2 {
+    color: #ffffff !important;
+}
+
+.dashboard-hero p {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Enhancing the light button inside the hero */
+.dashboard-hero .btn-light {
+    color: #9333ea !important; /* Purple text on the white button */
+    border: none;
+    transition: transform 0.2s ease;
+}
+
+.dashboard-hero .btn-light:hover {
+    transform: scale(1.05);
+    background-color: #ffffff;
+}
+
+/* Sticky Header Logic */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.85); /* Glass effect */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+/* Added when user scrolls */
+.header-active {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.notification-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* --- Sidebar Collapse Logic --- */
+
+/* 1. Sidebar Base */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: white;
+    z-index: 1050;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* 2. Collapsed State */
+.sidebar.collapsed {
+    width: 85px;
+}
+
+/* Hide text and brand name when collapsed */
+.sidebar.collapsed .nav-text, 
+.sidebar.collapsed .brand-name, 
+.sidebar.collapsed .profile-details,
+.sidebar.collapsed .sidebar-footer small,
+.sidebar.collapsed .sidebar-header small {
+    display: none;
+}
+
+/* Center icons when collapsed */
+.sidebar.collapsed .nav-link-custom {
+    justify-content: center;
+    padding: 12px 0;
+    margin: 4px 10px;
+}
+
+.sidebar.collapsed .nav-link-custom i {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+/* 3. Main Content Adjustment */
+.main-content {
+    margin-left: var(--sidebar-width);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.collapsed + .main-content {
+    margin-left: var(--sidebar-collapsed);
+}
+
+/* 4. Responsive (Mobile) */
+@media (max-width: 992px) {
+    .sidebar {
+        left: -260px; /* Hide off-screen */
+    }
+    .sidebar.mobile-active {
+        left: 0;
+    }
+    .main-content {
+        margin-left: 0 !important;
+    }
+}
+
+:root {
+    --primary: #6366f1;
+    --success: #22c55e;
+    --warning: #eab308;
+    --danger: #ef4444;
+    --sidebar-width: 260px;
+    --sidebar-collapsed: 85px;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dashboard-body {
+    display: flex;
+    background-color: #f3f4f6;
+    height: 100vh;
+    overflow: hidden; /* Main scroll happens in main-content */
+    font-family: 'Inter', sans-serif;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: white;
+    border-right: 1px solid rgba(0,0,0,0.05); /* subtle divider */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.03);
+    flex-shrink: 0;
+    transition: var(--transition);
+    z-index: 1100;
+}
+
+.sidebar.collapsed { width: var(--sidebar-collapsed); }
+
+/* --- STICKY GLASS HEADER --- */
+.dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 1rem 2rem;
+    transition: var(--transition);
+    background: transparent; /* Default */
+}
+
+/* Triggered by JS scroll */
+.header-scrolled {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding-top: 0.7rem !important;
+    padding-bottom: 0.7rem !important;
+}
+
+/* --- CONTENT AREA --- */
+.main-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    height: 100vh;
+    scroll-behavior: smooth;
+}
+
+/* --- STAT WIDGETS --- */
+.stat-card {
+    border: none;
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: transform 0.2s ease;
+}
+.stat-card:hover { transform: translateY(-5px); }
+.bg-purple-light { background: #f5f3ff; color: #7c3aed; }
+.bg-green-light { background: #f0fdf4; color: #16a34a; }
+.bg-yellow-light { background: #fffbeb; color: #d97706; }
+.bg-red-light { background: #fef2f2; color: #dc2626; }
+
+/* --- MODERN BUTTONS --- */
+.btn-modern {
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+.btn-modern:active { transform: scale(0.95); }
+
+/* Mobile Overlay */
+@media (max-width: 992px) {
+    .sidebar { position: fixed; left: -260px; }
+    .sidebar.mobile-active { left: 0; }
+}
+
+/* --- Desktop Collapse Behavior --- */
+@media (min-width: 993px) {
+    /* When 'collapsed' class is added via JS */
+    .sidebar.collapsed {
+        width: 80px; /* Narrow width */
+    }
+
+    /* Hide text labels but keep icons visible */
+    .sidebar.collapsed .nav-text,
+    .sidebar.collapsed .brand-name,
+    .sidebar.collapsed .profile-details {
+        display: none;
+    }
+
+    /* Center the icons in the narrow bar */
+    .sidebar.collapsed .nav-link-custom {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .sidebar.collapsed .nav-link-custom i {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+}
+
+/* --- Mobile Slide Behavior --- */
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        left: -260px; /* Start off-screen */
+        z-index: 2000;
+    }
+    
+    .sidebar.mobile-active {
+        left: 0; /* Slide in when clicked */
+    }
+}
+
+/* --- Desktop Expand/Collapse --- */
+@media (min-width: 993px) {
+    /* 1. Shrink the width */
+    .sidebar.collapsed {
+        width: 80px; 
+    }
+
+    /* 2. Hide all text labels and branding names */
+    .sidebar.collapsed .nav-text,
+    .sidebar.collapsed .brand-name,
+    .sidebar.collapsed .profile-details {
+        opacity: 0;
+        visibility: hidden;
+        display: none; /* Removes from layout entirely */
+    }
+
+    /* 3. Center the icons so they look clean in the narrow bar */
+    .sidebar.collapsed .nav-link-custom {
+        justify-content: center;
+        padding: 0.8rem 0;
+    }
+
+    .sidebar.collapsed .nav-link-custom i {
+        margin: 0;
+        font-size: 1.3rem;
+    }
+}
+
+/* --- Smooth Transition --- */
+.sidebar {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden; /* Prevents text from leaking out during shrink */
+}
+
+:root {
+    --primary: #6366f1;
+    --bg-beige: #f5f5f0; /* Soft linen beige */
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dashboard-body {
+    display: flex;
+    background-color: var(--bg-beige); /* Set background to beige */
+    height: 100vh;
+    overflow: hidden;
+    color: #333;
+}
+
+/* Updated Header for Beige Layout */
+.dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 1rem 2rem;
+    transition: var(--transition);
+    background: transparent; /* Transparent until scroll */
+}
+
+/* Modern Frosted Header on Scroll */
+.header-scrolled {
+    background: rgba(245, 245, 240, 0.8) !important; /* Beige glass effect */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Sidebar Styling to match Beige theme */
+.sidebar {
+    background: #ffffff;
+    border-right: 1px solid #e0e0da; /* Subtle beige-tinted border */
+}
+
+/* Card Improvements for visibility on beige */
+.card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Very faint border */
+    box-shadow: var(--card-shadow);
+}
+
+/* Sidebar General Styling */
+.sidebar {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Brand Icon (The Shield) */
+.brand-icon-modern {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: white;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.5rem;
+}
+
+/* Navigation Links Container */
+.sidebar-nav {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Spacing between items */
+}
+
+/* Individual Link Styling */
+.nav-link-modern {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 12px;
+    color: #475569;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth movement curve */
+    z-index: 1;
+}
+
+/* THE ACTIVE PURPLE GRADIENT (As seen in your image) */
+.nav-link-modern.active {
+    background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%); /* Blue to Purple gradient */
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3); /* Purple glow */
+    transform: translateX(5px); /* Subtle shift to the right when active */
+}
+
+/* Icon and Text colors for active state */
+.nav-link-modern.active i,
+.nav-link-modern.active .nav-text {
+    color: white;
+}
+
+/* Hover effect for non-active links */
+.nav-link-modern:hover:not(.active) {
+    background-color: rgba(99, 102, 241, 0.05);
+    color: #6366f1;
+}
+
+/* Bottom Profile Card */
+.profile-card-modern {
+    background-color: #f8fafc;
+    border-radius: 15px;
+    border: 1px solid #f1f5f9;
+}
+
+.avatar-modern {
+    background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Logout Button - Red Outline Style */
+.btn-logout-modern {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid #fee2e2;
+    border-radius: 10px;
+    color: #ef4444;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-logout-modern:hover {
+    background-color: #fef2f2;
+    border-color: #ef4444;
+}
+
+/* Sidebar Subtext */
+.brand-subtext {
+    font-size: 0.65rem;
+    display: block;
+    margin-top: -4px;
+}
+
+
+
+
+
+/* --- ClientDocument Styles --- */
+
+.info-card-doc {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eef2f6;
+    height: 100%;
+}
+
+.info-card-doc i {
+    font-size: 1.5rem;
+}
+
+.border-blue { border-left: 4px solid #2563eb; }
+.border-green { border-left: 4px solid #10b981; }
+.border-purple { border-left: 4px solid #9333ea; }
+
+.doc-main-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #f1f5f9;
+    transition: transform 0.2s ease;
+}
+
+.doc-main-card:hover {
+    transform: translateY(-5px);
+}
+
+.doc-icon-box {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.verification-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 15px 20px;
+    border-radius: 12px;
+}
+
+.ls-1 {
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+}
+
+.btn-white {
+    background: white;
+    color: #475569;
+    font-weight: 600;
+}
+
+.text-purple { color: #9333ea; }
+
+/* Sticky Header with Blur Effect */
+.dashboard-header.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background: rgba(255, 255, 255, 0.8) !important; /* Semi-transparent */
+    backdrop-filter: blur(10px); /* The "Glass" effect */
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid #f1f5f9;
+    padding: 15px 30px;
+}
+
+/* previous ClientDocument-specific rules removed to avoid layout conflicts. */
+
+/* --- Ensure Sticky Header is layered correctly --- */
+.dashboard-header.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 1050; /* Higher than document cards */
+    transition: all 0.3s ease-in-out; /* Smooth transition for the JS effects */
+    background: transparent; /* Initial state */
+}
+
+/* Ensure the main container doesn't "clip" the scroll */
+.main-content {
+    overflow-y: visible !important;
+    height: auto;
+    min-height: 100vh;
+}
+
+/* Optional: Add a slight top margin to your content wrapper 
+   so the first card isn't hidden under the header initially */
+.content-wrapper {
+    margin-top: 10px;
+}
+
+/* 1. Unlock the body and main containers */
+html, body {
+    height: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+}
+
+.dashboard-body {
+    display: flex;
+    min-height: 100vh;
+    overflow: visible !important;
+}
+
+/* 2. Fix the Sidebar so it stays while the page moves */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1040;
+}
+
+/* 3. The Main Content must be allowed to grow in height */
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width); /* Width of your sidebar */
+    min-height: 100vh;
+    height: auto !important;
+    overflow: visible !important;
+    display: block;
+}
+
+/* 4. Ensure the Header stays at the top of the SCREEN, not the page */
+.dashboard-header.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+
+/* --- ClientVerification Page --- */
+
+.verif-code {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #2563eb;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.sidebar-footer {
+    border-top: 1px solid #f1f5f9;
+}
+
+.stat-icon {
+    min-width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-purple-subtle { background-color: #f5f3ff; }
+.text-purple { color: #7c3aed; }
+
+/* Custom Badge Styles */
+.badge.bg-success-subtle { color: #10b981 !important; background-color: #ecfdf5 !important; }
+.badge.bg-warning-subtle { color: #f59e0b !important; background-color: #fffbeb !important; }
+
+
+
+/* Custom Modal Styles */
+#shareQRModal .modal-content {
+    background: #ffffff;
+}
+
+#shareQRModal .verif-code {
+    font-size: 1rem;
+    letter-spacing: 1px;
+    background: #f1f5f9;
+    color: #2563eb;
+    border: 1px dashed #cbd5e1;
+}
+
+#shareQRModal .btn-primary {
+    background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
+    border: none;
+    transition: transform 0.2s ease;
+}
+
+#shareQRModal .btn-primary:hover {
+    transform: scale(1.03);
+}
+
+
+/*ClientSettings Page*/
+
+.premium-highlight-card {
+    background: linear-gradient(135deg, #fffcf0 0%, #fff9e6 100%);
+    border: 1px solid #ffeeba !important;
+}
+
+.icon-box-gold {
+    width: 48px;
+    height: 48px;
+    background: #ffc107;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
+}
+
+.bg-dark {
+    background-color: #1e293b !important; /* Modern slate dark */
+}
+
+.form-control:focus {
+    background-color: #fff !important;
+    border-color: #6366f1 !important;
+    box-shadow: none;
+}
+
+.form-check-input:checked {
+    background-color: #10b981;
+    border-color: #10b981;
+}
+
+/* Sidebar Footer Adjustments */
+.sidebar-footer {
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+
+/*HelpCenter Page*/
+
+.nav-pills .nav-link.active {
+    background-color: #6366f1 !important;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.nav-pills .nav-link {
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #f8fafc;
+    color: #6366f1;
+    box-shadow: none;
+}
+
+.icon-box-blue {
+    width: 50px;
+    height: 50px;
+    background: #e0e7ff;
+    color: #4f46e5;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.policy-content::-webkit-scrollbar {
+    width: 6px;
+}
+.policy-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+
+
+/*IssuerSettings Page*/
+
+.brand-icon-issuer {
+    width: 35px;
+    height: 35px;
+    background: #7c3aed; /* Purple */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 1.2rem;
+}
+
+.avatar-circle-issuer {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.avatar-circle-sm {
+    width: 32px;
+    height: 32px;
+    background: #7c3aed;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.btn-purple {
+    background-color: #7c3aed;
+    color: white;
+}
+
+.btn-purple:hover {
+    background-color: #6d28d9;
+    color: white;
+}
+
+.text-purple {
+    color: #7c3aed;
+}
+
+.ls-1 { letter-spacing: 1px; }
+.uppercase { text-transform: uppercase; }
+
+
+/* Custom Scrollbar for the Content */
+.content-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+.content-wrapper::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+/* Sticky Header Modern Effect */
+.dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 1.5rem 2rem;
+    transition: all 0.3s ease;
+    background: transparent; /* Initial state */
+}
+
+/* Class added by JS on scroll */
+.header-scrolled {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(12px);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Avatar Sm for Staff List */
+.avatar-modern-sm {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.75rem;
+}
+
+.bg-indigo { background-color: #6366f1; }
+
+.text-indigo { color: #6366f1; }
+
+.btn-modern {
+    background: #6366f1;
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.2s ease;
+}
+
+.btn-modern:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+}
+
+
+/* Dashboard Layout Flex Fix */
+body.dashboard-body {
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 0;
+    width: 100%;
+    align-items: stretch;
+}
+
+.dashboard-body #sidebar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    align-self: flex-start;
+    flex: 0 0 var(--sidebar-width);
+    width: var(--sidebar-width);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-body #sidebar.collapsed {
+    flex-basis: var(--sidebar-collapsed);
+    width: var(--sidebar-collapsed);
+}
+
+.dashboard-body #sidebar.collapsed .nav-text,
+.dashboard-body #sidebar.collapsed .brand-name,
+.dashboard-body #sidebar.collapsed .profile-details,
+.dashboard-body #sidebar.collapsed .sidebar-header small,
+.dashboard-body #sidebar.collapsed .sidebar-footer small {
+    display: none;
+}
+
+.dashboard-body #sidebar.collapsed .nav-link-custom {
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.dashboard-body #sidebar.collapsed .nav-link-custom i {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.dashboard-body #mainContent {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: calc(100vw - var(--sidebar-width));
+    height: auto;
+    overflow-y: visible;
+    overflow-x: hidden;
+    margin-left: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-body #sidebar.collapsed + #mainContent,
+.dashboard-body #mainContent.expanded {
+    margin-left: 0 !important;
+    width: calc(100vw - var(--sidebar-collapsed));
+}
+
+.dashboard-body #dashboardHeader {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background-color: #ffffff;
+    box-shadow: none;
+}
+
+.dashboard-body #dashboardHeader.header-scrolled {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+@media (max-width: 992px) {
+    body.dashboard-body {
+        display: block;
+    }
+
+    .dashboard-body #sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: var(--sidebar-width);
+        height: 100vh;
+        flex: none;
+        z-index: 2000;
+    }
+
+    .dashboard-body #sidebar.mobile-active {
+        left: 0;
+    }
+
+    .dashboard-body #mainContent {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+}

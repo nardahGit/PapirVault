@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../Styles/style.css">
+    <link rel="stylesheet" href="../Styles/animations.css">
 
     <style>
         body.dashboard-body {
@@ -111,8 +112,8 @@
                 <i class="bi bi-person-fill"></i>
             </div>
             <div class="profile-details">
-                <div class="fw-bold small">NHI Admin</div>
-                <div class="text-muted extra-small">Official Issuer</div>
+                <div class="fw-bold small" id="sidebarIssuerName">NHI Admin</div>
+                <div class="text-muted extra-small" id="sidebarIssuerOrgType">Official Issuer</div>
             </div>
         </div>
         <a href="index.html" class="btn-logout-modern w-100">
@@ -133,7 +134,7 @@
                 <div class="d-flex align-items-center gap-3 w-50 justify-content-end">
                     <div class="input-group d-none d-md-flex shadow-sm rounded-pill overflow-hidden" style="max-width: 420px;">
                         <span class="input-group-text border-0 bg-white"><i class="bi bi-search text-muted"></i></span>
-                        <input type="text" id="searchInput" class="form-control border-0 px-1" placeholder="Search request by client or document...">
+                        <input type="text" id="searchInput" data-search-custom="true" class="form-control border-0 px-1" placeholder="Search request by client or document...">
                     </div>
                     <div class="position-relative">
                         <button class="btn btn-light rounded-circle shadow-sm" type="button">
@@ -308,6 +309,7 @@
     </div>
 
     <script src="../Main/script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../Main/firebase-env.js"></script>
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -321,8 +323,6 @@
             const notifCount = document.getElementById("issuerNotifCount");
             const searchInput = document.getElementById("searchInput");
             const detailsModalEl = document.getElementById("requestDetailsModal");
-            const modalAcceptBtn = document.getElementById("modalAcceptBtn");
-            const modalRejectBtn = document.getElementById("modalRejectBtn");
             const rejectReasonInput = document.getElementById("rejectReasonInput");
             const detailClientIdentity = document.getElementById("detailClientIdentity");
             const detailClientEmail = document.getElementById("detailClientEmail");
@@ -333,6 +333,120 @@
             const issuerStatActiveDocs = document.getElementById("issuerStatActiveDocs");
             const issuerStatPendingExpiring = document.getElementById("issuerStatPendingExpiring");
             const issuerStatExpired = document.getElementById("issuerStatExpired");
+
+            // Modal Accept/Reject buttons: assign after DOM is loaded
+            const modalAcceptBtn = document.getElementById("modalAcceptBtn");
+            const modalRejectBtn = document.getElementById("modalRejectBtn");
+
+            // Attach event listeners if buttons exist
+            if (modalAcceptBtn) {
+                modalAcceptBtn.addEventListener("click", async () => {
+                    const requestItem = liveRequests.find((item) => item.id === selectedRequestId);
+                    if (!requestItem) {
+                        showResult("warning", "Request not found. Please refresh and try again.");
+                        return;
+                    }
+                    const initialText = modalAcceptBtn.textContent;
+                    modalAcceptBtn.disabled = true;
+                    modalAcceptBtn.textContent = "Saving...";
+                    try {
+                        await updateRequestStatus({ requestItem, requestId: selectedRequestId, nextStatus: "Accepted" });
+                        showResult("success", "Request marked as Accepted. Client has been notified.");
+                        detailsModalApi?.hide();
+                    } catch (error) {
+                        showResult("danger", error?.message || "Failed to update request status.");
+                    } finally {
+                        modalAcceptBtn.disabled = false;
+                        modalAcceptBtn.textContent = initialText;
+                    }
+                });
+            }
+            if (modalRejectBtn) {
+                modalRejectBtn.addEventListener("click", async () => {
+                    const requestItem = liveRequests.find((item) => item.id === selectedRequestId);
+                    if (!requestItem) {
+                        showResult("warning", "Request not found. Please refresh and try again.");
+                        return;
+                    }
+                    const rejectReason = String(rejectReasonInput?.value || "").trim();
+                    if (!rejectReason) {
+                        showResult("warning", "Please provide a reason for rejection before confirming.");
+                        rejectReasonInput.focus();
+                        return;
+                    }
+                    const initialText = modalRejectBtn.textContent;
+                    modalRejectBtn.disabled = true;
+                    modalRejectBtn.textContent = "Saving...";
+                    try {
+                        await updateRequestStatus({ requestItem, requestId: selectedRequestId, nextStatus: "Rejected", rejectReason });
+                        showResult("warning", "Request marked as Rejected. Client has been notified.");
+                        detailsModalApi?.hide();
+                    } catch (error) {
+                        showResult("danger", error?.message || "Failed to update request status.");
+                    } finally {
+                        modalRejectBtn.disabled = false;
+                        modalRejectBtn.textContent = initialText;
+                    }
+                });
+            }
+
+            // Reset and robustly re-add modal Accept/Reject button event listeners
+            setTimeout(() => {
+                const modalAcceptBtn = document.getElementById("modalAcceptBtn");
+                const modalRejectBtn = document.getElementById("modalRejectBtn");
+                if (modalAcceptBtn) {
+                    modalAcceptBtn.onclick = async () => {
+                        // Accept logic
+                        const requestItem = liveRequests.find((item) => item.id === selectedRequestId);
+                        if (!requestItem) {
+                            showResult("warning", "Request not found. Please refresh and try again.");
+                            return;
+                        }
+                        const initialText = modalAcceptBtn.textContent;
+                        modalAcceptBtn.disabled = true;
+                        modalAcceptBtn.textContent = "Saving...";
+                        try {
+                            await updateRequestStatus({ requestItem, requestId: selectedRequestId, nextStatus: "Accepted" });
+                            showResult("success", "Request marked as Accepted. Client has been notified.");
+                            detailsModalApi?.hide();
+                        } catch (error) {
+                            showResult("danger", error?.message || "Failed to update request status.");
+                        } finally {
+                            modalAcceptBtn.disabled = false;
+                            modalAcceptBtn.textContent = initialText;
+                        }
+                    };
+                }
+                if (modalRejectBtn) {
+                    modalRejectBtn.onclick = async () => {
+                        // Reject logic
+                        const requestItem = liveRequests.find((item) => item.id === selectedRequestId);
+                        if (!requestItem) {
+                            showResult("warning", "Request not found. Please refresh and try again.");
+                            return;
+                        }
+                        const rejectReason = String(rejectReasonInput?.value || "").trim();
+                        if (!rejectReason) {
+                            showResult("warning", "Please provide a reason for rejection before confirming.");
+                            rejectReasonInput.focus();
+                            return;
+                        }
+                        const initialText = modalRejectBtn.textContent;
+                        modalRejectBtn.disabled = true;
+                        modalRejectBtn.textContent = "Saving...";
+                        try {
+                            await updateRequestStatus({ requestItem, requestId: selectedRequestId, nextStatus: "Rejected", rejectReason });
+                            showResult("warning", "Request marked as Rejected. Client has been notified.");
+                            detailsModalApi?.hide();
+                        } catch (error) {
+                            showResult("danger", error?.message || "Failed to update request status.");
+                        } finally {
+                            modalRejectBtn.disabled = false;
+                            modalRejectBtn.textContent = initialText;
+                        }
+                    };
+                }
+            }, 0);
 
             if (!result || !requestsBody || !notificationsBox || !requestCount || !notifCount) return;
 
@@ -345,7 +459,8 @@
             }
 
             const organizationType = String(issuerProfile?.organizationType || "").trim();
-            const organizationTypeKey = organizationType.toLowerCase().replace(/\s+/g, " ").trim();
+            // Use normalized key from profile if available, else fallback to normalized string
+            const organizationTypeKey = issuerProfile?.organizationTypeKey || organizationType.toLowerCase().replace(/\s+/g, " ").trim();
             if (!organizationTypeKey) {
                 requestsBody.innerHTML = '<tr><td colspan="6" class="text-danger small">Issuer identity is missing. Please sign in again.</td></tr>';
                 notificationsBox.innerHTML = '<div class="text-danger small">Issuer identity is missing.</div>';
@@ -353,9 +468,13 @@
             }
 
             const issuerName = String(issuerProfile?.issuerName || "").trim();
-            const profileNameEl = document.querySelector(".profile-details .fw-bold");
+            const profileNameEl = document.getElementById("sidebarIssuerName");
             if (issuerName && profileNameEl) {
                 profileNameEl.textContent = issuerName;
+            }
+            const profileOrgTypeEl = document.getElementById("sidebarIssuerOrgType");
+            if (issuerProfile?.organizationType && profileOrgTypeEl) {
+                profileOrgTypeEl.textContent = issuerProfile.organizationType;
             }
 
             const config = window.PAPIRVAULT_FIREBASE_CONFIG;
@@ -484,6 +603,7 @@
                         </td>
                     </tr>
                 `;
+                            // ...existing code...
                 }).join("");
             };
 
@@ -515,7 +635,11 @@
             };
 
             const openDetailsModal = (requestItem) => {
-                if (!detailsModalApi || !requestItem) return;
+                console.log('[DEBUG] openDetailsModal called. detailsModalApi:', !!detailsModalApi, 'requestItem:', requestItem);
+                if (!detailsModalApi || !requestItem) {
+                    console.warn('[DEBUG] Modal API missing or requestItem missing.');
+                    return;
+                }
                 selectedRequestId = requestItem.id;
                 detailClientIdentity.textContent = requestItem.clientIdentity || "Unknown client";
                 detailClientEmail.textContent = requestItem.clientEmail || "no-email";
@@ -594,51 +718,24 @@
                     return;
                 }
 
-                if (action === "View") {
-                    openDetailsModal(requestItem);
-                    return;
-                }
+                console.log('[DEBUG] Table action button clicked:', action, 'for requestId:', requestId);
 
-                if (action === "Accept") {
-                    const initialText = actionBtn.textContent;
-                    actionBtn.disabled = true;
-                    actionBtn.textContent = "Saving...";
-                    try {
-                        await updateRequestStatus({ requestItem, requestId, nextStatus: "Accepted" });
-                        showResult("success", "Request marked as Accepted. Client can now see this status.");
-                    } catch (error) {
-                        showResult("danger", error?.message || "Failed to update request status.");
-                    } finally {
-                        actionBtn.disabled = false;
-                        actionBtn.textContent = initialText;
-                    }
-                    return;
-                }
-
-                if (action === "Reject") {
-                    const initialText = actionBtn.textContent;
-                    actionBtn.disabled = true;
-                    actionBtn.textContent = "Saving...";
-                    try {
-                        await updateRequestStatus({ requestItem, requestId, nextStatus: "Rejected", rejectReason: "" });
-                        showResult("warning", "Request marked as Rejected. Client can now see this status.");
-                    } catch (error) {
-                        showResult("danger", error?.message || "Failed to update request status.");
-                    } finally {
-                        actionBtn.disabled = false;
-                        actionBtn.textContent = initialText;
-                    }
-                    return;
-                }
-
-                if (action === "Reason") {
+                // All actions open the modal and set selected request
+                try {
+                    console.log('[DEBUG] About to set selectedRequestId and rejectReasonInput');
                     selectedRequestId = requestId;
                     rejectReasonInput.value = requestItem.rejectReason || "";
+                    console.log('[DEBUG] About to call openDetailsModal. typeof openDetailsModal:', typeof openDetailsModal);
                     openDetailsModal(requestItem);
+                    console.log('[DEBUG] openDetailsModal call finished');
+                } catch (err) {
+                    console.error('[DEBUG] Error in table action handler:', err);
                 }
             });
 
             modalAcceptBtn?.addEventListener("click", async () => {
+                console.log('[DEBUG] Accept button clicked in modal');
+                // Accept logic (restored)
                 const requestItem = liveRequests.find((item) => item.id === selectedRequestId);
                 if (!requestItem) {
                     showResult("warning", "Request not found. Please refresh and try again.");
@@ -661,6 +758,8 @@
             });
 
             modalRejectBtn?.addEventListener("click", async () => {
+                console.log('[DEBUG] Reject button clicked in modal');
+                // Reject logic (restored)
                 const requestItem = liveRequests.find((item) => item.id === selectedRequestId);
                 if (!requestItem) {
                     showResult("warning", "Request not found. Please refresh and try again.");
@@ -668,6 +767,11 @@
                 }
 
                 const rejectReason = String(rejectReasonInput?.value || "").trim();
+                if (!rejectReason) {
+                    showResult("warning", "Please provide a reason for rejection before confirming.");
+                    rejectReasonInput.focus();
+                    return;
+                }
                 const initialText = modalRejectBtn.textContent;
                 modalRejectBtn.disabled = true;
                 modalRejectBtn.textContent = "Saving...";
@@ -737,5 +841,6 @@
             scrollHandler();
         });
     </script>
+    <script src="../Main/animations.js"></script>
 </body>
 </html>

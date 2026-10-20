@@ -187,13 +187,15 @@ const createDocumentRecord = async ({
     legalNote,
     file,
     fileUrl,
-    uploadWarning
+    uploadWarning,
+    organizationType
 }) => {
     const payload = {
         id: documentId,
         ownerUid: clientUid.trim(),
         issuerUid: issuerUid || "",
         issuerName: issuerName || "Authorized Issuer",
+        organizationType: organizationType || "N/A",
         title: title.trim(),
         titleLower: title.trim().toLowerCase(),
         category: category.trim(),
@@ -401,12 +403,31 @@ const searchClientDocuments = async ({ clientUid, keyword }) => {
     });
 };
 
-const listIssuerDocuments = async ({ issuerName }) => {
-    const normalizedName = String(issuerName || "").trim();
-    if (!db || !normalizedName) return [];
+const getDocumentByVerificationCode = async ({ verificationCode }) => {
+    const raw = String(verificationCode || "").trim();
+    if (!db || !raw) return null;
 
-    const q = query(collection(db, "documents"), where("issuerName", "==", normalizedName));
-    const snapshot = await getDocs(q);
+    const upper = raw.toUpperCase();
+    const candidates = [...new Set([upper, raw])];
+
+    for (const candidate of candidates) {
+        const q = query(collection(db, "documents"), where("verificationCode", "==", candidate));
+        const snapshot = await getDocs(q);
+        if (snapshot.empty) continue;
+
+        const entry = snapshot.docs[0];
+        const docItem = { id: entry.id, ...entry.data() };
+        return syncComputedDocumentFields(docItem);
+    }
+
+    return null;
+};
+
+const listIssuerDocuments = async ({ issuerName }) => {
+    if (!db) return [];
+
+    // DEBUG: Show all documents regardless of issuerName
+    const snapshot = await getDocs(collection(db, "documents"));
 
     const docs = snapshot.docs.map((entry) => ({
         id: entry.id,
@@ -436,5 +457,6 @@ window.PapirVaultDocs = {
     registerIssuerDocumentWithoutFile,
     listClientDocuments,
     searchClientDocuments,
-    listIssuerDocuments
+    listIssuerDocuments,
+    getDocumentByVerificationCode
 };

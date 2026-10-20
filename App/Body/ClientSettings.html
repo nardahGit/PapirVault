@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="../Styles/themes.css">
 
 <link rel="stylesheet" href="../Styles/style.css">
+    <link rel="stylesheet" href="../Styles/animations.css">
 
 <style>
 body.dashboard-body {
@@ -107,24 +108,15 @@ body.dashboard-body {
 
 <div class="sidebar-footer p-3 mt-auto">
 
-<div class="user-card p-3 rounded-4 bg-light d-flex align-items-center mb-2">
-
-<div class="avatar-circle me-3">JD</div>
-
-<div>
-
-<div class="fw-bold small">John Doe</div>
-
-<div class="extra-small text-muted">Premium Member</div>
-
+<div class="profile-card d-flex align-items-center p-2 rounded-3 mb-3 border bg-white">
+    <div class="avatar me-2" id="clientSidebarAvatar">--</div>
+    <div class="profile-details">
+        <div class="fw-bold small" id="clientSidebarName">Loading...</div>
+        <div class="text-muted extra-small" id="clientSidebarMeta">Client Account</div>
+    </div>
 </div>
-
-</div>
-
 <button class="btn btn-outline-danger w-100 rounded-3 btn-sm">
-
-<i class="bi bi-box-arrow-left me-2"></i> Logout
-
+    <i class="bi bi-box-arrow-left me-2"></i> Logout
 </button>
 
 </div>
@@ -160,7 +152,7 @@ body.dashboard-body {
         <span class="input-group-text bg-white border-0 ps-3">
             <i class="bi bi-search text-muted small"></i>
         </span>
-        <input type="text" id="headerSearch" class="form-control border-0 bg-white small" placeholder="Search settings...">
+        <input type="text" id="headerSearch" class="form-control border-0 bg-white small" placeholder="Search settings..." data-search-scope=".content-wrapper" data-search-items=".premium-highlight-card, .content-wrapper .card, .content-wrapper .resource-link">
     </div>
 </div>
 
@@ -239,7 +231,7 @@ body.dashboard-body {
 
 <div class="card-body p-4">
 
-<form>
+<form id="clientProfileSettingsForm">
 
 <div class="row g-3 mb-3">
 
@@ -247,7 +239,7 @@ body.dashboard-body {
 
 <label class="form-label small fw-bold">First Name</label>
 
-<input type="text" class="form-control rounded-3 border-light bg-light" value="John">
+<input type="text" id="settingsFirstName" class="form-control rounded-3 border-light bg-light" value="John">
 
 </div>
 
@@ -255,7 +247,7 @@ body.dashboard-body {
 
 <label class="form-label small fw-bold">Last Name</label>
 
-<input type="text" class="form-control rounded-3 border-light bg-light" value="Doe">
+<input type="text" id="settingsLastName" class="form-control rounded-3 border-light bg-light" value="Doe">
 
 </div>
 
@@ -265,11 +257,13 @@ body.dashboard-body {
 
 <label class="form-label small fw-bold">Email Address</label>
 
-<input type="email" class="form-control rounded-3 border-light bg-light" value="john.doe@example.com">
+<input type="email" id="settingsEmail" class="form-control rounded-3 border-light bg-light" value="john.doe@example.com" readonly>
 
 </div>
 
-<button type="button" class="btn btn-primary btn-sm rounded-pill px-4">Update Profile</button>
+<div id="profileSettingsFeedback" class="small mt-2 d-none"></div>
+
+<button type="button" id="updateClientProfileBtn" class="btn btn-primary btn-sm rounded-pill px-4">Update Profile</button>
 
 </form>
 
@@ -369,7 +363,7 @@ body.dashboard-body {
 
 <h6 class="fw-bold mb-3">Resources</h6>
 
-<a href="#" class="d-flex justify-content-between align-items-center text-decoration-none mb-3 py-2 border-bottom border-light">
+<a href="#" class="resource-link d-flex justify-content-between align-items-center text-decoration-none mb-3 py-2 border-bottom border-light">
 
 <span class="small text-dark"><i class="bi bi-question-circle me-2 text-muted"></i> Help Center</span>
 
@@ -377,7 +371,7 @@ body.dashboard-body {
 
 </a>
 
-<a href="#" class="d-flex justify-content-between align-items-center text-decoration-none mb-3 py-2 border-bottom border-light">
+<a href="#" class="resource-link d-flex justify-content-between align-items-center text-decoration-none mb-3 py-2 border-bottom border-light">
 
 <span class="small text-dark"><i class="bi bi-file-earmark-lock me-2 text-muted"></i> Privacy Policy</span>
 
@@ -385,7 +379,7 @@ body.dashboard-body {
 
 </a>
 
-<a href="#" class="d-flex justify-content-between align-items-center text-decoration-none py-2">
+<a href="#" class="resource-link d-flex justify-content-between align-items-center text-decoration-none py-2">
 
 <span class="small text-dark"><i class="bi bi-journal-text me-2 text-muted"></i> Terms of Service</span>
 
@@ -421,6 +415,103 @@ document.addEventListener("DOMContentLoaded", () => {
         window.PapirVaultAuth.protectPage({ redirectTo: "ClientLogin.html" });
         window.PapirVaultAuth.attachLogout({ selector: ".logout-btn, .btn-outline-danger", redirectTo: "ClientLogin.html" });
     }
+
+    const firstNameInput = document.getElementById("settingsFirstName");
+    const lastNameInput = document.getElementById("settingsLastName");
+    const emailInput = document.getElementById("settingsEmail");
+    const updateBtn = document.getElementById("updateClientProfileBtn");
+    const feedback = document.getElementById("profileSettingsFeedback");
+
+    const showFeedback = (type, message) => {
+        if (!feedback) return;
+        feedback.className = `small mt-2 ${type === "success" ? "text-success" : "text-danger"}`;
+        feedback.textContent = message;
+        feedback.classList.remove("d-none");
+    };
+
+    const fillFromProfile = (profile) => {
+        if (!profile) return;
+        const full = String(profile.displayName || "").trim();
+        const tokens = full.split(/\s+/).filter(Boolean);
+
+        if (firstNameInput) firstNameInput.value = tokens[0] || "";
+        if (lastNameInput) lastNameInput.value = tokens.slice(1).join(" ");
+        if (emailInput) emailInput.value = profile.email || "";
+    };
+
+    const updateDisplayNameWithFallback = async (displayName) => {
+        if (typeof window.PapirVaultAuth?.updateCurrentUserDisplayName === "function") {
+            return window.PapirVaultAuth.updateCurrentUserDisplayName(displayName);
+        }
+
+        // Fallback path for stale cached auth bundle that may miss helper methods.
+        const [{ getApps, getApp, initializeApp }, { getAuth, updateProfile }] = await Promise.all([
+            import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
+            import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js")
+        ]);
+
+        const config = window.PAPIRVAULT_FIREBASE_CONFIG;
+        if (!config?.apiKey || !config?.authDomain || !config?.projectId || !config?.appId) {
+            throw new Error("Firebase is not configured. Update Main/firebase-env.js.");
+        }
+
+        const app = getApps().length
+            ? getApp()
+            : initializeApp({ ...config, storageBucket: config.storageBucket || `${config.projectId}.appspot.com` });
+
+        const auth = getAuth(app);
+        if (!auth.currentUser) {
+            throw new Error("No active user session. Please sign in again.");
+        }
+
+        await updateProfile(auth.currentUser, { displayName });
+
+        const email = auth.currentUser.email || "";
+        const parts = String(displayName).trim().split(/\s+/).filter(Boolean);
+        const initials = parts.length > 1
+            ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+            : (parts[0] || "CL").slice(0, 2).toUpperCase();
+
+        const updatedProfile = {
+            uid: auth.currentUser.uid || "",
+            displayName,
+            email,
+            initials
+        };
+
+        sessionStorage.setItem("papirvaultClientProfile", JSON.stringify(updatedProfile));
+        localStorage.setItem("papirvaultClientProfile", JSON.stringify(updatedProfile));
+        window.dispatchEvent(new CustomEvent("papirvault:profile-updated", { detail: updatedProfile }));
+        return updatedProfile;
+    };
+
+    const profile = window.PapirVaultAuth?.getCurrentUserProfile?.();
+    fillFromProfile(profile);
+
+    updateBtn?.addEventListener("click", async () => {
+        const first = String(firstNameInput?.value || "").trim();
+        const last = String(lastNameInput?.value || "").trim();
+        const displayName = `${first} ${last}`.trim();
+
+        if (!displayName) {
+            showFeedback("error", "Please provide at least a first name.");
+            return;
+        }
+
+        try {
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+
+            const updated = await updateDisplayNameWithFallback(displayName);
+            fillFromProfile(updated);
+            showFeedback("success", "Profile updated successfully.");
+        } catch (error) {
+            showFeedback("error", error?.message || "Unable to update profile right now.");
+        } finally {
+            updateBtn.disabled = false;
+            updateBtn.textContent = "Update Profile";
+        }
+    });
 });
 </script>
 
@@ -440,6 +531,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+    <script src="../Main/animations.js"></script>
 </body>
-
 </html>

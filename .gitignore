@@ -70,3 +70,7 @@ node_modules/
 # My Private Firebase Keys
 App/Main/firebase-env.js
 .firebaserc
+.env
+*-firebase-adminsdk-*.json
+firebase-env.js
+**/firebase-env.js

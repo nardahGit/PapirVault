@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="94c4bf48-2ad5-4c3d-9945-153829a6f016" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/App/Assets/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/ClientDashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/ClientDashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/ClientDocuments.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/ClientDocuments.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/ClientForgot.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/ClientForgot.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/ClientLogin.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/ClientLogin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/ClientSettings.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/ClientSettings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/ClientSignUp.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/ClientSignUp.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/ClientUpgrade.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/ClientUpgrade.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/ClientVerification.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/ClientVerification.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/HelpCenter.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/HelpCenter.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/IssuerDashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/IssuerDashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/IssuerDocuments.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/IssuerDocuments.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/IssuerForgot.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/IssuerForgot.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/IssuerHelp.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/IssuerHelp.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/IssuerLogin.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/IssuerLogin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/IssuerSettings.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/IssuerSettings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/IssuerSignUp.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/IssuerSignUp.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/IssuerUpgrade.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/IssuerUpgrade.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/IssuerVerification.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/IssuerVerification.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/PasswordReset.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/PasswordReset.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/VerifyStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/VerifyStatus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Body/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/App/Body/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Main/firebase-auth.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Main/firebase-documents.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Main/firebase-env.example.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/Main/script.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firebase.json" beforeDir="false" afterPath="$PROJECT_DIR$/firebase.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="3C7cKOACoA2reKzTDwCQvy6hbxm" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.JVM Logging",
+    "show.migrate.to.gradle.popup": "false"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="94c4bf48-2ad5-4c3d-9945-153829a6f016" name="Changes" comment="" />
+      <created>1775739986191</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1775739986191</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

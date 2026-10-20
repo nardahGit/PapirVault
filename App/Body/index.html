@@ -10,13 +10,82 @@
     <link rel="stylesheet" href="../Styles/fonts.css">
     <link rel="stylesheet" href="../Styles/themes.css">
     <link rel="stylesheet" href="../Styles/style.css">
+    <link rel="stylesheet" href="../Styles/animations.css">
+
+    <style>
+        body.modern-bg {
+            background-image:
+                linear-gradient(180deg, rgba(248, 250, 252, 0.45) 0%, rgba(248, 250, 252, 0.58) 100%),
+                url('../Assets/Landing.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .landing-header {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.10) 0%, rgba(124, 58, 237, 0.09) 100%);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.25);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+
+        .landing-header .container-fluid {
+            padding-left: 0 !important;
+            padding-right: 0.9rem !important;
+        }
+
+        .landing-header .navbar-brand {
+            margin-right: 0 !important;
+            padding-left: 0 !important;
+            transform: translateX(-8px);
+        }
+
+        .landing-header .navbar-brand img {
+            margin-right: 0.35rem !important;
+        }
+
+        .landing-header .navbar-brand .lh-1 {
+            margin-left: 0 !important;
+        }
+
+        @media (min-width: 768px) {
+            .landing-header .container-fluid {
+                padding-left: 0 !important;
+            }
+
+            .landing-header .navbar-brand {
+                transform: translateX(-12px);
+            }
+        }
+
+        .hero-tagline {
+            color: #0f172a;
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+        }
+
+        .hero-description-enhanced {
+            color: #111827;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            max-width: 760px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.68);
+            border-left: 4px solid rgba(37, 99, 235, 0.45);
+            border-radius: 0.8rem;
+            padding: 1rem 1.15rem;
+        }
+    </style>
 </head>
 <body class="modern-bg">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top shadow-sm py-3">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="../Assets/logo.png" alt="PapirVault Logo" class="me-2" style="height: 35px; width: auto;">
+    <nav class="navbar navbar-expand-lg navbar-light landing-header sticky-top shadow-sm py-3">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center ms-0" href="#">
+                <img src="../Assets/logo.png" alt="PapirVault Logo" class="me-1" style="height: 35px; width: auto;">
                 <div class="lh-1">
                     <h5 class="mb-0 fw-bold"><span class="text-primary-blue">Papir</span><span class="text-primary-purple">Vault</span></h5>
                     <small class="text-muted extra-small">Secure . Verify . Trust</small>
@@ -31,10 +100,15 @@
                 <img src="../Assets/logo.png" alt="PapirVault Logo" class="hero-main-logo">
             </div>
             <h1 class="display-4 fw-bold mb-3">Welcome to <span class="text-primary-blue">Papir</span><span class="text-primary-purple">Vault</span></h1>
-            <p class="lead text-secondary mb-4">Secure Your Official Documents. Verified Instantly.</p>
-            <p class="text-muted mx-auto hero-description">
-                A highly secure digital vault where official documents are uploaded directly by authorized issuers, ensuring authenticity and instant verification.
+            <p class="lead hero-tagline mb-4">Secure your official documents. Verified in an instant.</p>
+            <p class="mx-auto hero-description hero-description-enhanced">
+                A high-trust digital vault where authorized issuers publish official records directly, preserving authenticity and enabling immediate verification.
             </p>
+            <div class="mt-4 d-flex justify-content-center">
+                <a href="VerifyStatus.html" class="btn btn-outline-dark rounded-pill px-4 py-2 fw-bold shadow-sm">
+                    <i class="bi bi-search me-2"></i>Verify by Code
+                </a>
+            </div>
         </div>
 
         <h3 class="fw-bold mb-5 section-title">Choose Your Login Type</h3>
@@ -136,17 +210,18 @@
     </main>
 
     <footer class="container pb-4">
-        <div class="rounded-4 shadow-sm px-4 py-3 d-flex flex-column flex-md-row justify-content-between align-items-center" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(124, 58, 237, 0.12) 100%); border: 1px solid rgba(99, 102, 241, 0.25);">
+        <div class="rounded-4 shadow-sm px-4 py-3 d-flex flex-column flex-md-row justify-content-between align-items-center" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.46) 0%, rgba(124, 58, 237, 0.44) 100%); border: 1px solid rgba(99, 102, 241, 0.70); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);">
             <div class="d-flex align-items-center mb-2 mb-md-0">
-                <i class="bi bi-shield-check text-primary-blue me-2"></i>
-                <span class="small text-secondary">Trusted Digital Document Platform</span>
+                <i class="bi bi-shield-check text-white me-2"></i>
+                <span class="small text-white">Trusted Digital Document Platform</span>
             </div>
-            <div class="fw-bold text-primary-purple small">
+            <div class="fw-bold text-white small">
                 <i class="bi bi-c-circle me-1"></i>2026 CULS Prague
             </div>
         </div>
     </footer>
 
     <script src="..Main/script.js"></script>
+    <script src="../Main/animations.js"></script>
 </body>
 </html>

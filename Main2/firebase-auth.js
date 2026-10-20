@@ -12,6 +12,7 @@ import {
     sendPasswordResetEmail,
     verifyPasswordResetCode,
     confirmPasswordReset,
+    updateProfile,
     onAuthStateChanged,
     signOut,
     setPersistence,
@@ -57,16 +58,35 @@ const toInitials = (name) => {
     return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
 };
 
-const saveClientProfile = (user) => {
+// Fetch profile from Firestore and save to storage
+const saveClientProfile = async (user) => {
     if (!user) return;
 
     const displayName = toDisplayNameFromUser(user);
-    const profile = {
+    let profile = {
         uid: user.uid || "",
         displayName,
-        email: user.email || "",
+        email: (user.email || "").toLowerCase(),
         initials: toInitials(displayName)
     };
+
+    // Try to fetch extra profile fields from Firestore (e.g., organizationType)
+    try {
+        const { getFirestore, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+        const db = getFirestore();
+        // Try both 'profiles' and 'issuers' collections for flexibility
+        let docRef = doc(db, "profiles", user.uid);
+        let snap = await getDoc(docRef);
+        if (!snap.exists()) {
+            docRef = doc(db, "issuers", user.uid);
+            snap = await getDoc(docRef);
+        }
+        if (snap.exists()) {
+            profile = { ...profile, ...snap.data() };
+        }
+    } catch (e) {
+        // Ignore Firestore errors, fallback to Auth profile
+    }
 
     sessionStorage.setItem("papirvaultClientProfile", JSON.stringify(profile));
     localStorage.setItem("papirvaultClientProfile", JSON.stringify(profile));
@@ -141,9 +161,9 @@ const initGoogleLogin = ({
     hideMessage(errorSelector);
 
     getRedirectResult(auth)
-        .then((result) => {
+        .then(async (result) => {
             if (result && result.user) {
-                saveClientProfile(result.user);
+                await saveClientProfile(result.user);
                 window.location.href = successRedirect;
             }
         })
@@ -159,7 +179,7 @@ const initGoogleLogin = ({
             button.setAttribute("disabled", "true");
             await setPersistence(auth, browserLocalPersistence);
             const userCredential = await signInWithPopup(auth, provider);
-            saveClientProfile(userCredential.user);
+            await saveClientProfile(userCredential.user);
             window.location.href = successRedirect;
         } catch (error) {
             const popupBlocked = error && (error.code === "auth/popup-blocked" || error.code === "auth/cancelled-popup-request");
@@ -266,14 +286,24 @@ const initEmailPasswordLogin = ({
 
             await setPersistence(auth, browserLocalPersistence);
             const normalizedEmail = emailInput.value.trim();
+
             const methods = await fetchSignInMethodsForEmail(auth, normalizedEmail);
+            // Show a clear message if the user should use Google sign-in
             if (!methods.length) {
-                showMessage(errorSelector, "You don't have an account yet. Please sign up first.");
+                showMessage(errorSelector, "No account found with this email. Please sign up first or use Google sign-in if you registered with Google.");
+                return;
+            }
+            if (methods.includes("google.com") && !methods.includes("password")) {
+                showMessage(errorSelector, "This email is registered with Google. Please use 'Continue with Google' to sign in.");
+                return;
+            }
+            if (!methods.includes("password")) {
+                showMessage(errorSelector, "This email is not registered for password login. Please use the correct provider.");
                 return;
             }
 
             const userCredential = await signInWithEmailAndPassword(auth, normalizedEmail, passwordInput.value);
-            saveClientProfile(userCredential.user);
+            await saveClientProfile(userCredential.user);
 
             showMessage(successSelector, "Login successful. Redirecting...");
             window.location.href = successRedirect;
@@ -488,7 +518,7 @@ const protectPage = ({ redirectTo = "ClientLogin.html", requireVerified = false 
             return;
         }
 
-        saveClientProfile(user);
+        await saveClientProfile(user);
 
         if (requireVerified && !user.emailVerified) {
             await signOut(auth);
@@ -510,6 +540,52 @@ const attachLogout = ({ selector = ".logout-btn", redirectTo = "ClientLogin.html
     });
 };
 
+const getStoredProfile = () => {
+    const fromSession = sessionStorage.getItem("papirvaultClientProfile") || "";
+    const fromLocal = localStorage.getItem("papirvaultClientProfile") || "";
+    const raw = fromSession || fromLocal;
+    if (!raw) return null;
+
+    try {
+        return JSON.parse(raw);
+    } catch {
+        return null;
+    }
+};
+
+const getCurrentUserProfile = () => {
+    const currentUser = auth?.currentUser;
+    if (currentUser) {
+        const displayName = toDisplayNameFromUser(currentUser);
+        return {
+            uid: currentUser.uid || "",
+            displayName,
+            email: currentUser.email || "",
+            initials: toInitials(displayName)
+        };
+    }
+
+    return getStoredProfile();
+};
+
+const updateCurrentUserDisplayName = async (displayName) => {
+    if (!auth?.currentUser) {
+        throw new Error("No active user session. Please sign in again.");
+    }
+
+    const trimmed = String(displayName || "").trim();
+    if (!trimmed) {
+        throw new Error("Display name cannot be empty.");
+    }
+
+    await updateProfile(auth.currentUser, { displayName: trimmed });
+    await saveClientProfile(auth.currentUser);
+
+    const profile = getCurrentUserProfile();
+    window.dispatchEvent(new CustomEvent("papirvault:profile-updated", { detail: profile }));
+    return profile;
+};
+
 window.PapirVaultAuth = {
     initGoogleLogin,
     initEmailPasswordSignup,
@@ -518,5 +594,7 @@ window.PapirVaultAuth = {
     initPasswordResetRequest,
     initPasswordResetPage,
     protectPage,
-    attachLogout
+    attachLogout,
+    getCurrentUserProfile,
+    updateCurrentUserDisplayName
 };

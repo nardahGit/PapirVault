@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../Styles/fonts.css">
     <link rel="stylesheet" href="../Styles/themes.css">
     <link rel="stylesheet" href="../Styles/style.css">
+    <link rel="stylesheet" href="../Styles/animations.css">
 </head>
 <body class="modern-bg">
 
@@ -62,11 +63,12 @@
                             <div class="row g-3 mb-4">
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold">Institution Type</label>
-                                    <select id="issuerSignupInstitutionType" class="modern-select w-100 shadow-none">
-                                        <option>Government Body</option>
-                                        <option>Private Insurance</option>
-                                        <option>Educational Office</option>
-                                        <option>Banking / Finance</option>
+                                    <select id="issuerSignupInstitutionType" class="modern-select w-100 shadow-none" required>
+                                        <option value="" disabled selected>Select organization type</option>
+                                        <option value="University / Academic Institution">University / Academic Institution</option>
+                                        <option value="Banking & Financial Institution">Banking & Financial Institution</option>
+                                        <option value="Governmental Body">Governmental Body</option>
+                                        <option value="Medical / Healthcare Provider">Medical / Healthcare Provider</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
@@ -118,5 +120,6 @@
     </div>
 
     <script src="../Main/script.js"></script>
+    <script src="../Main/animations.js"></script>
 </body>
 </html>

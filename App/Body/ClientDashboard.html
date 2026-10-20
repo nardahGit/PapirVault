@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../Styles/fonts.css">
     <link rel="stylesheet" href="../Styles/themes.css">
     <link rel="stylesheet" href="../Styles/style.css">
+    <link rel="stylesheet" href="../Styles/animations.css">
 </head>
 <body class="dashboard-body">
     
@@ -70,7 +71,7 @@
                     <span class="input-group-text bg-white border-0 ps-3">
                         <i class="bi bi-search text-muted small"></i>
                     </span>
-                    <input type="text" id="headerSearch" class="form-control border-0 bg-white small" placeholder="Search...">
+                    <input type="text" id="headerSearch" data-search-custom="true" class="form-control border-0 bg-white small" placeholder="Search...">
                 </div>
             </div>
         </div>
@@ -493,5 +494,6 @@
             });
         });
     </script>
+    <script src="../Main/animations.js"></script>
 </body>
 </html>

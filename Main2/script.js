@@ -34,38 +34,74 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const toInitials = (name) => {
+        const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return 'CL';
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    };
+
+    const deriveNameFromEmail = (email) => {
+        const local = String(email || '').split('@')[0] || 'Client';
+        return local
+            .split(/[._-]+/)
+            .filter(Boolean)
+            .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+            .join(' ') || 'Client';
+    };
+
+    const applyClientSidebar = (profile) => {
+        const userCard = document.querySelector('.user-card');
+        const classicCard = document.querySelector('.profile-card');
+
+        const target = userCard || classicCard;
+        if (!target || !profile) return;
+
+        const name = profile.displayName || deriveNameFromEmail(profile.email) || 'Client';
+        const emailOrMeta = profile.email || 'Client Account';
+        const initials = profile.initials || toInitials(name);
+
+        const nameEl = target.querySelector('.profile-details .fw-bold') || document.getElementById('clientSidebarName');
+        const metaEl = target.querySelector('.profile-details .text-muted') || document.getElementById('clientSidebarMeta');
+        const avatarEl = target.querySelector('.avatar, .avatar-circle') || document.getElementById('clientSidebarAvatar');
+
+        if (nameEl) nameEl.textContent = name;
+        if (metaEl) metaEl.textContent = emailOrMeta;
+        if (avatarEl) avatarEl.textContent = initials;
+    };
+
+    const applyIssuerSidebar = (profile) => {
+        const issuerCard = document.querySelector('.profile-card-modern');
+        if (!issuerCard || !profile) return;
+
+        const name = profile.issuerName || profile.displayName || deriveNameFromEmail(profile.email) || 'Issuer Admin';
+        // Always prefer display value for sidebar
+        const meta = profile.organizationType || profile.institutionType || profile.organizationTypeKey || profile.email || 'Official Issuer';
+
+        // Prefer explicit IDs if present (for patch compatibility)
+        const nameEl = document.getElementById('sidebarIssuerName') || issuerCard.querySelector('.profile-details .fw-bold');
+        const metaEl = document.getElementById('sidebarIssuerOrgType') || issuerCard.querySelector('.profile-details .text-muted');
+        const avatarEl = issuerCard.querySelector('.avatar-modern');
+
+        if (nameEl) nameEl.textContent = name;
+        if (metaEl) metaEl.textContent = meta;
+        if (avatarEl && !avatarEl.querySelector('i')) {
+            avatarEl.textContent = profile.initials || toInitials(name);
+        }
+    };
+
     const clientProfile = readJsonStorage('papirvaultClientProfile');
     const issuerProfile = readJsonStorage('papirvaultIssuerProfile');
 
-    const clientCard = document.querySelector('.profile-card');
-    if (clientCard && clientProfile) {
-        const nameEl = clientCard.querySelector('.profile-details .fw-bold');
-        const metaEl = clientCard.querySelector('.profile-details .text-muted');
-        const avatarEl = clientCard.querySelector('.avatar, .avatar-circle');
+    applyClientSidebar(clientProfile);
+    applyIssuerSidebar(issuerProfile || clientProfile);
 
-        if (nameEl) {
-            nameEl.textContent = clientProfile.displayName || 'Client';
-        }
-        if (metaEl) {
-            metaEl.textContent = clientProfile.email || 'Client Account';
-        }
-        if (avatarEl && typeof avatarEl.textContent === 'string') {
-            avatarEl.textContent = clientProfile.initials || 'CL';
-        }
-    }
-
-    const issuerCard = document.querySelector('.profile-card-modern');
-    if (issuerCard && issuerProfile) {
-        const nameEl = issuerCard.querySelector('.profile-details .fw-bold');
-        const metaEl = issuerCard.querySelector('.profile-details .text-muted');
-
-        if (nameEl) {
-            nameEl.textContent = issuerProfile.issuerName || 'Issuer Admin';
-        }
-        if (metaEl) {
-            metaEl.textContent = issuerProfile.organizationType || 'Official Issuer';
-        }
-    }
+    window.addEventListener('papirvault:profile-updated', (event) => {
+        const profile = event?.detail || readJsonStorage('papirvaultClientProfile');
+        if (!profile) return;
+        applyClientSidebar(profile);
+        applyIssuerSidebar(profile);
+    });
 });
 /*ClientLogin*/
 
@@ -85,33 +121,7 @@ function togglePassword() {
 // Optional: Fancy submit effect
 /* --- ClientLogin Functionalies --- */
 
-const loginForm = document.getElementById('clientLoginForm');
-
-if (loginForm && !loginForm.hasAttribute('data-firebase-auth')) {
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Target the specific ID from your HTML
-        const btn = document.getElementById('signInBtn');
-        
-        // 1. Visual Loading State
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Authenticating...';
-        btn.disabled = true;
-        
-        // 2. Simulate Secure Connection
-        setTimeout(() => {
-            // Update button to show success before moving
-            btn.innerHTML = 'Access Granted <i class="bi bi-shield-check-fill ms-2"></i>';
-            btn.classList.replace('btn-primary-blue', 'btn-success');
-
-            // 3. Redirect to the Dashboard after a brief moment
-            setTimeout(() => {
-                window.location.href = 'ClientDashboard.html';
-            }, 800); // 800ms delay for a smooth transition
-            
-        }, 1500);
-    });
-}
+// ...existing code...
 /*ClientLogin Functionality*/
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -275,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!matchedAccount) {
+
                 if (issuerAuthError) {
                     issuerAuthError.textContent = "You don't have an account yet. Sign up first.";
                     issuerAuthError.classList.remove('d-none');
@@ -282,11 +293,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Strict validation: name and type must match stored account
+            const storedName = String(matchedAccount.organizationName || '').trim();
+            const storedType = String(matchedAccount.organizationType || matchedAccount.institutionType || '').trim();
+            const inputName = String(issuerName).trim();
+            const inputType = String(issuerType).trim();
+
+            if (
+                storedName.toLowerCase() !== inputName.toLowerCase() ||
+                storedType.toLowerCase() !== inputType.toLowerCase()
+            ) {
+                if (issuerAuthError) {
+                    issuerAuthError.textContent = "Organization name or type does not match our records for this email. Please check your details.";
+                    issuerAuthError.classList.remove('d-none');
+                }
+                return;
+            }
+
             const issuerProfile = {
-                issuerName: matchedAccount.organizationName || issuerName,
-                issuerNameKey: (matchedAccount.organizationName || issuerName).toLowerCase().replace(/\s+/g, ' ').trim(),
+                issuerName: storedName,
+                issuerNameKey: storedName.toLowerCase().replace(/\s+/g, ' ').trim(),
                 issuerEmail,
-                organizationType: matchedAccount.institutionType || issuerType
+                organizationType: storedType,
+                organizationTypeKey: storedType.trim().replace(/\s+/g, ' ').toLowerCase()
             };
             
             const loginBtn = issuerForm.querySelector('button[type="submit"]') || document.getElementById('issuerSignInBtn');
@@ -408,9 +437,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const existingIndex = accounts.findIndex((entry) => String(entry.email || '').toLowerCase() === workEmail);
+
+            // Normalize organizationTypeKey for issuer accounts
+            const organizationTypeKey = institutionType.trim().replace(/\s+/g, ' ').toLowerCase();
             const accountRecord = {
                 organizationName,
-                institutionType,
+                institutionType, // display value
+                organizationType: institutionType, // for consistency
+                organizationTypeKey, // normalized key
                 licenseId,
                 email: workEmail,
                 updatedAt: Date.now()
@@ -529,19 +563,39 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollHandler();
     }
 
-    // 4. SEARCH FILTER FOR RECENT ACTIVITY TABLE
-    const searchInput = document.getElementById('headerSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', () => {
-            const term = searchInput.value.trim().toLowerCase();
-            // target any table rows within the content wrapper
-            const rows = document.querySelectorAll('.content-wrapper table tbody tr');
-            rows.forEach(r => {
-                const text = r.innerText.toLowerCase();
-                r.style.display = text.includes(term) ? '' : 'none';
-            });
+    // 4. AUTO SEARCH WIRING (tables/cards/faq blocks)
+    const allTextInputs = Array.from(document.querySelectorAll('input[type="text"], input[type="search"]'));
+    const isSearchInput = (input) => {
+        const id = String(input.id || '').toLowerCase();
+        const name = String(input.name || '').toLowerCase();
+        const placeholder = String(input.placeholder || '').toLowerCase();
+        return id.includes('search') || name.includes('search') || placeholder.includes('search');
+    };
+
+    allTextInputs
+        .filter(isSearchInput)
+        .forEach((input) => {
+            if (input.dataset.searchCustom === 'true' || input.dataset.searchSkip === 'true') return;
+
+            const scopeSelector = input.dataset.searchScope || '.content-wrapper';
+            const itemSelector = input.dataset.searchItems || 'table tbody tr';
+            const root = input.closest('main') || document;
+            const scope = root.querySelector(scopeSelector) || document.querySelector(scopeSelector) || root;
+            if (!scope) return;
+
+            const applyFilter = () => {
+                const term = String(input.value || '').trim().toLowerCase();
+                const items = Array.from(scope.querySelectorAll(itemSelector));
+                if (!items.length) return;
+
+                items.forEach((item) => {
+                    const text = String(item.textContent || '').toLowerCase();
+                    item.style.display = !term || text.includes(term) ? '' : 'none';
+                });
+            };
+
+            input.addEventListener('input', applyFilter);
         });
-    }
 
     // 4. VIEW ALL DOCUMENTS TOGGLE
     if (viewAllBtn) {

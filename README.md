@@ -22,6 +22,80 @@ Use this format for future updates:
 - ...
 ```
 
+## [v0.1.2] - 2026-03-11
+
+### Added
+- Global animation system across app pages using:
+	- `App/Styles/animations.css`
+	- `App/Main/animations.js`
+- Family-based motion profiles:
+	- Client pages: softer/calm motion profile
+	- Issuer pages: sharper enterprise-style motion profile
+	- Landing page: enhanced hero choreography
+- Landing page public quick action:
+	- `Verify by Code` button on `App/Body/index.html` linking to `App/Body/VerifyStatus.html`
+- Public live verification-by-code flow:
+	- New verification form on `App/Body/VerifyStatus.html`
+	- Firestore-backed lookup by code in `App/Main/firebase-documents.js` (`getDocumentByVerificationCode`)
+
+### Changed
+- Sidebar identity sync generalized across client/issuer pages in `App/Main/script.js`.
+- Client profile update flow upgraded on `App/Body/ClientSettings.html`:
+	- Added profile form IDs and feedback state
+	- Uses `PapirVaultAuth` helper when available
+	- Includes runtime fallback update path for stale cached auth bundle
+- Issuer settings modernized with editable Issuer Profile section on `App/Body/IssuerSettings.html`:
+	- Organization name/type/email/contact fields
+	- Save flow persists profile and refreshes sidebar identity instantly
+- Receipt UX/security updates on `App/Body/IssuerDocuments.html`:
+	- Receipt preview/HTML now emphasizes verification code
+	- Full client UID replaced with masked client reference
+	- Receipt selector label switched to include verification code
+
+### Fixed
+- Issuer document upload path now uploads actual files instead of metadata-only records:
+	- `App/Body/IssuerDocuments.html` now uses `uploadIssuerDocument(...)`
+	- Prevents blank/missing file behavior caused by old no-file registration mode
+- Added visible warning badge for legacy records with empty `fileUrl`:
+	- "No file attached - re-upload required" shown in issuer list/modals
+- Improved PDF receipt generation reliability by rendering from a safe invisible DOM container (reduces blank PDF export cases).
+- Resolved client settings runtime error path:
+	- `window.PapirVaultAuth.updateCurrentUserDisplayName is not a function`
+	- Fallback implementation now handles this safely.
+
+### Pending
+- Re-upload legacy issuer records created before file-upload fix (records with empty `fileUrl`).
+- Optionally add direct document download/view action for issuer/client lists using `fileUrl` where available.
+
+## [v0.1.1] - 2026-03-10
+
+### Added
+- Reusable global search wiring in `App/Main/script.js` for search inputs across pages using `data-search-*` attributes.
+- Working dynamic recent-uploads search on `App/Body/IssuerDocuments.html` (`issuerUploadsSearch`) for live row filtering.
+
+### Changed
+- Search behavior enabled and configured on key pages:
+	- `App/Body/ClientDocuments.html`
+	- `App/Body/ClientVerification.html`
+	- `App/Body/ClientSettings.html`
+	- `App/Body/HelpCenter.html`
+	- `App/Body/IssuerHelp.html`
+- Preserved custom page-level search handlers where already implemented:
+	- `App/Body/ClientDashboard.html`
+	- `App/Body/IssuerDashboard.html`
+	- verify/code modal searches in `App/Body/IssuerDocuments.html`
+- Landing page (`App/Body/index.html`) visual polish:
+	- `Landing.png` background integration with tuned overlay opacity
+	- Improved hero text readability/weight and highlighted description panel
+	- Header subtle color tint and adjusted left alignment for logo/title block
+	- Footer contrast/readability improvements (stronger panel + white text)
+
+### Fixed
+- Search bars that previously had no effective filtering behavior now perform real content filtering based on page context.
+
+### Pending
+- Finalize Firebase reset-email delivery/provider configuration in console-level settings.
+
 ## [v0.1.0] - 2026-03-10
 
 ### Added

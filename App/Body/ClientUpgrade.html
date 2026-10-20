@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="../Styles/fonts.css">
 	<link rel="stylesheet" href="../Styles/themes.css">
 	<link rel="stylesheet" href="../Styles/style.css">
+    <link rel="stylesheet" href="../Styles/animations.css">
 
 	<style>
 		body.dashboard-body {
@@ -100,15 +101,15 @@
 
 	<div class="sidebar-footer px-3 border-top pt-4 pb-4">
 		<div class="profile-card d-flex align-items-center p-2 rounded-3 mb-3 border bg-white">
-			<div class="avatar me-2">JD</div>
+			<div class="avatar me-2" id="clientSidebarAvatar">--</div>
 			<div class="profile-details">
-				<div class="fw-bold small">John Doe</div>
-				<div class="text-muted extra-small">Trial User</div>
+				<div class="fw-bold small" id="clientSidebarName">Loading...</div>
+				<div class="text-muted extra-small" id="clientSidebarMeta">Client Account</div>
 			</div>
 		</div>
-		<a href="ClientLogin.html" class="logout-btn text-danger text-decoration-none small fw-bold d-flex align-items-center px-3">
-			<i class="bi bi-box-arrow-left me-2"></i> <span class="nav-text">Logout</span>
-		</a>
+		<button class="btn btn-outline-danger w-100 rounded-3 btn-sm">
+			<i class="bi bi-box-arrow-left me-2"></i> Logout
+		</button>
 	</div>
 </aside>
 
@@ -316,5 +317,6 @@
 		}
 	});
 </script>
+    <script src="../Main/animations.js"></script>
 </body>
 </html>

@@ -1,0 +1,30 @@
+
+/*index.html*/
+
+/* Importing Plus Jakarta Sans - Modern, clean, and highly readable for dashboards */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@00,200..800;1,200..800&display=swap');
+
+:root {
+    --main-font: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    font-family: var(--main-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #1e293b; /* Deep slate for better legibility */
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: var(--main-font);
+    letter-spacing: -0.02em; /* Tighter spacing for a premium look */
+}
+
+.extra-small {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.fw-bold {
+    font-weight: 700 !important;
+}
